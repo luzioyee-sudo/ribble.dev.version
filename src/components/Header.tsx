@@ -247,14 +247,10 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Video Player */}
           <button
-            onClick={() => setActiveView('youtube' as AppView)}
+            onClick={() => window.location.assign('/watch-standalone.html')}
             className={`flex items-center gap-2.5 p-2.5 rounded-2xl transition-all cursor-pointer text-start ${
               isCollapsed ? 'justify-center' : 'px-3.5'
-            } ${
-              activeView === 'youtube'
-                ? 'text-[#222222] bg-[#A4F5A6] font-bold shadow-xs'
-                : 'text-[#222222]/80 hover:text-[#222222] hover:bg-[#D0D2CF]/40'
-            }`}
+            } text-[#222222]/80 hover:text-[#222222] hover:bg-[#D0D2CF]/40`}
             title="Video player"
           >
             <Youtube className="w-4 h-4 stroke-[2] shrink-0 text-[#222222]" />

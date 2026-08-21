@@ -69,7 +69,7 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({ settings,  onNavigat
       title: 'YouTube Studio',
       description: 'Learn with interactive YouTube video transcripts',
       icon: Youtube,
-      view: 'youtube' as AppView,
+      path: '/watch-standalone.html',
       color: 'bg-red-500/10 text-red-600 dark:text-red-400'
     },
     {
@@ -128,7 +128,7 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({ settings,  onNavigat
           return (
             <button
               key={tool.id}
-              onClick={() => tool.view && onNavigate(tool.view)}
+              onClick={() => tool.path ? window.location.assign(tool.path) : tool.view && onNavigate(tool.view)}
               className={`w-full items-center justify-between p-4 rounded-2xl bg-white dark:bg-stone-900 border border-[#D0D2CF]/80 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700 transition-all cursor-pointer group shadow-2xs hover:shadow-xs ${
                 tool.id === 'settings' ? 'hidden sm:flex' : 'flex'
               }`}

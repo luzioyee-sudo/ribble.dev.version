@@ -1548,6 +1548,57 @@ Respond ONLY with valid JSON in this exact structure:
   }
 });
 
+// Public API adapters used by the supplied standalone watch page.
+app.get('/api/public/transcript', async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  const videoId = String(req.query.v ?? '');
+  if (!/^[A-Za-z0-9_-]{11}$/.test(videoId)) {
+    return res.status(400).json({ error: 'Invalid YouTube video ID.' });
+  }
+  try {
+    const transcript = await fetchYoutubeTranscriptHelper(videoId, () => undefined);
+    return res.json({
+      title: 'YouTube video',
+      channel: '',
+      segments: transcript.segments.map((segment: any) => ({
+        text: String(segment.text ?? '').trim(),
+        offset: Math.round(Number(segment.startTime ?? 0) * 1000),
+        duration: Math.max(300, Math.round((Number(segment.endTime ?? 0) - Number(segment.startTime ?? 0)) * 1000)),
+      })).filter((segment: any) => segment.text && segment.duration > 0),
+    });
+  } catch (error: any) {
+    return res.status(404).json({ error: error?.message ?? 'No trustworthy transcript is available.' });
+  }
+});
+
+app.options('/api/public/translate', (_req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'content-type');
+  return res.sendStatus(204);
+});
+
+app.post('/api/public/translate', async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  const words = Array.isArray(req.body?.words) ? req.body.words.filter((word: unknown) => typeof word === 'string').slice(0, 20) : [];
+  const target = String(req.body?.target ?? 'ar');
+  if (!words.length) return res.status(400).json({ error: 'An array of words is required.' });
+  try {
+    const translations: Record<string, string> = {};
+    await Promise.all(words.map(async (word: string) => {
+      const response = await fetch(`http://127.0.0.1:${PORT}/api/translate`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ word, targetLanguage: target, sourceLanguage: 'English' }),
+      });
+      const payload = await response.json();
+      translations[word] = String(payload.translation ?? payload.word ?? word);
+    }));
+    return res.json({ translations });
+  } catch (error: any) {
+    return res.status(502).json({ error: error?.message ?? 'Translation service unavailable.' });
+  }
+});
+
 // YouTube Transcript Route with Redundant Fallbacks
 app.post("/api/youtube-transcript", async (req, res) => {
   try {

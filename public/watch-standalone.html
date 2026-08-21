@@ -1,0 +1,764 @@
+<!doctype html>
+<!--
+  ============================================================================
+  RIBBLE — STANDALONE "WATCH" PAGE (single file: HTML + CSS + JS)
+  ============================================================================
+  What this file is:
+    A self-contained copy of the app's /watch screen. Open it directly
+    (file:///.../watch-standalone.html) or serve it (http://localhost:8080/watch-standalone.html).
+    Add ?v=VIDEO_ID to the URL to pick a video, e.g. ...html?v=GkG1hMhIQ_Q
+
+  What it does, in order:
+    1. Reads the YouTube video id from the page URL (?v=...).
+    2. Loads the real YouTube IFrame Player API and builds a player.
+    3. Downloads that video's caption track (the "transcript") from our own
+       public API, which talks to YouTube's internal player endpoint server-side.
+    4. Renders every transcript line with its timestamp.
+    5. Polls the player 5x/second and highlights the line that matches the
+       current playback time (this is the transcript "sync").
+    6. Click a line -> the video seeks to that moment.
+       Click a word  -> the video pauses and a translation bubble appears
+       (translation comes from the app's /api/public/translate endpoint).
+
+  HOW THE TRANSCRIPT WORKS (the important part):
+    - YouTube does NOT expose captions through a normal public REST API, and its
+      caption URLs are not CORS-enabled, so the browser cannot fetch them
+      directly. That is why the request goes to OUR server first:
+          browser  ->  GET /api/public/transcript?v=<id>   (CORS: *)
+          server   ->  POST youtubei/v1/player  (pretending to be the Android app)
+                       => JSON containing captions.playerCaptionsTracklistRenderer.captionTracks
+          server   ->  GET <track.baseUrl>      => timed-text XML
+          server   ->  parses XML into [{ text, offset, duration }, ...] (milliseconds)
+    - Track choice: auto-generated ("asr") tracks in the video's spoken language
+      are preferred, because translated tracks would not match the audio.
+    - Timing fix: auto-captions overlap (a line's `duration` often runs past the
+      next line's `offset`). We clamp each duration to the next line's start so
+      exactly one line is "active" at any playback time.
+    - Finding the active line is a binary search over `offset` (the array is
+      sorted by time), so it stays instant even for 1000+ line transcripts.
+  ============================================================================
+-->
+<html lang="en">
+  <head>
+    <!-- Character encoding first: caption text contains accents/quotes/emoji. -->
+    <meta charset="utf-8" />
+    <!-- Mobile scaling so the two-column layout can collapse to one column. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- SEO/browser tab title for this single page. -->
+    <title>Ribble — Watch &amp; learn from any YouTube transcript</title>
+    <!-- Short description used by search engines and link previews. -->
+    <meta
+      name="description"
+      content="Watch a YouTube video with a time-synced transcript. Tap any word to pause and see its translation."
+    />
+
+    <style>
+      /* ---------------------------------------------------------------
+         DESIGN TOKENS — the Ribble palette, declared once and reused.
+         Using CSS variables keeps colors consistent (no random colors).
+         --------------------------------------------------------------- */
+      :root {
+        --offwhite: #eff1ee; /* page background */
+        --surface: #f7f8f6; /* cards, slightly lighter than the page */
+        --gray: #d0d2cf; /* borders / inactive states */
+        --mint: #a4f5a6; /* primary accent (active line, buttons) */
+        --mint-ink: #2f7a3e; /* readable dark-mint for small text */
+        --lavender: #b2a1ff; /* secondary accent */
+        --charcoal: #222222; /* primary text */
+        --muted: #5a5f58; /* secondary text */
+        --radius-card: 28px; /* containers: large rounding */
+        --radius-btn: 14px; /* buttons: medium rounding */
+      }
+
+      /* Reset the browser's default 8px body margin and box model quirks. */
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--offwhite);
+        color: var(--charcoal);
+        /* System font stack: no webfont download, so the page works offline. */
+        font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
+
+      /* Page shell: centers content and adds breathing room. */
+      .wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px 16px 48px;
+      }
+
+      /* Small uppercase label style used for meta text. */
+      .eyebrow {
+        font-size: 11px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      /* Two columns on wide screens: video (left) + transcript (right). */
+      .grid {
+        display: grid;
+        gap: 20px;
+        /* 1.4fr/1fr gives the player more room than the transcript. */
+        grid-template-columns: 1.4fr 1fr;
+        align-items: start;
+      }
+      /* Below 900px there is not enough width, so stack the columns. */
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Generic soft card surface. */
+      .card {
+        background: var(--surface);
+        border: 1px solid rgba(34, 34, 34, 0.08);
+        border-radius: var(--radius-card);
+        padding: 14px;
+        box-shadow: 0 10px 30px rgba(34, 34, 34, 0.06);
+      }
+
+      /* Keeps the iframe at 16:9 no matter the column width. */
+      .player {
+        aspect-ratio: 16 / 9;
+        width: 100%;
+        background: var(--gray);
+        border-radius: var(--radius-card);
+        overflow: hidden; /* clips the iframe corners to the rounding */
+      }
+      /* The YouTube API replaces #player with an <iframe>; make it fill the box. */
+      .player iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        display: block;
+      }
+
+      /* Transcript scroller: fixed height so the page itself does not grow
+         to 1000 lines, and so auto-scroll has something to scroll inside. */
+      #lines {
+        list-style: none; /* remove <ol> numbers */
+        margin: 0;
+        padding: 0;
+        max-height: 62vh;
+        overflow-y: auto;
+      }
+
+      /* One transcript line: [timestamp] [text]. */
+      .line {
+        display: grid;
+        grid-template-columns: 52px 1fr; /* fixed gutter keeps text aligned */
+        gap: 10px;
+        padding: 7px 8px;
+        border-radius: var(--radius-btn);
+        cursor: pointer;
+        transition: background 0.18s ease, color 0.18s ease;
+      }
+      .line:hover {
+        background: rgba(34, 34, 34, 0.04);
+      }
+      /* The line matching the current playback position. */
+      .line.active {
+        background: var(--mint);
+      }
+      /* Lines already spoken are dimmed, so the eye finds "now" faster. */
+      .line.past .txt {
+        color: var(--muted);
+      }
+      .ts {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 12px;
+        color: var(--muted);
+        padding-top: 3px;
+        font-variant-numeric: tabular-nums; /* digits keep equal width */
+      }
+      .line.active .ts {
+        color: var(--mint-ink);
+      }
+
+      /* Each word is its own span so a click can target a single word. */
+      .w {
+        cursor: pointer;
+        border-radius: 6px;
+        padding: 0 1px;
+      }
+      .w:hover {
+        background: rgba(178, 161, 255, 0.35); /* lavender hover */
+      }
+
+      /* Floating translation bubble, positioned by JS. */
+      #bubble {
+        position: fixed;
+        z-index: 50;
+        max-width: 280px;
+        padding: 10px 12px;
+        border-radius: 18px;
+        background: var(--surface);
+        border: 1px solid rgba(34, 34, 34, 0.1);
+        box-shadow: 0 14px 34px rgba(34, 34, 34, 0.18);
+        /* display:none while idle so it cannot intercept clicks. */
+        display: none;
+        opacity: 0;
+        transform: translateY(4px);
+        transition: opacity 0.14s ease, transform 0.14s ease;
+      }
+      #bubble.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      #bubble .src {
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      #bubble .out {
+        color: var(--mint-ink);
+        margin-top: 2px;
+      }
+      /* Small round "speak this word" button. */
+      #bubble button {
+        margin-left: auto;
+        border: 0;
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        background: var(--mint);
+        color: var(--charcoal);
+        cursor: pointer;
+        line-height: 1;
+      }
+
+      /* Controls row (language select + video id input). */
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+      select,
+      input {
+        font: inherit;
+        padding: 8px 12px;
+        border-radius: var(--radius-btn);
+        border: 1px solid var(--gray);
+        background: var(--surface);
+        color: var(--charcoal);
+      }
+      button.pill {
+        font: inherit;
+        border: 0;
+        padding: 9px 16px;
+        border-radius: var(--radius-btn);
+        background: var(--mint);
+        color: var(--charcoal);
+        cursor: pointer;
+      }
+      button.pill:active {
+        transform: scale(0.97);
+      }
+
+      /* Loading placeholder bars shown while the transcript downloads. */
+      .sk {
+        height: 12px;
+        border-radius: 6px;
+        background: var(--gray);
+        margin: 10px 4px;
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        50% {
+          opacity: 0.45;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <!-- Exactly one <h1> on the page (good for SEO/accessibility). -->
+      <h1 style="font-size: 26px; margin: 0 0 4px">Watch &amp; learn</h1>
+      <p class="eyebrow" id="meta">Loading video…</p>
+
+      <!-- Controls. They are plain HTML; JS reads their values on change. -->
+      <div class="row">
+        <!-- Video id box: 11-character YouTube id, or a full YouTube URL. -->
+        <input id="vid" size="26" placeholder="YouTube video id or URL" />
+        <!-- Target language for word translations. -->
+        <select id="lang" aria-label="Translation language">
+          <option value="ar">العربية (ar)</option>
+          <option value="es">Español (es)</option>
+          <option value="fr">Français (fr)</option>
+          <option value="de">Deutsch (de)</option>
+        </select>
+        <button class="pill" id="load">Load</button>
+      </div>
+
+      <div class="grid">
+        <!-- LEFT: the player. The API swaps this div for an <iframe>. -->
+        <section class="card" style="padding: 0; border: 0; box-shadow: none">
+          <div class="player"><div id="player"></div></div>
+        </section>
+
+        <!-- RIGHT: the transcript. -->
+        <section class="card">
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px"
+          >
+            <h2 style="font-size: 20px; margin: 0">Transcript</h2>
+            <span class="eyebrow" id="count"></span>
+          </div>
+          <!-- Populated by JS. <ol> because transcript order is meaningful. -->
+          <ol id="lines"></ol>
+          <!-- Status area for loading skeletons and error messages. -->
+          <div id="status">
+            <div class="sk" style="width: 90%"></div>
+            <div class="sk" style="width: 70%"></div>
+            <div class="sk" style="width: 80%"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <!-- The translation bubble lives at the end of <body> so it stacks on top. -->
+    <div id="bubble"></div>
+
+    <script>
+      // =====================================================================
+      // 1. CONFIGURATION
+      // =====================================================================
+
+      // Origin of the deployed Ribble app, used for the two public endpoints.
+      // Both endpoints send `Access-Control-Allow-Origin: *`, so this file works
+      // from any origin — including a file:// page with no server at all.
+      var API = "https://project--93870dbc-cec5-43a5-a7fe-085216cb30e6.lovable.app";
+
+      // If this file is itself served by the app, prefer same-origin requests
+      // (faster, and it keeps working if the project URL ever changes).
+      if (location.protocol === "http:" || location.protocol === "https:") {
+        if (location.hostname === "localhost" || location.hostname.endsWith("lovable.app")) {
+          API = location.origin;
+        }
+      }
+
+      // Fallback video used when the URL has no ?v= parameter.
+      var DEFAULT_ID = "GkG1hMhIQ_Q";
+
+      // =====================================================================
+      // 2. TINY HELPERS
+      // =====================================================================
+
+      // Shorthand for document.getElementById.
+      function $(id) {
+        return document.getElementById(id);
+      }
+
+      // Accepts a bare id, a watch?v= URL, or a youtu.be link and returns the
+      // 11-character id, or "" when nothing valid is found.
+      function parseId(raw) {
+        var s = (raw || "").trim();
+        var m = s.match(/[?&]v=([A-Za-z0-9_-]{11})/) || s.match(/youtu\.be\/([A-Za-z0-9_-]{11})/);
+        if (m) return m[1];
+        return /^[A-Za-z0-9_-]{11}$/.test(s) ? s : "";
+      }
+
+      // Milliseconds -> "m:ss" (or "h:mm:ss" for long videos), for timestamps.
+      function clock(ms) {
+        var total = Math.max(0, Math.floor(ms / 1000)); // never show negatives
+        var h = Math.floor(total / 3600);
+        var m = Math.floor((total % 3600) / 60);
+        var s = total % 60;
+        var mm = String(m).padStart(h > 0 ? 2 : 1, "0");
+        var ss = String(s).padStart(2, "0");
+        return h > 0 ? h + ":" + mm + ":" + ss : mm + ":" + ss;
+      }
+
+      // Current UI state, kept in one object so it is easy to reason about.
+      var state = {
+        videoId: parseId(new URLSearchParams(location.search).get("v")) || DEFAULT_ID,
+        lines: [], // normalized transcript: [{text, offset, duration}]
+        nodes: [], // the <li> element for each line, same index
+        active: -1, // index of the currently spoken line (-1 = none yet)
+        player: null, // YouTube player instance
+        cache: {}, // "lang|word" -> translation, avoids repeat network calls
+        timer: null, // interval id for the playback poller
+      };
+
+      // Show the chosen id in the input box on first paint.
+      $("vid").value = state.videoId;
+
+      // =====================================================================
+      // 3. THE YOUTUBE PLAYER
+      //    The IFrame API is what gives us getCurrentTime()/seekTo(); a plain
+      //    <iframe src="youtube.com/embed/..."> cannot be read or controlled.
+      // =====================================================================
+
+      // Load https://www.youtube.com/iframe_api once and resolve when ready.
+      // The API only signals readiness through the global callback below.
+      var ytReady = new Promise(function (resolve) {
+        window.onYouTubeIframeAPIReady = resolve; // called by the remote script
+        var tag = document.createElement("script");
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+      });
+
+      // Build (or rebuild) the player for the given video id.
+      function mountPlayer(videoId) {
+        return ytReady.then(function () {
+          // Destroy an existing player first, otherwise iframes pile up.
+          if (state.player) {
+            try {
+              state.player.destroy();
+            } catch (e) {
+              /* already gone — safe to ignore */
+            }
+          }
+          // The API replaces the target element, so give it a fresh host div.
+          var host = document.createElement("div");
+          $("player").innerHTML = "";
+          $("player").appendChild(host);
+
+          state.player = new YT.Player(host, {
+            videoId: videoId,
+            playerVars: {
+              playsinline: 1, // iOS: play inline instead of fullscreen
+              rel: 0, // limit "related videos" at the end
+              modestbranding: 1, // smaller YouTube logo
+            },
+            events: {
+              onReady: function () {
+                // Start the sync loop only once the player can report time.
+                startSyncLoop();
+              },
+            },
+          });
+        });
+      }
+
+      // Poll the player 5x per second and re-highlight the active line.
+      // Why an interval and not requestAnimationFrame: 60 updates/second would
+      // re-render a 1000-line transcript and freeze the page. 200ms is smooth
+      // enough for reading and ~300x cheaper.
+      function startSyncLoop() {
+        if (state.timer) clearInterval(state.timer); // never stack two loops
+        state.timer = setInterval(function () {
+          if (!state.player || !state.player.getCurrentTime) return;
+          var ms = state.player.getCurrentTime() * 1000; // seconds -> ms
+          highlight(findActive(ms)); // ms -> line index -> DOM update
+        }, 200);
+      }
+
+      // Binary search for the LAST line whose offset is <= the playhead.
+      // The transcript is sorted by offset, so this is O(log n) instead of
+      // O(n) — the difference between smooth and janky on long videos.
+      function findActive(ms) {
+        var lo = 0;
+        var hi = state.lines.length - 1;
+        var found = -1;
+        while (lo <= hi) {
+          var mid = (lo + hi) >> 1; // fast integer midpoint
+          if (state.lines[mid].offset <= ms) {
+            found = mid; // candidate; try to find a later one
+            lo = mid + 1;
+          } else {
+            hi = mid - 1; // this line starts in the future
+          }
+        }
+        return found;
+      }
+
+      // Move the highlight. Only two elements are touched per change (the old
+      // active line and the new one), never the whole list.
+      function highlight(i) {
+        if (i === state.active) return; // nothing changed -> no DOM work
+        var prev = state.nodes[state.active];
+        if (prev) prev.classList.remove("active"); // un-highlight the old line
+        state.active = i;
+        var el = state.nodes[i];
+        if (!el) return;
+        el.classList.add("active");
+        // Mark everything before the playhead as "past" (dimmed).
+        for (var k = 0; k < state.nodes.length; k++) {
+          state.nodes[k].classList.toggle("past", k < i);
+        }
+        // Keep the active line vertically centered in the scroller.
+        el.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+
+      // =====================================================================
+      // 4. FETCHING AND RENDERING THE TRANSCRIPT
+      // =====================================================================
+
+      function loadTranscript(videoId) {
+        // Reset the panel into its loading state.
+        $("lines").innerHTML = "";
+        state.lines = [];
+        state.nodes = [];
+        state.active = -1;
+        $("count").textContent = "";
+        $("status").innerHTML =
+          '<div class="sk" style="width:90%"></div><div class="sk" style="width:70%"></div><div class="sk" style="width:80%"></div>';
+
+        // One request to our server, which does the YouTube work for us.
+        return fetch(API + "/api/public/transcript?v=" + encodeURIComponent(videoId))
+          .then(function (r) {
+            return r.json(); // { segments, title, channel } or { error }
+          })
+          .then(function (data) {
+            if (data.error) throw new Error(data.error);
+            var segs = data.segments || [];
+            if (!segs.length) throw new Error("This video has no transcript.");
+
+            // --- TIMING NORMALIZATION ---------------------------------------
+            // Auto-captions overlap: a segment's `duration` frequently extends
+            // past the next segment's `offset`. Clamping each duration to the
+            // gap to the next line guarantees exactly one active line per
+            // instant, which is what makes the highlight track the audio.
+            state.lines = segs.map(function (s, i) {
+              var next = segs[i + 1];
+              var gap = next ? Math.max(300, next.offset - s.offset) : Math.max(300, s.duration);
+              return {
+                text: s.text,
+                offset: s.offset,
+                duration: Math.min(s.duration || gap, gap),
+              };
+            });
+
+            $("status").innerHTML = ""; // remove the skeletons
+            $("count").textContent = state.lines.length + " lines";
+            $("meta").textContent = (data.title || "YouTube video") + (data.channel ? " · " + data.channel : "");
+            document.title = (data.title || "Watch") + " — Ribble";
+            renderLines();
+          })
+          .catch(function (err) {
+            // Any failure (no captions, offline, blocked video) ends up here.
+            $("status").innerHTML =
+              '<p style="color:#8a3b3b;font-size:14px">' + (err.message || "Failed to load transcript") + "</p>";
+          });
+      }
+
+      // Build the list once, using a DocumentFragment so the browser lays out
+      // and paints a single time instead of once per line.
+      function renderLines() {
+        var frag = document.createDocumentFragment();
+
+        state.lines.forEach(function (line, i) {
+          var li = document.createElement("li");
+          li.className = "line";
+
+          // Timestamp gutter.
+          var ts = document.createElement("span");
+          ts.className = "ts";
+          ts.textContent = clock(line.offset);
+
+          // Text column.
+          var txt = document.createElement("span");
+          txt.className = "txt";
+
+          // Split into words and wrap each in its own <span class="w"> so a
+          // click can identify exactly which word was tapped. Using textContent
+          // (never innerHTML) means caption text can never inject markup.
+          line.text.split(/\s+/).forEach(function (word, wi) {
+            if (!word) return;
+            if (wi > 0) txt.appendChild(document.createTextNode(" ")); // keep spacing
+            var w = document.createElement("span");
+            w.className = "w";
+            w.textContent = word;
+            txt.appendChild(w);
+          });
+
+          li.appendChild(ts);
+          li.appendChild(txt);
+
+          // Clicking anywhere on the line seeks the video to that moment.
+          // seekTo() takes SECONDS while our data is in MILLISECONDS.
+          li.addEventListener("click", function (e) {
+            if (e.target.classList.contains("w")) return; // word clicks are handled below
+            if (state.player) {
+              state.player.seekTo(line.offset / 1000, true);
+              state.player.playVideo();
+            }
+          });
+
+          frag.appendChild(li);
+          state.nodes.push(li);
+        });
+
+        $("lines").appendChild(frag); // one DOM insertion for the whole list
+      }
+
+      // =====================================================================
+      // 5. WORD TRANSLATION BUBBLE
+      // =====================================================================
+
+      // Strip surrounding punctuation ("world!" -> "world") and lowercase it,
+      // so "World", "world," and "world" all share one cache entry.
+      function cleanWord(s) {
+        return s.replace(/^[^A-Za-z0-9'-]+|[^A-Za-z0-9'-]+$/g, "").toLowerCase();
+      }
+
+      // Ask our translate endpoint for one word. It batches, caches and calls
+      // the AI gateway server-side, so no API key is ever exposed here.
+      function translate(word, lang) {
+        var key = lang + "|" + word;
+        if (state.cache[key]) return Promise.resolve(state.cache[key]); // instant
+        return fetch(API + "/api/public/translate", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ words: [word], target: lang }),
+        })
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (d) {
+            var v = (d.translations || {})[word] || "No translation found";
+            state.cache[key] = v; // remember it for the rest of the session
+            return v;
+          })
+          .catch(function () {
+            return "Offline"; // never leave the bubble spinning forever
+          });
+      }
+
+      // Render the bubble near (x, y), clamped so it stays on screen.
+      function showBubble(x, y, word, body, rtl) {
+        var b = $("bubble");
+        b.innerHTML = ""; // clear previous content
+        b.dir = rtl ? "rtl" : "ltr"; // Arabic reads right-to-left
+
+        var src = document.createElement("div");
+        src.className = "src";
+        src.dir = "ltr"; // the English word always reads LTR
+        src.textContent = word;
+
+        // Pronounce button, using the browser's built-in speech synthesis.
+        var say = document.createElement("button");
+        say.type = "button";
+        say.title = "Pronounce";
+        say.textContent = "🔊";
+        say.addEventListener("click", function (e) {
+          e.stopPropagation(); // do not re-trigger the outside-click closer
+          try {
+            var u = new SpeechSynthesisUtterance(word);
+            u.lang = "en-US";
+            speechSynthesis.cancel(); // stop anything still speaking
+            speechSynthesis.speak(u);
+          } catch (err) {
+            /* speech not available in this browser */
+          }
+        });
+        src.appendChild(say);
+
+        var out = document.createElement("div");
+        out.className = "out";
+        out.textContent = body;
+
+        b.appendChild(src);
+        b.appendChild(out);
+
+        // Measure after content is in the DOM, then position within the viewport.
+        b.style.display = "block";
+        var r = b.getBoundingClientRect();
+        b.style.left = Math.max(8, Math.min(window.innerWidth - r.width - 8, x - r.width / 2)) + "px";
+        b.style.top = (y + r.height + 16 > window.innerHeight ? y - r.height - 12 : y + 10) + "px";
+        // Next frame -> the opacity/transform transition actually animates.
+        requestAnimationFrame(function () {
+          b.classList.add("show");
+        });
+      }
+
+      // Fade out, then hide so the invisible bubble cannot block clicks.
+      function hideBubble() {
+        var b = $("bubble");
+        b.classList.remove("show");
+        setTimeout(function () {
+          if (!b.classList.contains("show")) b.style.display = "none";
+        }, 150);
+      }
+
+      // One delegated listener for every word in the transcript: far cheaper
+      // than attaching thousands of individual click handlers.
+      $("lines").addEventListener("click", function (e) {
+        var el = e.target;
+        if (!el.classList || !el.classList.contains("w")) return;
+
+        var word = cleanWord(el.textContent);
+        if (!word) return;
+
+        // Pause so the learner can read without the audio running away.
+        if (state.player) {
+          try {
+            state.player.pauseVideo();
+          } catch (err) {
+            /* ignore */
+          }
+        }
+
+        var lang = $("lang").value;
+        var rect = el.getBoundingClientRect(); // anchor under the clicked word
+        var cached = state.cache[lang + "|" + word];
+
+        // Show immediately: cached value, or "…" as an optimistic placeholder.
+        showBubble(rect.left + rect.width / 2, rect.bottom, word, cached || "…", lang === "ar");
+        if (cached) return;
+
+        translate(word, lang).then(function (v) {
+          // Only replace the text if the bubble still shows the same word.
+          var b = $("bubble");
+          if (b.style.display === "block" && b.querySelector(".src").textContent.indexOf(word) === 0) {
+            b.querySelector(".out").textContent = v;
+          }
+        });
+      });
+
+      // Click anywhere else (or press Escape) to dismiss the bubble.
+      document.addEventListener("click", function (e) {
+        if (!$("bubble").contains(e.target) && !(e.target.classList && e.target.classList.contains("w"))) {
+          hideBubble();
+        }
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") hideBubble();
+      });
+
+      // =====================================================================
+      // 6. BOOTSTRAP + CONTROLS
+      // =====================================================================
+
+      // Load player and transcript in parallel — neither one needs the other.
+      function open(videoId) {
+        state.videoId = videoId;
+        // Keep the URL shareable/bookmarkable without reloading the page.
+        if (history.replaceState) history.replaceState(null, "", "?v=" + videoId);
+        mountPlayer(videoId);
+        loadTranscript(videoId);
+      }
+
+      // "Load" button: validate the input, then re-open with the new video.
+      $("load").addEventListener("click", function () {
+        var id = parseId($("vid").value);
+        if (!id) {
+          alert("Enter a valid YouTube video id or URL.");
+          return;
+        }
+        open(id);
+      });
+
+      // Enter inside the input behaves like clicking "Load".
+      $("vid").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") $("load").click();
+      });
+
+      // Changing the language drops nothing — the cache is keyed per language,
+      // so old lookups stay valid and new ones simply fetch fresh.
+      $("lang").addEventListener("change", hideBubble);
+
+      // Kick everything off.
+      open(state.videoId);
+    </script>
+  </body>
+</html>

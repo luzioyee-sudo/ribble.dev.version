@@ -46,7 +46,6 @@ import { QuickSearchModal } from './components/QuickSearchModal';
 import { LockScreen } from './components/LockScreen';
 import { BlockedScreen } from './components/BlockedScreen';
 import { AllToolsView } from './components/AllToolsView';
-import { YouTubeView } from './components/YouTubeView';
 import { WritingView } from './components/WritingView';
 import { LandingPageView } from './components/LandingPageView';
 import { NotificationCenter } from './components/NotificationCenter';
@@ -2239,22 +2238,6 @@ export default function App() {
                 onNavigate={(view) => handleNavigateWithHistory(view)}
                 quizHistory={quizHistory}
                 onSaveQuizHistory={handleSaveQuizHistory}
-              />
-            </motion.div>
-          )}
-
-          {/* VIEW: YOUTUBE */}
-          {activeView === 'youtube' && (
-            <motion.div
-              key="youtube-view-portal"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <YouTubeView
-                settings={settings}
-                onBack={handleNavigateBack}
               />
             </motion.div>
           )}
