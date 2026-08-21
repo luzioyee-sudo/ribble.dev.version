@@ -1,5 +1,4 @@
-import fs from 'fs';
-import path from 'path';
+import { getServerSupabase } from './supabaseServer.ts';
 import type {
   LexicalEntry,
   LexiconSearchQuery,
@@ -24,43 +23,55 @@ import { WEATHER_AND_SEASONS_DATA } from '../data/weatherAndSeasons.ts';
 import { INTRODUCING_YOURSELF_DATA } from '../data/introducingYourself.ts';
 import { DAILY_ROUTINE_DATA } from '../data/dailyRoutine.ts';
 
-const STORAGE_DIR = path.join(process.cwd(), 'storage');
-const DB_FILE = path.join(STORAGE_DIR, 'master_lexicon_db.json');
+// Supabase stores the authoritative lexicon; the in-memory map is a read-optimized cache.
+let lexiconMap: Record<string, LexicalEntry> = {};
+let normalizedIndex: Record<string, string> = {};
 
-function ensureStorageDir() {
-  if (!fs.existsSync(STORAGE_DIR)) {
-    fs.mkdirSync(STORAGE_DIR, { recursive: true });
+async function hydrateMasterLexicon(): Promise<void> {
+  try {
+    const { data, error } = await getServerSupabase()
+      .from('lexicon_entries')
+      .select('id,language,normalized_word,status,data')
+      .neq('status', 'deprecated')
+      .limit(10000);
+    if (error) throw error;
+    if (data?.length) {
+      lexiconMap = Object.fromEntries(data.map((row: any) => [row.id, row.data as LexicalEntry]));
+      rebuildNormalizedIndex();
+    } else {
+      await persistMasterLexicon();
+    }
+  } catch (error) {
+    console.warn('[Master Lexicon] Supabase hydration notice; using seeded memory cache:', error);
   }
 }
 
-// In-memory master index keyed by normalizedWord or ID
-let lexiconMap: Record<string, LexicalEntry> = {};
-let normalizedIndex: Record<string, string> = {}; // normalizedWord -> entry ID
+async function persistMasterLexicon(): Promise<void> {
+  try {
+    const entries = Object.values(lexiconMap).map((entry) => ({
+      id: entry.id,
+      normalized_word: entry.normalizedWord,
+      language: entry.language,
+      status: entry.status,
+      data: entry,
+      created_at: entry.createdAt,
+      updated_at: entry.updatedAt,
+    }));
+    const client = getServerSupabase();
+    for (let index = 0; index < entries.length; index += 500) {
+      const { error } = await client.from('lexicon_entries').upsert(entries.slice(index, index + 500), { onConflict: 'id' });
+      if (error) throw error;
+    }
+  } catch (error) {
+    console.warn('[Master Lexicon] Supabase persistence notice:', error);
+  }
+}
 
 export function loadMasterLexicon(): void {
-  ensureStorageDir();
-  if (fs.existsSync(DB_FILE)) {
-    try {
-      const raw = fs.readFileSync(DB_FILE, 'utf-8');
-      const loaded: Record<string, LexicalEntry> = JSON.parse(raw);
-      lexiconMap = loaded;
-    } catch (err) {
-      console.error('[Master Lexicon] Failed to read DB file:', err);
-      lexiconMap = {};
-    }
-  }
-
-  // Seed initial master lexicon and all 9 topic datasets if database has fewer than 100 entries
   if (Object.keys(lexiconMap).length < 100) {
-    console.log('[Master Lexicon] Seeding initial master lexicon corpus and all 9 topic datasets...');
+    console.log('[Master Lexicon] Seeding initial lexicon corpus in memory...');
     lexiconMap = {};
-
-    // 1. Seed base INITIAL_MASTER_LEXICON
-    INITIAL_MASTER_LEXICON.forEach((entry) => {
-      lexiconMap[entry.id] = entry;
-    });
-
-    // 2. Seed all topic datasets
+    INITIAL_MASTER_LEXICON.forEach((entry) => { lexiconMap[entry.id] = entry; });
     const datasets = [
       { name: 'Introduce Yourself', data: INTRODUCING_YOURSELF_DATA },
       { name: 'Daily Routine', data: DAILY_ROUTINE_DATA },
@@ -71,104 +82,45 @@ export function loadMasterLexicon(): void {
       { name: 'Hobbies & Free Time', data: HOBBIES_AND_FREE_TIME_DATA },
       { name: 'Home & Where You Live', data: HOME_AND_WHERE_YOU_LIVE_DATA },
       { name: 'Shopping & Money', data: SHOPPING_AND_MONEY_DATA },
-      { name: 'Weather & Seasons', data: WEATHER_AND_SEASONS_DATA }
+      { name: 'Weather & Seasons', data: WEATHER_AND_SEASONS_DATA },
     ];
-
-    datasets.forEach((dataset) => {
-      const topicName = dataset.name;
-      const topicSlug = topicName.toLowerCase().replace(/[^a-z0-9]+/g, '_');
-
-      dataset.data.forEach((row, rowIndex) => {
-        const languagesToSeed = [
-          { name: 'English', code: 'en', getWord: (r: any) => r.english, getPhonetic: (r: any) => r.phonetic?.english },
-          { name: 'Spanish', code: 'es', getWord: (r: any) => r.spanish, getPhonetic: (r: any) => r.phonetic?.spanish },
-          { name: 'German', code: 'de', getWord: (r: any) => r.german, getPhonetic: (r: any) => r.phonetic?.german },
-          { name: 'Arabic', code: 'ar', getWord: (r: any) => r.arabic, getPhonetic: (r: any) => r.phonetic?.arabic },
-          { name: 'French', code: 'fr', getWord: (r: any) => r.french, getPhonetic: (r: any) => r.phonetic?.french },
-          { name: 'Chinese', code: 'zh', getWord: (r: any) => r.chinese, getPhonetic: (r: any) => r.phonetic?.chinese },
-          { name: 'Japanese', code: 'ja', getWord: (r: any) => r.japanese, getPhonetic: (r: any) => r.phonetic?.japanese },
-        ];
-
-        languagesToSeed.forEach((lang) => {
-          const word = lang.getWord(row);
-          if (!word || typeof word !== 'string' || !word.trim()) {
-            return; // Skip empty words
-          }
-
-          const cleanWord = word.trim();
-          const id = `lex_topic_${topicSlug}_${rowIndex}_${lang.code}`;
-
-          let pos: any = 'other';
-          if (row.pos) {
-            const rawPos = row.pos.toLowerCase();
-            const validPos = [
-              'noun', 'verb', 'adjective', 'adverb', 'pronoun', 'preposition',
-              'conjunction', 'determiner', 'interjection', 'auxiliary', 'modal',
-              'numeral', 'particle', 'article', 'phrase', 'other'
-            ];
-            if (validPos.includes(rawPos)) {
-              pos = rawPos;
-            }
-          }
-
-          let lexicalType: any = 'word';
-          if (row.type === 'chunk') {
-            lexicalType = 'chunk';
-          } else if (row.type === 'sentence') {
-            lexicalType = 'expression';
-          }
-
-          const entry: LexicalEntry = {
-            id,
-            word: cleanWord,
-            normalizedWord: cleanWord.toLowerCase(),
-            type: lexicalType,
-            lemma: cleanWord,
-            language: lang.name,
-            partOfSpeech: pos,
-            phonetic: lang.getPhonetic(row) || undefined,
-            frequency: 'Common',
-            cefr: row.cefr || 'A1',
-            topics: [topicName],
-            arabicTranslation: row.arabic || undefined,
-            senses: [
-              {
-                senseId: `${id}_s1`,
-                definition: row.english,
-                partOfSpeech: pos,
-                cefr: row.cefr || 'A1',
-                examples: [],
-                arabicTranslation: row.arabic ? {
-                  text: row.arabic
-                } : undefined
-              }
-            ],
-            source: `Topic Seeder - ${topicName}`,
-            status: 'active',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          };
-
-          lexiconMap[id] = entry;
-        });
+    datasets.forEach((dataset) => dataset.data.forEach((row: any, rowIndex: number) => {
+      const languagesToSeed = [
+        { name: 'English', code: 'en', getWord: (r: any) => r.english, getPhonetic: (r: any) => r.phonetic?.english },
+        { name: 'Spanish', code: 'es', getWord: (r: any) => r.spanish, getPhonetic: (r: any) => r.phonetic?.spanish },
+        { name: 'German', code: 'de', getWord: (r: any) => r.german, getPhonetic: (r: any) => r.phonetic?.german },
+        { name: 'Arabic', code: 'ar', getWord: (r: any) => r.arabic, getPhonetic: (r: any) => r.phonetic?.arabic },
+        { name: 'French', code: 'fr', getWord: (r: any) => r.french, getPhonetic: (r: any) => r.phonetic?.french },
+        { name: 'Chinese', code: 'zh', getWord: (r: any) => r.chinese, getPhonetic: (r: any) => r.phonetic?.chinese },
+        { name: 'Japanese', code: 'ja', getWord: (r: any) => r.japanese, getPhonetic: (r: any) => r.phonetic?.japanese },
+      ];
+      languagesToSeed.forEach((lang) => {
+        const word = lang.getWord(row);
+        if (!word || typeof word !== 'string' || !word.trim()) return;
+        const cleanWord = word.trim();
+        const topicSlug = dataset.name.toLowerCase().replace(/[^a-z0-9]+/g, '_');
+        const id = `lex_topic_${topicSlug}_${rowIndex}_${lang.code}`;
+        const pos = row.pos || 'other';
+        const lexicalType = row.type === 'chunk' ? 'chunk' : row.type === 'sentence' ? 'expression' : 'word';
+        lexiconMap[id] = {
+          id, word: cleanWord, normalizedWord: cleanWord.toLowerCase(), type: lexicalType as any,
+          lemma: cleanWord, language: lang.name, partOfSpeech: pos as any,
+          phonetic: lang.getPhonetic(row) || undefined, frequency: 'Common', cefr: row.cefr || 'A1', topics: [dataset.name],
+          arabicTranslation: row.arabic || undefined,
+          senses: [{ senseId: `${id}_s1`, definition: row.english, partOfSpeech: pos as any, cefr: row.cefr || 'A1', examples: [], arabicTranslation: row.arabic ? { text: row.arabic } : undefined }],
+          source: `Topic Seeder - ${dataset.name}`, status: 'active', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
+        };
       });
-    });
-
-    console.log(`[Master Lexicon] Successfully seeded ${Object.keys(lexiconMap).length} entries across all languages and topics!`);
-    saveMasterLexicon();
+    }));
+    console.log(`[Master Lexicon] Seeded ${Object.keys(lexiconMap).length} entries in memory.`);
   }
-
   rebuildNormalizedIndex();
+  void hydrateMasterLexicon();
 }
 
 export function saveMasterLexicon(): void {
-  ensureStorageDir();
-  try {
-    fs.writeFileSync(DB_FILE, JSON.stringify(lexiconMap, null, 2), 'utf-8');
-    rebuildNormalizedIndex();
-  } catch (err) {
-    console.error('[Master Lexicon] Failed to save DB file:', err);
-  }
+  rebuildNormalizedIndex();
+  void persistMasterLexicon();
 }
 
 function rebuildNormalizedIndex(): void {

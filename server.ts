@@ -598,86 +598,57 @@ Mandates:
   }
 });
 
-// Helper to resolve safe, sanitized, per-user progress file paths to support multi-account isolation
-function getProgressFilePath(email: string | undefined): string {
-  const cleanEmail = (email || "mopl8065_gmail_com")
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9_.-]/g, "_");
-  return path.join(process.cwd(), `user_progress_${cleanEmail}.json`);
+// Supabase-backed progress helpers for legacy API routes.
+async function findProgressByEmail(email: string): Promise<any | null> {
+  const client = getServerSupabase();
+  const { data: profile, error: profileError } = await client.from('user_profiles').select('id,data').eq('email', email.trim().toLowerCase()).maybeSingle();
+  if (profileError) throw profileError;
+  if (!profile?.id) return null;
+  const { data: progress, error: progressError } = await client.from('user_progress').select('data').eq('id', profile.id).maybeSingle();
+  if (progressError) throw progressError;
+  return progress?.data || profile.data || null;
 }
 
-// Client progress synchronization endpoint (saves state as a local JSON file)
-app.post("/api/progress/sync", (req, res) => {
+app.post("/api/progress/sync", async (req, res) => {
   try {
-    const progressData = req.body;
-    const email = progressData.email || progressData.settings?.userEmail || (progressData.userId ? `user_${progressData.userId}` : "guest");
-    const filePath = getProgressFilePath(email);
-    
-    let existingData: any = {};
-    if (fs.existsSync(filePath)) {
-      try {
-        existingData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-      } catch (_) {}
-    }
-
+    const progressData = req.body || {};
+    const client = getServerSupabase();
+    const userId = progressData.userId || progressData.id;
+    if (!userId) return res.status(400).json({ error: 'A Supabase userId is required for progress sync.' });
+    const { data: existing } = await client.from('user_progress').select('data').eq('id', userId).maybeSingle();
+    const existingData = existing?.data || {};
     const mergedData = {
       ...existingData,
       ...progressData,
-      documents: (Array.isArray(progressData.documents) && progressData.documents.length > 0) ? progressData.documents : (existingData.documents || []),
-      vocabulary: (Array.isArray(progressData.vocabulary) && progressData.vocabulary.length > 0) ? progressData.vocabulary : (existingData.vocabulary || []),
-      highlights: (Array.isArray(progressData.highlights) && progressData.highlights.length > 0) ? progressData.highlights : (existingData.highlights || []),
-      stickyNotes: (Array.isArray(progressData.stickyNotes) && progressData.stickyNotes.length > 0) ? progressData.stickyNotes : (existingData.stickyNotes || []),
-      folders: (Array.isArray(progressData.folders) && progressData.folders.length > 0) ? progressData.folders : (existingData.folders || []),
-      decks: (Array.isArray(progressData.decks) && progressData.decks.length > 0) ? progressData.decks : (existingData.decks || []),
-      timestamp: Date.now()
+      documents: progressData.documents?.length ? progressData.documents : (existingData.documents || []),
+      vocabulary: progressData.vocabulary?.length ? progressData.vocabulary : (existingData.vocabulary || []),
+      highlights: progressData.highlights?.length ? progressData.highlights : (existingData.highlights || []),
+      stickyNotes: progressData.stickyNotes?.length ? progressData.stickyNotes : (existingData.stickyNotes || []),
+      folders: progressData.folders?.length ? progressData.folders : (existingData.folders || []),
+      decks: progressData.decks?.length ? progressData.decks : (existingData.decks || []),
+      timestamp: Date.now(),
     };
-
-    fs.writeFileSync(
-      filePath,
-      JSON.stringify(mergedData, null, 2),
-      "utf-8"
-    );
+    const { error } = await client.from('user_progress').upsert({ id: userId, email: mergedData.email || mergedData.settings?.userEmail || '', data: mergedData, updated_at: new Date().toISOString() }, { onConflict: 'id' });
+    if (error) throw error;
     res.json({ success: true, timestamp: new Date().toISOString() });
-  } catch (err: any) {
-    console.error("Error writing user progress:", err);
-    res.status(500).json({ error: "Failed to sync user progress", details: err?.message });
+  } catch (error: any) {
+    console.error('Error writing Supabase user progress:', error);
+    res.status(500).json({ error: 'Failed to sync user progress', details: error?.message });
   }
 });
 
-// Developer API Endpoint (Allows external models or other scripts to retrieve user stats, reading logs, and flashcard metrics)
-app.get("/api/developer/progress", (req, res) => {
+app.get("/api/developer/progress", async (req, res) => {
   try {
-    const authHeader = req.headers["x-api-key"] || req.headers["authorization"]?.toString().replace(/^bearer\s+/i, "");
-    
-    if (!authHeader) {
-      return res.status(401).json({ 
-        error: "Unauthorized", 
-        message: "Please provide an 'x-api-key' header or 'Authorization: Bearer <key>'. You can find your API key in the LingoFlow App Settings under Developer API." 
-      });
-    }
-
-    const reqEmail = req.query.email || req.headers["x-user-email"];
-    if (!reqEmail) {
-      return res.status(400).json({
-        error: "Missing Email",
-        message: "Access restricted. Please specify the target user account email using the 'email' query parameter (e.g., ?email=user@example.com) or the 'x-user-email' header to access progress logs."
-      });
-    }
-
-    const filePath = getProgressFilePath(reqEmail.toString());
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ 
-        error: "Not Found", 
-        message: `No synchronized progress data found for user email '${reqEmail}'. Please configure and save this email in the app settings first to enable API access.` 
-      });
-    }
-
-    const data = fs.readFileSync(filePath, "utf-8");
-    res.json(JSON.parse(data));
-  } catch (err: any) {
-    console.error("Error reading progress file:", err);
-    res.status(500).json({ error: "Failed to read progress", details: err?.message });
+    const authHeader = req.headers['x-api-key'] || req.headers['authorization']?.toString().replace(/^bearer\s+/i, '');
+    if (!authHeader) return res.status(401).json({ error: 'Unauthorized', message: 'An API key is required.' });
+    const reqEmail = req.query.email || req.headers['x-user-email'];
+    if (!reqEmail) return res.status(400).json({ error: 'Missing Email', message: 'Specify the target user email.' });
+    const data = await findProgressByEmail(reqEmail.toString());
+    if (!data) return res.status(404).json({ error: 'Not Found', message: `No synchronized Supabase progress data found for '${reqEmail}'.` });
+    res.json(data);
+  } catch (error: any) {
+    console.error('Error reading Supabase progress:', error);
+    res.status(500).json({ error: 'Failed to read progress', details: error?.message });
   }
 });
 
@@ -685,14 +656,11 @@ app.get("/api/developer/progress", (req, res) => {
 app.post("/api/ai/advices", async (req, res) => {
   try {
     const email = req.body.email || "mopl8065@gmail.com";
-    const filePath = getProgressFilePath(email);
-    let progressData: any = {};
-    if (fs.existsSync(filePath)) {
-      progressData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
-    } else {
-      return res.status(404).json({ 
-        error: "Not Found", 
-        message: `No progress data found for '${email}'. Please study, read books, or save vocabulary first to generate recommendations.` 
+    const progressData = await findProgressByEmail(email);
+    if (!progressData) {
+      return res.status(404).json({
+        error: "Not Found",
+        message: `No Supabase progress data found for '${email}'. Please study, read books, or save vocabulary first to generate recommendations.`
       });
     }
 

@@ -1,4 +1,7 @@
+import dotenv from 'dotenv';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+
+dotenv.config();
 
 let client: SupabaseClient | null = null;
 

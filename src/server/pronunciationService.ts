@@ -37,17 +37,13 @@ export interface PronunciationStats {
 }
 
 const STORAGE_DIR = path.join(process.cwd(), 'storage', 'pronunciations');
-const DB_FILE = path.join(process.cwd(), 'storage', 'pronunciations_db.json');
-const STATS_FILE = path.join(process.cwd(), 'storage', 'pronunciations_stats.json');
 
-// Ensure storage directories exist
+import { getServerSupabase } from './supabaseServer.ts';
+
 function ensureStorageDirs() {
-  if (!fs.existsSync(STORAGE_DIR)) {
-    fs.mkdirSync(STORAGE_DIR, { recursive: true });
-  }
+  if (!fs.existsSync(STORAGE_DIR)) fs.mkdirSync(STORAGE_DIR, { recursive: true });
 }
 
-// In-memory cache map for ultra-fast lookup
 let dbIndex: Record<string, PronunciationRecord> = {};
 let statsData: PronunciationStats = {
   total_assets: 0,
@@ -58,47 +54,51 @@ let statsData: PronunciationStats = {
   estimated_tokens_saved: 0,
   last_updated: new Date().toISOString(),
 };
-
-// In-flight concurrency protection map to deduplicate parallel requests
 const inFlightGenerations = new Map<string, Promise<PronunciationRecord>>();
 
-// Load DB index from disk into memory
+async function hydratePronunciationDb(): Promise<void> {
+  try {
+    const { data, error } = await getServerSupabase().from('pronunciation_records').select('id,composite_key,status,hit_count,data').limit(10000);
+    if (error) throw error;
+    dbIndex = Object.fromEntries((data || []).map((row: any) => [row.composite_key, row.data as PronunciationRecord]));
+    statsData.total_assets = Object.keys(dbIndex).length;
+  } catch (error) {
+    console.warn('[Pronunciation DB] Supabase hydration notice:', error);
+  }
+}
+
+async function persistPronunciationDb(): Promise<void> {
+  try {
+    const rows = Object.values(dbIndex).map((record) => ({
+      id: record.id,
+      composite_key: record.composite_key,
+      status: record.status,
+      hit_count: record.hit_count || 0,
+      data: record,
+      created_at: record.created_at,
+      updated_at: record.updated_at,
+    }));
+    const client = getServerSupabase();
+    for (let index = 0; index < rows.length; index += 500) {
+      const { error } = await client.from('pronunciation_records').upsert(rows.slice(index, index + 500), { onConflict: 'id' });
+      if (error) throw error;
+    }
+  } catch (error) {
+    console.warn('[Pronunciation DB] Supabase persistence notice:', error);
+  }
+}
+
 export function loadPronunciationDb(): void {
   ensureStorageDirs();
-  if (fs.existsSync(DB_FILE)) {
-    try {
-      const raw = fs.readFileSync(DB_FILE, 'utf-8');
-      dbIndex = JSON.parse(raw);
-    } catch (err) {
-      console.error('[Pronunciation DB] Error reading DB file:', err);
-      dbIndex = {};
-    }
-  }
-  if (fs.existsSync(STATS_FILE)) {
-    try {
-      const raw = fs.readFileSync(STATS_FILE, 'utf-8');
-      statsData = JSON.parse(raw);
-    } catch (err) {
-      console.error('[Pronunciation Stats] Error reading Stats file:', err);
-    }
-  }
-  statsData.total_assets = Object.keys(dbIndex).length;
+  void hydratePronunciationDb();
 }
 
-// Save DB index to disk
 export function savePronunciationDb(): void {
-  ensureStorageDirs();
-  try {
-    fs.writeFileSync(DB_FILE, JSON.stringify(dbIndex, null, 2), 'utf-8');
-    statsData.total_assets = Object.keys(dbIndex).length;
-    statsData.last_updated = new Date().toISOString();
-    fs.writeFileSync(STATS_FILE, JSON.stringify(statsData, null, 2), 'utf-8');
-  } catch (err) {
-    console.error('[Pronunciation DB] Error saving DB file:', err);
-  }
+  statsData.total_assets = Object.keys(dbIndex).length;
+  statsData.last_updated = new Date().toISOString();
+  void persistPronunciationDb();
 }
 
-// Initialize on module import
 loadPronunciationDb();
 
 /**
