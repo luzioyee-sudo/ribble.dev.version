@@ -1227,16 +1227,31 @@ export default function App() {
   };
 
   // Onboarding completion callback
-  const handleOnboardingComplete = (name: string, language: string) => {
+  const handleOnboardingComplete = (
+    name: string,
+    language: string,
+    authenticatedUserId?: string,
+    authenticatedEmail?: string,
+  ) => {
+    const resolvedUserId = authenticatedUserId || auth.currentUser?.uid || activityTracker.getCurrentUserId();
+    const resolvedEmail = authenticatedEmail || auth.currentUser?.email || settings.userEmail || '';
+
+    // Set the identity before saving so completion never lands in the guest profile.
+    if (resolvedUserId && resolvedUserId !== 'usr-1') {
+      activityTracker.setCurrentUserId(resolvedUserId);
+      setActiveUserId(resolvedUserId);
+    }
+
     const updated = {
       ...settings,
       hasCompletedOnboarding: true,
       userName: name,
+      userEmail: resolvedEmail,
       targetLanguage: language,
       interfaceLanguage: language,
     };
     setSettings(updated);
-    storage.saveSettings(updated);
+    storage.saveSettings(updated, resolvedUserId);
 
     activityTracker.logActivity('Onboarding', `Completed initial onboarding. User: "${name}", Language: "${language}"`, 15, 'auth');
 
@@ -1247,7 +1262,7 @@ export default function App() {
         currentStreak: streak,
         lastActiveDate: Date.now(),
       };
-      storage.saveUserStats(newStats);
+      storage.saveUserStats(newStats, resolvedUserId);
       return newStats;
     });
   };

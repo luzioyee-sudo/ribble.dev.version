@@ -8,7 +8,7 @@ import { getTranslation } from '../utils/i18n';
 import { tracker } from '../utils/tracker';
 
 interface OnboardingViewProps {
-  onComplete: (name: string, language: string) => void;
+  onComplete: (name: string, language: string, userId?: string, email?: string) => void;
   settings?: any;
 }
 
@@ -25,22 +25,68 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete, sett
   const [isLoading, setIsLoading] = useState(false);
 
 
+  const formatAuthError = (error: any, mode: 'login' | 'signup') => {
+    const code = String(error?.code || '').toLowerCase();
+    const rawMessage = String(error?.message || '');
+
+    if (code.includes('operation-not-allowed') || code.includes('admin-restricted-operation') || code.includes('password-login-disabled')) {
+      return 'Email and password sign-in is disabled for this app. Enable the Email/Password provider in Firebase Authentication, then try again.';
+    }
+    if (code.includes('email-already-in-use')) {
+      return 'An account already exists for this email. Switch to Sign In or use a different email address.';
+    }
+    if (code.includes('invalid-credential') || code.includes('wrong-password') || code.includes('user-not-found')) {
+      return 'The email or password is incorrect. Check your details and try again.';
+    }
+    if (code.includes('invalid-email')) {
+      return 'Enter a valid email address.';
+    }
+    if (code.includes('weak-password')) {
+      return 'Your password must be at least 6 characters long.';
+    }
+    if (code.includes('too-many-requests')) {
+      return 'Too many attempts were made. Wait a moment and try again.';
+    }
+    if (code.includes('network-request-failed')) {
+      return 'A network error prevented authentication. Check your connection and try again.';
+    }
+    if (rawMessage.includes('PASSWORD_LOGIN_DISABLED')) {
+      return 'Email and password sign-in is disabled for this app. Enable the Email/Password provider in Firebase Authentication, then try again.';
+    }
+
+    return rawMessage || `Unable to ${mode === 'login' ? 'sign in' : 'create your account'}. Please try again.`;
+  };
+
   const handleEmailAuth = async () => {
-    if (!email.trim() || !password.trim()) return;
+    const normalizedEmail = email.trim().toLowerCase();
+    const trimmedPassword = password.trim();
+    if (!normalizedEmail || !trimmedPassword) {
+      setAuthError('Enter your email and password to continue.');
+      return;
+    }
+    if (!isLogin && trimmedPassword.length < 6) {
+      setAuthError('Your password must be at least 6 characters long.');
+      return;
+    }
+
     setAuthError('');
     setIsLoading(true);
     try {
-      if (isLogin) {
-        await signInWithEmailAndPassword(auth, email, password);
-        tracker.trackEvent('user_logged_in', 'auth', { method: 'email' }, true);
-      } else {
-        await createUserWithEmailAndPassword(auth, email, password);
-        tracker.trackEvent('user_registered', 'auth', { method: 'email' }, true);
-      }
+      const credential = isLogin
+        ? await signInWithEmailAndPassword(auth, normalizedEmail, trimmedPassword)
+        : await createUserWithEmailAndPassword(auth, normalizedEmail, trimmedPassword);
+      const authenticatedUser = credential.user;
+
+      tracker.trackEvent(isLogin ? 'user_logged_in' : 'user_registered', 'auth', { method: 'email' }, true);
       tracker.trackEvent('onboarding_completed', 'funnel', { method: 'email' }, true);
-      onComplete(name || 'User', language);
+      onComplete(
+        name.trim() || authenticatedUser.displayName || normalizedEmail.split('@')[0] || 'User',
+        language,
+        authenticatedUser.uid,
+        authenticatedUser.email || normalizedEmail,
+      );
     } catch (err: any) {
-      setAuthError(err.message || 'Authentication failed. Please check your credentials.');
+      setAuthError(formatAuthError(err, isLogin ? 'login' : 'signup'));
     } finally {
       setIsLoading(false);
     }
@@ -284,12 +330,17 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete, sett
                     setAuthError('');
                     setIsLoading(true);
                     try {
-                      await signInWithPopup(auth, googleProvider);
+                      const credential = await signInWithPopup(auth, googleProvider);
                       tracker.trackEvent('user_logged_in', 'auth', { method: 'google' }, true);
                       tracker.trackEvent('onboarding_completed', 'funnel', { method: 'google' }, true);
-                      onComplete(name || 'User', language);
+                      onComplete(
+                        name.trim() || credential.user.displayName || credential.user.email?.split('@')[0] || 'User',
+                        language,
+                        credential.user.uid,
+                        credential.user.email || '',
+                      );
                     } catch (err: any) {
-                      setAuthError(err.message || 'Google Sign-In failed');
+                      setAuthError(formatAuthError(err, 'login'));
                     } finally {
                       setIsLoading(false);
                     }
@@ -321,6 +372,7 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete, sett
                   <input
                     type="email"
                     placeholder={t.emailAddress || "Email address"}
+                    autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full ps-11 pe-4 py-3.5 rounded-2xl border border-[#D0D2CF] dark:border-[#2C2E2A] bg-white dark:bg-[#1A1C19] text-sm text-[#222222] dark:text-white placeholder:text-[#999999] dark:placeholder:text-[#666666] focus:border-[#222222] dark:focus:border-[#A4F5A6] outline-none transition-all min-h-[48px]"
@@ -332,6 +384,7 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete, sett
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder={t.password || "Password"}
+                    autoComplete={isLogin ? 'current-password' : 'new-password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     onKeyDown={(e) => {
