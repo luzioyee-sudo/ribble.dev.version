@@ -86,11 +86,45 @@ export async function signInWithEmail(email: string, password: string) {
   });
 }
 
-export async function signInWithGoogle() {
+export type SocialAuthProvider = 'google' | 'apple';
+
+async function assertSocialProviderEnabled(provider: SocialAuthProvider): Promise<void> {
+  const env = (import.meta.env || {}) as Record<string, string | undefined>;
+  const url = String(env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).trim();
+  const key = String(env.VITE_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_PUBLISHABLE_KEY).trim();
+  try {
+    const response = await fetch(`${url}/auth/v1/settings`, { headers: { apikey: key } });
+    if (!response.ok) return;
+    const settings = await response.json();
+    if (settings?.external?.[provider] === false) {
+      const error = new Error(`${provider} provider is not enabled in Supabase Auth.`) as Error & { code?: string };
+      error.code = 'provider-not-enabled';
+      throw error;
+    }
+  } catch (error: any) {
+    if (error?.code === 'provider-not-enabled') throw error;
+    // If the settings endpoint is temporarily unavailable, let Supabase OAuth
+    // return its authoritative response rather than blocking a valid provider.
+  }
+}
+
+export async function signInWithSocialProvider(provider: SocialAuthProvider) {
+  await assertSocialProviderEnabled(provider);
   return requireSupabase().auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: window.location.origin },
+    provider,
+    options: {
+      redirectTo: window.location.origin,
+      queryParams: provider === 'apple' ? { prompt: 'login' } : undefined,
+    },
   });
+}
+
+export async function signInWithGoogle() {
+  return signInWithSocialProvider('google');
+}
+
+export async function signInWithApple() {
+  return signInWithSocialProvider('apple');
 }
 
 export async function signOutFromSupabase() {

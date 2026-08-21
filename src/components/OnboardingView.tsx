@@ -4,8 +4,9 @@ import {
   signInWithEmail,
   signUpWithEmail,
   signInWithGoogle,
+  signInWithApple,
 } from '../lib/supabase';
-import { Eye, EyeOff, User, Sparkles, ArrowRight, ShieldCheck, Mail } from 'lucide-react';
+import { Eye, EyeOff, User, Sparkles, ArrowRight, ShieldCheck, Mail, Apple } from 'lucide-react';
 import { RibbleLogo } from './RibbleLogo';
 import { getTranslation } from '../utils/i18n';
 import { tracker } from '../utils/tracker';
@@ -28,10 +29,14 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete, sett
   const [isLoading, setIsLoading] = useState(false);
 
 
-  const formatAuthError = (error: any, mode: 'login' | 'signup') => {
+  const formatAuthError = (error: any, mode: 'login' | 'signup', providerName?: string) => {
     const code = String(error?.code || '').toLowerCase();
     const rawMessage = String(error?.message || '');
 
+    const providerMessage = rawMessage.toLowerCase();
+    if (providerName && (code.includes('provider-not-enabled') || code.includes('unsupported-provider') || providerMessage.includes('provider is not enabled') || providerMessage.includes('unsupported provider') || providerMessage.includes('provider is disabled'))) {
+      return `${providerName} sign-in is not enabled in Supabase yet. Enable the ${providerName} provider in Supabase Auth, then try again.`;
+    }
     if (code.includes('operation-not-allowed') || code.includes('admin-restricted-operation') || code.includes('password-login-disabled')) {
       return 'Email and password sign-in is disabled for this app. Enable email/password authentication in Supabase Auth, then try again.';
     }
@@ -100,6 +105,20 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete, sett
     } catch (err: any) {
       setAuthError(formatAuthError(err, isLogin ? 'login' : 'signup'));
     } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSocialAuth = async (provider: 'google' | 'apple') => {
+    const providerName = provider === 'google' ? 'Google' : 'Apple';
+    setAuthError('');
+    setIsLoading(true);
+    try {
+      const result = provider === 'google' ? await signInWithGoogle() : await signInWithApple();
+      if (result.error) throw result.error;
+      tracker.trackEvent('user_logged_in', 'auth', { method: provider }, true);
+    } catch (err: any) {
+      setAuthError(formatAuthError(err, 'login', providerName));
       setIsLoading(false);
     }
   };
@@ -336,33 +355,36 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete, sett
               </p>
 
               <div className="mt-6 sm:mt-8 flex flex-col gap-3.5 w-full max-w-md">
-                {/* Google Sign In */}
-                <button
-                  onClick={async () => {
-                    setAuthError('');
-                    setIsLoading(true);
-                    try {
-                      const result = await signInWithGoogle();
-                      if (result.error) throw result.error;
-                      // OAuth redirects back to the app; App listens for the resulting Supabase session.
-                      tracker.trackEvent('user_logged_in', 'auth', { method: 'google' }, true);
-                    } catch (err: any) {
-                      setAuthError(formatAuthError(err, 'login'));
-                    } finally {
-                      setIsLoading(false);
-                    }
-                  }}
-                  disabled={isLoading}
-                  className="w-full flex items-center justify-center gap-3 px-5 py-3.5 rounded-2xl border border-[#D0D2CF] dark:border-[#2C2E2A] bg-white dark:bg-[#1A1C19] hover:bg-[#EFF1EE] dark:hover:bg-[#252824] text-[#222222] dark:text-[#EFF1EE] text-sm font-semibold transition-all cursor-pointer shadow-xs min-h-[48px] active:scale-[0.98]"
-                >
-                  <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                  </svg>
-                  <span>{t.continueWithGoogle || "Continue with Google"}</span>
-                </button>
+                {/* Social sign-in buttons: clicking either icon or label starts OAuth immediately. */}
+                <div className="grid grid-cols-2 gap-3 w-full">
+                  <button
+                    type="button"
+                    onClick={() => void handleSocialAuth('google')}
+                    disabled={isLoading}
+                    aria-label="Continue with Google"
+                    title="Continue with Google"
+                    className="w-full flex items-center justify-center gap-2 px-3 py-3.5 rounded-2xl border border-[#D0D2CF] dark:border-[#2C2E2A] bg-white dark:bg-[#1A1C19] hover:bg-[#EFF1EE] dark:hover:bg-[#252824] text-[#222222] dark:text-[#EFF1EE] text-sm font-semibold transition-all cursor-pointer shadow-xs min-h-[48px] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    <svg viewBox="0 0 24 24" className="w-5 h-5 shrink-0" aria-hidden="true">
+                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    <span className="hidden sm:inline">{t.continueWithGoogle || "Google"}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void handleSocialAuth('apple')}
+                    disabled={isLoading}
+                    aria-label="Continue with Apple"
+                    title="Continue with Apple"
+                    className="w-full flex items-center justify-center gap-2 px-3 py-3.5 rounded-2xl border border-[#D0D2CF] dark:border-[#2C2E2A] bg-white dark:bg-[#1A1C19] hover:bg-[#EFF1EE] dark:hover:bg-[#252824] text-[#222222] dark:text-[#EFF1EE] text-sm font-semibold transition-all cursor-pointer shadow-xs min-h-[48px] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    <Apple className="w-5 h-5 shrink-0" aria-hidden="true" />
+                    <span className="hidden sm:inline">{t.continueWithApple || "Apple"}</span>
+                  </button>
+                </div>
 
                 <div className="relative my-2 sm:my-3">
                   <div className="absolute inset-0 flex items-center">
