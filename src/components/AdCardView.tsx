@@ -172,7 +172,7 @@ export const CARD_PALETTES: Record<string, CardStylePreset> = {
   },
   'pastel-terracotta': {
     id: 'pastel-terracotta',
-    name: 'LingoFlow Warm Terracotta',
+    name: 'Ribble Warm Terracotta',
     gradient: 'linear-gradient(135deg, #E8F2FE 0%, #F5DFD4 100%)',
     bgSolid: '#E8F2FE',
     textColor: '#422011',

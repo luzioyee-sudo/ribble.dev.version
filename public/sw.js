@@ -71,7 +71,7 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => {
           return caches.match('/') || caches.match('/index.html') || new Response(
-            '<!DOCTYPE html><html><body><h1>LingoFlow Offline Mode</h1><p>You are currently offline. Loaded cached resources are available.</p></body></html>',
+            '<!DOCTYPE html><html><body><h1>Ribble Offline Mode</h1><p>You are currently offline. Loaded cached resources are available.</p></body></html>',
             { headers: { 'Content-Type': 'text/html' } }
           );
         })

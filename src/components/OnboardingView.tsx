@@ -245,18 +245,12 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete, sett
                 ))}
               </div>
               
-              <div className="mt-8 sm:mt-10 flex items-center justify-between">
+              <div className="mt-8 sm:mt-10 flex items-center justify-start">
                 <button
                   onClick={() => setStep(0)}
                   className="text-[#666666] dark:text-[#999999] text-sm hover:text-[#222222] dark:hover:text-white transition-colors cursor-pointer py-2"
                 >
                   ← {t.back || "Back"}
-                </button>
-                <button
-                  onClick={() => setStep(3)}
-                  className="text-[#222222] dark:text-[#A4F5A6] text-xs font-bold hover:underline cursor-pointer py-2"
-                >
-                  {t.skipStep || "Skip step →"}
                 </button>
               </div>
             </motion.div>
@@ -271,23 +265,12 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete, sett
               transition={{ duration: 0.4, ease: "easeOut" }}
               className="flex-1 flex flex-col justify-center py-4 sm:py-8"
             >
-              <div className="mb-4 sm:mb-6 text-[#222222] dark:text-[#EFF1EE] flex items-center justify-between">
+              <div className="mb-4 sm:mb-6 text-[#222222] dark:text-[#EFF1EE] flex items-center justify-start">
                 <RibbleLogo showWordmark={false} size="md" animated />
-
-                <button
-                  onClick={() => {
-                    tracker.trackEvent('onboarding_guest_continued', 'auth', {}, true);
-                    tracker.trackEvent('onboarding_completed', 'funnel', { method: 'guest' }, true);
-                    onComplete(name || 'Guest User', language);
-                  }}
-                  className="text-xs font-bold text-[#666666] hover:text-[#222222] dark:text-[#999999] dark:hover:text-[#EFF1EE] transition-colors cursor-pointer py-1.5 px-3.5 bg-white dark:bg-[#1A1C19] hover:bg-[#EFF1EE] dark:hover:bg-[#252824] rounded-full border border-[#D0D2CF] dark:border-[#2C2E2A] shadow-xs"
-                >
-                  {t.continueAsGuest || "Continue as Guest"}
-                </button>
               </div>
               
               <h1 className="text-2xl sm:text-3xl md:text-[36px] font-['Cabinet_Grotesk','Plus_Jakarta_Sans',sans-serif] font-bold text-[#222222] dark:text-white leading-tight">
-                {isLogin ? (t.welcomeBack || 'Welcome back to LingoFlow') : (t.createYourAccount || 'Create your account')}
+                {isLogin ? (t.welcomeBack || 'Welcome back to Ribble') : (t.createYourAccount || 'Create your account')}
               </h1>
               
               <p className="mt-2 sm:mt-3 text-[#666666] dark:text-[#999999] text-xs sm:text-[14px]">
@@ -398,22 +381,12 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete, sett
                 </p>
               </div>
 
-              <div className="mt-6 sm:mt-8 flex items-center justify-between">
+              <div className="mt-6 sm:mt-8 flex items-center justify-start">
                 <button
                   onClick={() => setStep(2)}
                   className="text-[#666666] dark:text-[#999999] text-sm hover:text-[#222222] dark:hover:text-white transition-colors cursor-pointer py-1"
                 >
                   ← {t.back || "Back"}
-                </button>
-                <button
-                  onClick={() => {
-                    tracker.trackEvent('onboarding_skipped', 'funnel', {}, true);
-                    tracker.trackEvent('onboarding_completed', 'funnel', { method: 'skip' }, true);
-                    onComplete(name || 'Guest User', language);
-                  }}
-                  className="text-[#666666] dark:text-[#999999] text-xs font-medium hover:text-[#222222] dark:hover:text-white hover:underline cursor-pointer py-1"
-                >
-                  {t.skipForNow || "Skip for now →"}
                 </button>
               </div>
             </motion.div>

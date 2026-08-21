@@ -1,4 +1,4 @@
-export type AppView = 'home' | 'reader' | 'flashcards' | 'dictionary' | 'practice' | 'quizzes' | 'settings' | 'flashcards-view' | 'admin-dashboard' | 'all-tools' | 'writing' | 'youtube' | 'landing';
+export type AppView = 'home' | 'reader' | 'flashcards' | 'dictionary' | 'practice' | 'quizzes' | 'settings' | 'flashcards-view' | 'admin-dashboard' | 'all-tools' | 'writing' | 'youtube' | 'landing' | 'onboarding';
 
 export type QuizType = 'multiple_choice' | 'choose_the_word' | 'fill_in_the_blank' | 'translation' | 'match_pairs' | 'sentence_ordering' | 'context_choice' | 'synonym' | 'antonym' | 'find_the_mistake' | 'matching' | 'listening' | 'sentence_completion' | 'word_order' | 'grammar' | 'mixed';
 

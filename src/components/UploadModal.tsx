@@ -401,7 +401,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                           <div className="flex items-center gap-1 opacity-80">
                             <BookLogo className="w-3.5 h-3.5 shrink-0" />
                             <span className="text-[6.5px] font-bold uppercase tracking-widest opacity-85">
-                              LingoFlow
+                              Ribble
                             </span>
                           </div>
                         </div>

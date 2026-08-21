@@ -219,7 +219,7 @@ class ActionTracker {
       user_id: userId,
       session_id: this.sessionId,
       anonymous_id: this.anonymousId,
-      page: document.title || 'LingoFlow Ribble',
+      page: document.title || 'Ribble',
       route: window.location.hash || window.location.pathname || '/',
       element_id: metadata?.element_id || null,
       element_type: metadata?.element_type || null,

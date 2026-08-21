@@ -121,7 +121,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({
             type="submit"
             className="w-full py-3.5 rounded-2xl bg-[#334DAF] hover:bg-[#091F5C] text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer hover:scale-[1.01] active:scale-[0.98] min-h-[48px]"
           >
-            <span>Unlock LingoFlow</span>
+            <span>Unlock Ribble</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>

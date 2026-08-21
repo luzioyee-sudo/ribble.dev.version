@@ -2509,7 +2509,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         <div className="space-y-6 max-w-3xl">
           <div>
             <h2 className="text-xl font-bold font-serif-classic text-[#222222] dark:text-stone-100">App Passcode Protection</h2>
-            <p className="text-xs text-stone-400 mt-0.5">Control password access protection for LingoFlow, set or change password credentials</p>
+            <p className="text-xs text-stone-400 mt-0.5">Control password access protection for Ribble, set or change password credentials</p>
           </div>
 
           <div className="bg-white dark:bg-[#1D201A] border border-[#D0D2CF]/80 dark:border-stone-800 rounded-3xl p-6 shadow-xs space-y-6">
@@ -2522,7 +2522,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
                 <div>
                   <h3 className="font-bold text-[#222222] dark:text-stone-100 text-sm">Require Passcode to Access App</h3>
-                  <p className="text-xs text-stone-400">When enabled, visitors must enter the password to unlock LingoFlow</p>
+                  <p className="text-xs text-stone-400">When enabled, visitors must enter the password to unlock Ribble</p>
                 </div>
               </div>
 

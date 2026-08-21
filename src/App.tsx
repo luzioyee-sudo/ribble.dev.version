@@ -1803,13 +1803,30 @@ export default function App() {
 
   // Landing Page standalone View (First screen before onboarding/app)
   if (activeView === 'landing') {
-    return <LandingPageView onNavigate={(view: AppView) => handleNavigateWithHistory(view)} />;
+    return (
+      <LandingPageView
+        onNavigate={(view: AppView) => handleNavigateWithHistory(view)}
+        onStartLearning={() => {
+          const updatedSettings = { ...settings, hasCompletedOnboarding: false };
+          setSettings(updatedSettings);
+          storage.saveSettings(updatedSettings);
+          handleNavigateWithHistory('onboarding');
+        }}
+      />
+    );
   }
 
-  // Onboarding Guard check
-  console.log("Checking onboarding, hasCompletedOnboarding:", settings.hasCompletedOnboarding);
-  if (!settings.hasCompletedOnboarding) {
-    return <OnboardingView onComplete={handleOnboardingComplete} settings={settings} />;
+  // Explicit Onboarding View or not yet completed
+  if (activeView === 'onboarding' || !settings.hasCompletedOnboarding) {
+    return (
+      <OnboardingView
+        onComplete={(name, lang) => {
+          handleOnboardingComplete(name, lang);
+          handleNavigateWithHistory('home');
+        }}
+        settings={settings}
+      />
+    );
   }
 
   // Account Blocked Guard check
