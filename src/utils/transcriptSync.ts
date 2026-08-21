@@ -2,22 +2,121 @@ import type { Transcript, TranscriptSegment, TranscriptWord } from '../types/tra
 
 const EPSILON = 0.05;
 
+function wordWeight(text: string): number {
+  return Math.max(1, (text.match(/[\p{L}\p{N}]/gu) ?? []).length);
+}
+
+/**
+ * Creates deterministic word windows when a caption source only provides a
+ * line-level timestamp. The windows fill the segment exactly and use the
+ * visible word length as a proxy for speaking time.
+ */
+export function createWordTimings(
+  text: string,
+  startTime: number,
+  endTime: number,
+  idPrefix: string,
+): TranscriptWord[] {
+  const words: string[] = text.match(/\S+/g) ?? [];
+  const safeStart = Number(startTime);
+  const safeEnd = Number(endTime);
+  if (!words.length || !Number.isFinite(safeStart) || !Number.isFinite(safeEnd) || safeEnd <= safeStart) {
+    return [];
+  }
+
+  const totalWeight = words.reduce((sum, word) => sum + wordWeight(word), 0);
+  let cursor = safeStart;
+
+  return words.map((word, index) => {
+    const isLast = index === words.length - 1;
+    const duration = safeEnd - safeStart;
+    const nextCursor = isLast
+      ? safeEnd
+      : cursor + (duration * wordWeight(word)) / totalWeight;
+    const result: TranscriptWord = {
+      id: `${idPrefix}-word-${index}`,
+      text: word,
+      startTime: cursor,
+      endTime: Math.max(cursor, nextCursor),
+    };
+    cursor = nextCursor;
+    return result;
+  });
+}
+
+function normalizeWords(
+  rawWords: any[],
+  segmentStart: number,
+  segmentEnd: number,
+  segmentId: string,
+): TranscriptWord[] {
+  const parsed = rawWords
+    .map((word: any, wordIndex: number) => {
+      const explicitStart = word.startTime ?? word.start;
+      const relativeStartMs = word.tOffsetMs ?? word.offsetMs;
+      const relativeStart = word.offset;
+      const startTime = explicitStart !== undefined
+        ? Number(explicitStart)
+        : relativeStartMs !== undefined
+          ? segmentStart + Number(relativeStartMs) / 1000
+          : relativeStart !== undefined
+            ? segmentStart + Number(relativeStart) / 1000
+            : segmentStart;
+
+      const explicitEnd = word.endTime ?? word.end;
+      const durationMs = word.dDurationMs;
+      const duration = word.duration;
+      const endTime = explicitEnd !== undefined
+        ? Number(explicitEnd)
+        : durationMs !== undefined
+          ? startTime + Number(durationMs) / 1000
+          : duration !== undefined
+            ? startTime + (Number(duration) > 100 ? Number(duration) / 1000 : Number(duration))
+            : Number.NaN;
+
+      return {
+        id: String(word.id ?? `${segmentId}-word-${wordIndex}`),
+        text: String(word.text ?? word.word ?? word.utf8 ?? '').trim(),
+        startTime,
+        endTime,
+        wordIndex,
+      };
+    })
+    .filter((word) => word.text.length > 0 && Number.isFinite(word.startTime) && word.startTime >= segmentStart)
+    .sort((a, b) => a.startTime - b.startTime);
+
+  if (!parsed.length) return [];
+
+  return parsed
+    .map((word, index) => {
+      const nextStart = parsed[index + 1]?.startTime;
+      const endTime = Number.isFinite(word.endTime)
+        ? word.endTime
+        : (nextStart ?? segmentEnd);
+      return {
+        id: word.id,
+        text: word.text,
+        startTime: Math.max(segmentStart, Math.min(word.startTime, segmentEnd)),
+        endTime: Math.min(segmentEnd, Math.max(word.startTime, endTime)),
+      };
+    })
+    .filter((word) => word.endTime > word.startTime);
+}
+
 export function normalizeTranscript(raw: any, videoId: string): Transcript {
   if (!raw) {
     throw new Error(`No transcript data received for ${videoId}.`);
   }
 
-  // Handle case where raw is an array of segments or an object containing segments/transcript
+  // Handle case where raw is an array of segments or an object containing segments/transcript.
   const source = Array.isArray(raw)
     ? { segments: raw }
     : (raw.segments ? raw : (raw.transcript ? { ...raw, segments: raw.transcript } : raw));
 
   const rawSegments = source.segments ?? source.events ?? [];
-  
+
   const segments: TranscriptSegment[] = rawSegments
     .map((item: any, index: number) => {
-      // Support various timestamp structures:
-      // startTime / endTime, start / end, offset / duration, tStartMs / dDurationMs
       let startTime = 0;
       let endTime = 0;
 
@@ -40,35 +139,24 @@ export function normalizeTranscript(raw: any, videoId: string): Transcript {
       } else if (item.dDurationMs !== undefined) {
         endTime = startTime + Number(item.dDurationMs) / 1000;
       } else {
-        endTime = startTime + 3.0; // Sensible default span
+        endTime = startTime + 3.0;
       }
 
-      // Handle text: from item.text or item.segs
       let text = String(item.text ?? '').trim();
       if (!text && Array.isArray(item.segs)) {
         text = item.segs
           .map((s: any) => String(s.utf8 ?? ''))
-          .join('')
+          .join(' ')
           .replace(/\s+/g, ' ')
           .trim();
       }
 
-      const words: TranscriptWord[] | undefined = Array.isArray(item.words)
-        ? item.words
-            .map((word: any, wordIndex: number) => ({
-              id: String(word.id ?? `${index}-word-${wordIndex}`),
-              text: String(word.text ?? word.word ?? '').trim(),
-              startTime: Number(word.startTime ?? word.start ?? (word.offset ? word.offset / 1000 : startTime)),
-              endTime: Number(word.endTime ?? word.end ?? (word.duration ? (word.startTime ?? startTime) + word.duration : endTime)),
-            }))
-            .filter((word: TranscriptWord) =>
-              word.text.length > 0 &&
-              Number.isFinite(word.startTime) &&
-              Number.isFinite(word.endTime) &&
-              word.startTime >= 0 &&
-              word.endTime >= word.startTime
-            )
-        : undefined;
+      const explicitWords = Array.isArray(item.words)
+        ? normalizeWords(item.words, startTime, endTime, String(item.id ?? `segment-${index}`))
+        : [];
+      const words = explicitWords.length
+        ? explicitWords
+        : createWordTimings(text, startTime, endTime, String(item.id ?? `segment-${index}`));
 
       return {
         id: String(item.id ?? item.line_id ?? `segment-${index}`),
@@ -76,7 +164,7 @@ export function normalizeTranscript(raw: any, videoId: string): Transcript {
         startTime,
         endTime,
         speaker: item.speaker ? String(item.speaker) : undefined,
-        words: words?.length ? words : undefined,
+        words: words.length ? words : undefined,
       };
     })
     .filter((segment: TranscriptSegment) =>

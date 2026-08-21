@@ -1965,9 +1965,42 @@ app.post("/api/youtube-transcript", async (req, res) => {
   }
 });
 
+type TranscriptWordPayload = {
+  id?: string;
+  text: string;
+  startTime: number;
+  endTime: number;
+};
+
+function createServerWordTimings(text: string, startTime: number, endTime: number, idPrefix: string): TranscriptWordPayload[] {
+  const words = text.match(/\S+/g) ?? [];
+  if (!words.length || !Number.isFinite(startTime) || !Number.isFinite(endTime) || endTime <= startTime) {
+    return [];
+  }
+
+  const weights = words.map((word) => Math.max(1, (word.match(/[\p{L}\p{N}]/gu) ?? []).length));
+  const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+  const duration = endTime - startTime;
+  let cursor = startTime;
+
+  return words.map((word, index) => {
+    const nextCursor = index === words.length - 1
+      ? endTime
+      : cursor + (duration * weights[index]) / totalWeight;
+    const result = {
+      id: `${idPrefix}-word-${index}`,
+      text: word,
+      startTime: cursor,
+      endTime: nextCursor,
+    };
+    cursor = nextCursor;
+    return result;
+  });
+}
+
 function makeTranscript(
   videoId: string,
-  segments: Array<{ id?: string; text: string; startTime: number; endTime: number }>,
+  segments: Array<{ id?: string; text: string; startTime: number; endTime: number; words?: TranscriptWordPayload[] }>,
   alignmentMethod: 'caption-segment' | 'asr-segment' = 'caption-segment',
 ) {
   return {
@@ -1984,6 +2017,9 @@ function makeTranscript(
         text: segment.text.trim(),
         startTime: Number(segment.startTime),
         endTime: Number(segment.endTime),
+        words: segment.words?.length
+          ? segment.words
+          : createServerWordTimings(segment.text.trim(), Number(segment.startTime), Number(segment.endTime), segment.id ?? `segment-${index}`),
       }))
       .filter((segment) =>
         segment.text.length > 0 &&
@@ -2032,15 +2068,49 @@ async function fetchYoutubeTranscriptHelper(videoId: string, log: (msg: string) 
               if (json3Data?.events && Array.isArray(json3Data.events)) {
                 const parsedSegments = json3Data.events
                   .filter((event: any) => Array.isArray(event.segs) && event.segs.length > 0)
-                  .map((event: any, index: number) => {
+                  .map((event: any, index: number, events: any[]) => {
                     const text = event.segs
                       .map((seg: any) => String(seg.utf8 ?? '').replace(/\s+/g, ' '))
                       .join(' ')
                       .replace(/\s+/g, ' ')
                       .trim();
                     const startTime = Number(event.tStartMs ?? 0) / 1000;
-                    const endTime = startTime + Number(event.dDurationMs ?? 0) / 1000;
-                    return { id: `caption-${index}`, text, startTime, endTime };
+                    const rawDuration = Number(event.dDurationMs ?? 0) / 1000;
+                    const nextEventStart = Number(events[index + 1]?.tStartMs ?? 0) / 1000;
+                    const endTime = rawDuration > 0
+                      ? startTime + rawDuration
+                      : (nextEventStart > startTime ? nextEventStart : startTime + 3);
+
+                    let cursor = startTime;
+                    const pieces = event.segs
+                      .map((seg: any, segIndex: number) => {
+                        const pieceText = String(seg.utf8 ?? '').replace(/\s+/g, ' ').trim();
+                        if (!pieceText) return null;
+                        const pieceStart = Number.isFinite(Number(seg.tOffsetMs))
+                          ? startTime + Number(seg.tOffsetMs) / 1000
+                          : cursor;
+                        const pieceDuration = Number(seg.dDurationMs ?? 0) / 1000;
+                        const piece = {
+                          id: `caption-${index}-word-${segIndex}`,
+                          text: pieceText,
+                          startTime: Math.max(startTime, Math.min(pieceStart, endTime)),
+                          endTime: pieceDuration > 0 ? Math.min(endTime, pieceStart + pieceDuration) : Number.NaN,
+                        };
+                        cursor = piece.startTime;
+                        return piece;
+                      })
+                      .filter(Boolean) as TranscriptWordPayload[];
+
+                    const words = pieces.length > 0
+                      ? pieces.map((piece, pieceIndex) => ({
+                          ...piece,
+                          endTime: Number.isFinite(piece.endTime)
+                            ? piece.endTime
+                            : (pieces[pieceIndex + 1]?.startTime ?? endTime),
+                        })).filter((word) => word.endTime > word.startTime)
+                      : createServerWordTimings(text, startTime, endTime, `caption-${index}`);
+
+                    return { id: `caption-${index}`, text, startTime, endTime, words };
                   })
                   .filter((segment: any) => segment.text && segment.endTime > segment.startTime);
 
