@@ -1,0 +1,133 @@
+{
+  "email": "mopl8065@gmail.com",
+  "documents": [
+    {
+      "id": "text-paste-1786550698256",
+      "totalPages": 1,
+      "size": 11,
+      "contentData": "[Page 1]\nAFKJAHS;KHD\n\n",
+      "lastReadAt": 1786550698257,
+      "uploadedAt": 1786550698257,
+      "name": "My Pasted Text",
+      "coverColor": "linen-sand",
+      "language": "Auto",
+      "title": "My Pasted Text",
+      "currentPage": 1,
+      "fileType": "text"
+    },
+    {
+      "name": "mohamed",
+      "totalPages": 11,
+      "fileType": "pdf",
+      "language": "Auto",
+      "id": "pdf-1786120409068",
+      "currentPage": 1,
+      "lastReadAt": 1786120409068,
+      "title": "mohamed",
+      "uploadedAt": 1786120409068,
+      "coverColor": "forest-spruce",
+      "size": 4388399,
+      "contentData": "[Page 1]\nComprehensive   Agent   Speci fi cation   for  Developing   the   Artist   Cafe   Digital   Platform  Executive Summary and Project Vision  The primary objective of this project is to architect and deploy a sophisticated, highly interactive, and visually captivating web application for   Artist Cafe , a creative culinary destination situated in   Qanat Quartier, Island Pearl, Doha, Qatar . The website must communicate a distinctive brand position in which dining, specialty drinks, desserts, and artistic expression coexist in one memorable customer experience. The platform should feel immersive, polished, and emotionally rich, functioning not merely as an informational site but as a digital extension of the cafe’s atmosphere. The core concept to preserve throughout the website is that   Artist Cafe is not only a place to eat, but a place to create, gather, relax, and share visually memorable moments . The digital experience should therefore combine hospitality design, lifestyle branding, food presentation, and artistic storytelling in a seamless way.  Business Intelligence and Brand Foundation  The following table consolidates the essential operational and brand details that must be re fl ected clearly in the website structure.  Attribute   Speci fi cation  O ffi cial Name   Artist Cafe  Location   Qanat Quartier, Island Pearl, Doha, Qatar  Operating Hours   Open 24 hours  Primary Phone   +974 6690 6770  Category   Cafe / Restaurant / Artistic Experience Venue  Core Identity   A cafe where food, desserts, drinks, and painting activities come together  Audience   Families, couples, tourists, solo visitors, art lovers, social media users, and casual diners  Digital References   Google Maps listing, Instagram presence, and delivery platforms such as Talabat\n\n[Page 2]\nStrategic Design Direction  The design system should combine the visual energy of an art studio with the comfort of a stylish modern cafe. The space should feel welcoming, photogenic, and emotionally expressive. The user interface should make visitors feel as if they are stepping into a visually rich venue where creativity and comfort are equally important. A warm and modern visual language is recommended. Use o ff -white or light neutral backgrounds as the base, accented with deep blue seating tones, greenery, wood   fi nishes,  fl oral reds, soft warm lighting, and selective pops of paint-like colors. Typography should be elegant but readable, balancing artistic personality with premium hospitality clarity.  Required Website Structure  The site should be organized into a set of high-conversion and high-storytelling sections. These sections should be implemented in a way that feels intentional and editorial rather than generic.  Copywriting Direction  Section   Purpose   Key Content  Hero Section   Create immediate emotional impact Strong brand statement, striking visual, CTA buttons  About the Experience   Explain what makes Artist Cafe special Dining + art concept, ambiance, who it is for  Featured Menu   Drive appetite and interest   Signature desserts, pasta, breakfast, co ff ee, drinks  Art Experience Section   Highlight the painting/creative component Canvas painting, artistic environment, visual inspiration  Gallery   Showcase the venue visually   Interior, food, artistic corners, signature atmosphere  Visit / Contact Section   Support action and navigation   Map link, phone number, location text, operating hours  Order / CTA Section   Encourage conversion Delivery links, reservation/contact prompt, social follow prompt\n\n[Page 3]\nThe voice should feel re fi ned, sensory, and inviting. It must sound premium but not intimidating, expressive but not overly dramatic. Emphasize atmosphere, creativity, comfort, and visual delight. The website copy should make users imagine themselves enjoying desserts, co ff ee, conversation, and painting in a highly photogenic environment. Sample positioning language for the builder to adapt may include the following ideas: Artist Cafe is a creative hideaway in The Pearl where guests can enjoy desserts, co ff ee, savory dishes, and a one-of-a-kind artistic mood. It is a destination for people who want more than a meal; it is for those seeking an experience worth remembering and sharing.  Culinary Positioning  The menu presentation should focus on visual desirability and curated highlights rather than attempting to overload the homepage with every item. The site should communicate variety, indulgence, and quality.  Image Asset Pack and Exact Usage Instructions  All of the following images have been gathered from the available source material and should be used directly by the website-building agent. The builder should optimize them for responsive delivery, preserve their visual quality, and use them intentionally rather than decoratively. The following table identi fi es each asset, its direct URL, what it shows, and how it should be used on the site.  Category   Example Highlights  Desserts   Kinder Cheesecake, San Sebastian, Lotus Crepe, Kinder Pancake  Savory Items   Bistro sandwiches, pasta, shakshuka  Drinks   Cappuccino, specialty co ff ee, juices, mojitos, milkshakes  Experience Add-on   Drawing and painting activity  Image ID   Direct Image URL   Description   Recommended Website Placement  Image 0   Open image   A blue square avatar image with a white letter   R . This appears to be a pro fi le or Do   not   use in the main design unless needed for raw asset completeness or\n\n[Page 4]\nplaceholder-style image rather than a branded cafe photo. archival reference. Exclude from the public-facing gallery.  Image 1   Open image A plated dessert or pancake-style item topped with a heart- shaped layer and fresh strawberries, served with a small white jug of chocolate sauce. Use in the   featured desserts section , in a promotional card, or in a scrolling food gallery to communicate sweetness and presentation quality.  Image 2   Open image A creamy pasta dish presented in a turquoise bowl, garnished with cherry tomatoes and herbs, with a soft blurred background. Use in the   featured menu   area for savory items, or in a split- layout section showing that the cafe o ff ers more than desserts and co ff ee.  Image 3   Open image A polished interior shot of the cafe with velvet blue seating, warm wood   fl ooring, glowing counters, greenery walls, and hanging   fl oral details. Use as a   secondary hero ,   about section backdrop , or  ambiance showcase  image. This image strongly communicates the venue’s comfort and premium atmosphere.  Image 4   Open image A shakshuka-style egg dish in a rustic serving pan, presented on a marble-like surface with warm red sauce and herb garnish. Use in the  breakfast/brunch spotlight   or   signature dishes   section to reinforce menu variety and an all-day dining appeal.  Image 5   Open image A highly distinctive interior art corner with shelves of paint bottles, displayed canvases, hanging lights, neon accents, and a small seating setup. Use in the   main hero section ,   art experience section , or   gallery introduction   because it expresses the cafe’s most unique di ff erentiator: the fusion of dining and painting.\n\n[Page 5]\nEmbedded Image Reference Block  The website-building agent should review the images visually before implementation. The following embedded references are included directly in this prompt   fi le so the agent can understand both the assets and their intended mood.  Image 0  Image 1\n\n[Page 6]\nImage 2\n\n[Page 7]\n\n\n[Page 8]\nImage 3  Image 4\n\n[Page 9]\nImage 5\n\n[Page 10]\nPage Composition Guidance  The agent should build the homepage so that the strongest emotional asset appears   fi rst.  Image 5   is the most brand-de fi ning visual because it shows the painting concept explicitly. It should therefore anchor the top of the site or an early feature section.   Image 3   should support it by presenting the broader ambiance and seating environment. The food assets—  Images 1, 2, and 4 —should be distributed across menu and conversion-oriented sections so that the user sees a balanced story of atmosphere and food quality. A strong homepage sequence would be as follows. Begin with a hero that uses   Image 5   or a layered collage built from   Image 5   and   Image 3 . Follow that with a short brand narrative introducing Artist Cafe as a place where guests can eat, relax, and paint. Then present curated signature items using   Images 1, 2, and 4 . After that, introduce the creative concept in more depth and conclude with a contact/order section.  Technical Build Instructions\n\n[Page 11]\nThe implementation should use a modern frontend stack such as   React with Tailwind CSS . The result should be fully responsive, optimized for mobile, and designed with strong attention to visual spacing, image hierarchy, and loading performance. The gallery should support responsive cropping and maintain visual consistency across aspect ratios. The website should include subtle animations such as fade-ins, slow parallax movement, or hover transitions, but these e ff ects must remain elegant and restrained. Accessibility should also be considered. Every image should include meaningful alt text. Color contrast must remain readable despite the artistic design direction.  SEO and Conversion Guidance  The builder should optimize the site for search terms related to the venue’s location and concept, including   Artist Cafe Doha ,   The Pearl Qatar cafe ,   Qanat Quartier cafe ,   painting cafe Qatar , and   art cafe Doha . Contact actions should be simple and clear. Include a phone CTA, a directions CTA, and an order CTA that points users toward delivery platforms or social discovery paths.  Final Instruction to the Website-Building Agent  Use this prompt as the authoritative creative brief. Build a website that feels editorial, premium, artistic, and memorable. Do not create a generic restaurant site. Instead, create a destination-style digital experience that expresses the unique identity of Artist Cafe as a place where hospitality and creativity meet. The visual storytelling must be driven by the provided images, especially the art-corner and interior atmosphere images, while the menu visuals should support appetite, warmth, and versatility. The   fi nal result should make a visitor immediately understand that Artist Cafe is not just somewhere to order food, but somewhere to experience a mood, a visual identity, and a creative social moment.  Source Notes  The business information and visual cues in this prompt were compiled from the provided map listing, related menu references, and the gathered image assets listed above.\n\n"
+    },
+    {
+      "fileType": "text",
+      "language": "Auto",
+      "size": 25,
+      "uploadedAt": 1786699680386,
+      "coverColor": "charcoal-ink",
+      "currentPage": 1,
+      "lastReadAt": 1786699680386,
+      "id": "text-paste-1786699680385",
+      "contentData": "[Page 1]\nhello my name is mohamed \n\n",
+      "totalPages": 1,
+      "title": "hello",
+      "name": "hello"
+    }
+  ],
+  "vocabulary": [
+    {
+      "translation": "اسم",
+      "id": "card-1786699754059",
+      "grammarNote": "يضاف إليه ضمير متصل لبيان الملكية مثل اسمي.",
+      "phonetic": "/ism/",
+      "definition": "اللفظ الذي يطلق على الشخص لتمييزه عن غيره.",
+      "tags": [],
+      "dateAdded": 1786699754059,
+      "word": "name",
+      "partOfSpeech": "اسم",
+      "srs": {
+        "repetitions": 0,
+        "learningStepIndex": 0,
+        "state": "learning",
+        "intervalDays": 0,
+        "lastReviewedAt": 1786699776714,
+        "lapses": 0,
+        "dueAt": 1786699866714,
+        "easeFactor": 2.5
+      },
+      "language": "Arabic",
+      "contextSentence": ""
+    },
+    {
+      "translation": "Keyboard smash",
+      "definition": "A sequence of random characters typed on a keyboard to express extreme emotion, such as frustration, laughter, excitement, or being overwhelmed.",
+      "word": "AFKJAHS",
+      "grammarNote": "This is a non-lexical expression commonly used in digital communication. It has no grammatical root and functions as a standalone emotional utterance.",
+      "dateAdded": 1786713710199,
+      "partOfSpeech": "interjection",
+      "phonetic": "[AF-kah-jaws]",
+      "srs": {
+        "learningStepIndex": 0,
+        "intervalDays": 0,
+        "repetitions": 0,
+        "lapses": 0,
+        "dueAt": 1786713710199,
+        "state": "new",
+        "easeFactor": 2.5
+      },
+      "id": "card-1786713710199",
+      "contextSentence": "",
+      "language": "English",
+      "tags": []
+    }
+  ],
+  "highlights": [],
+  "stickyNotes": [],
+  "userStats": {
+    "currentStreak": 1,
+    "lastActiveDate": 1786713803496,
+    "wordsMastered": 0,
+    "dailyGoal": 10,
+    "activityHistory": {
+      "2026-08-14": 3
+    }
+  },
+  "settings": {
+    "appTheme": "light",
+    "hasCompletedOnboarding": true,
+    "userName": "Mohamed ",
+    "userEmail": "mopl8065@gmail.com",
+    "userAvatar": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%20width%3D%22100%22%20height%3D%22100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20fill%3D%22%23222C7A%22%2F%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2241%22%20r%3D%2219%22%20fill%3D%22%23FFF0A5%22%2F%3E%3Cpath%20d%3D%22M%2010%20100%20C%2010%2066%2C%2030%2066%2C%2050%2066%20C%2070%2066%2C%2090%2066%2C%2090%20100%20Z%22%20fill%3D%22%23FFF0A5%22%2F%3E%3C%2Fsvg%3E",
+    "isPasswordProtected": false,
+    "appPassword": "",
+    "fontSize": 18,
+    "fontFamily": "serif",
+    "lineHeight": 1.7,
+    "readerTheme": "sunset",
+    "autoTranslateOnClick": true,
+    "targetLanguage": "English",
+    "interfaceLanguage": "English",
+    "ttsVoiceRate": 1,
+    "showHighlights": true,
+    "showNotes": true,
+    "strokeColor": "#FF6D00",
+    "strokeWidth": 3,
+    "strokeOpacity": 1,
+    "penType": "pen",
+    "hasSeenLanding": true,
+    "dailyGoal": 35
+  },
+  "folders": [],
+  "decks": [],
+  "timestamp": 1786810557533
+}

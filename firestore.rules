@@ -1,0 +1,58 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Authentication and Identity Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && 
+             (request.auth.token.email == 'mopl8065@gmail.com' || request.auth.token.email == 'admin@lingoflow.com');
+    }
+
+    // Users Collection Rule
+    match /users/{userId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+
+      // Nested Activity Logs Sub-collection Rule
+      match /activityLogs/{logId} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
+
+      // Nested Quiz History Sub-collection Rule
+      match /quizHistory/{historyId} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
+    }
+
+    // Test connectivity document
+    match /test/{testId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Notifications Collection Rule
+    match /notifications/{notificationId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Ads and Banners Collection Rule
+    match /ads/{adId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+  }
+}

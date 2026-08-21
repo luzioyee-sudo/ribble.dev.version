@@ -1,0 +1,6 @@
+{
+  "name": "Ribble",
+  "description": "Distraction-free language learning companion and reader with SRS flashcards, curated vocabulary decks, interactive handwriting practice, and instant word lookups.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

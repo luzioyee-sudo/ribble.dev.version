@@ -1,0 +1,134 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and synced learning state",
+      "type": "object",
+      "properties": {
+        "settings": { "type": "object" },
+        "userStats": { "type": "object" },
+        "documents": { "type": "array" },
+        "highlights": { "type": "array" },
+        "annotations": { "type": "array" },
+        "stickyNotes": { "type": "array" },
+        "folders": { "type": "array" },
+        "decks": { "type": "array" },
+        "vocabulary": { "type": "array" },
+        "lastSynced": { "type": "number" }
+      }
+    },
+    "ActivityLog": {
+      "title": "ActivityLog",
+      "description": "User navigation and interaction event log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "dateLabel": { "type": "string" },
+        "section": { "type": "string" },
+        "action": { "type": "string" },
+        "duration": { "type": "string" },
+        "device": { "type": "string" },
+        "location": { "type": "string" },
+        "type": { "type": "string" }
+      },
+      "required": [
+        "id",
+        "timestamp",
+        "dateLabel",
+        "section",
+        "action",
+        "duration",
+        "type"
+      ]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "System broadcast or direct user notification",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string" },
+        "targetUserId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "readBy": { "type": "array" }
+      },
+      "required": [
+        "id",
+        "title",
+        "message",
+        "type",
+        "createdAt"
+      ]
+    },
+    "Ad": {
+      "title": "Ad",
+      "description": "In-app advertisement or promotional banner",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "targetPage": { "type": "string" },
+        "placement": { "type": "string" },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string" }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "active",
+        "createdAt"
+      ]
+    },
+    "QuizHistory": {
+      "title": "QuizHistory",
+      "description": "Historical record of a completed quiz examination",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "quizId": { "type": "string" },
+        "quizTitle": { "type": "string" },
+        "score": { "type": "number" },
+        "totalQuestions": { "type": "number" },
+        "percentage": { "type": "number" },
+        "completedAt": { "type": "string" }
+      },
+      "required": [
+        "id",
+        "quizId",
+        "quizTitle",
+        "score",
+        "totalQuestions",
+        "percentage",
+        "completedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User document with full synced data"
+    },
+    "/users/{userId}/activityLogs/{logId}": {
+      "schema": "ActivityLog",
+      "description": "Sub-collection tracking individual user actions"
+    },
+    "/users/{userId}/quizHistory/{historyId}": {
+      "schema": "QuizHistory",
+      "description": "Historical records of user quiz attempts"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "Global or user-targeted notification messages"
+    },
+    "/ads/{adId}": {
+      "schema": "Ad",
+      "description": "In-app advertisements and promotional banners"
+    }
+  }
+}
