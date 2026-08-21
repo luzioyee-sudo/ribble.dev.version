@@ -1,22 +1,32 @@
 import React, { useEffect } from 'react';
 
-export const LandingPageView: React.FC<any> = () => {
+interface LandingPageViewProps {
+  onNavigate?: (view: any) => void;
+}
+
+export const LandingPageView: React.FC<LandingPageViewProps> = ({ onNavigate }) => {
   useEffect(() => {
-    // Listen for messages from the iframe if they decide to add postMessage navigation later
+    // Listen for messages from the iframe when user clicks "Start learning"
     const handleMessage = (event: MessageEvent) => {
-      if (event.data === 'navigate-home') {
-        window.location.hash = '#home';
+      if (event.data === 'navigate-home' || event.data === 'navigate-onboarding') {
+        if (onNavigate) {
+          onNavigate('home');
+        } else {
+          window.location.hash = '#home';
+        }
       }
     };
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, []);
+  }, [onNavigate]);
 
   return (
-    <iframe 
-      src="/landing.html" 
-      style={{ width: '100%', height: '100vh', border: 'none', display: 'block' }} 
-      title="Ribble Landing Page" 
-    />
+    <div className="w-screen h-screen overflow-hidden m-0 p-0 fixed inset-0 z-50 bg-[#EFF1EE]">
+      <iframe 
+        src="/landing.html" 
+        className="w-full h-full border-none block" 
+        title="Ribble Landing Page" 
+      />
+    </div>
   );
 };

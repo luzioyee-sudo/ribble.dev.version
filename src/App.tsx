@@ -1801,6 +1801,11 @@ export default function App() {
     );
   }
 
+  // Landing Page standalone View (First screen before onboarding/app)
+  if (activeView === 'landing') {
+    return <LandingPageView onNavigate={(view: AppView) => handleNavigateWithHistory(view)} />;
+  }
+
   // Onboarding Guard check
   console.log("Checking onboarding, hasCompletedOnboarding:", settings.hasCompletedOnboarding);
   if (!settings.hasCompletedOnboarding) {
@@ -2044,19 +2049,6 @@ export default function App() {
             </div>
           )}
           <AnimatePresence mode="wait">
-          
-          {/* VIEW: LANDING PAGE */}
-          {activeView === 'landing' && (
-            <motion.div
-              key="landing-view-portal"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <LandingPageView onNavigate={(view) => handleNavigateWithHistory(view)} />
-            </motion.div>
-          )}
           
           {/* VIEW 0: ALL TOOLS (Mobile Redesign) */}
           {activeView === 'all-tools' && (
