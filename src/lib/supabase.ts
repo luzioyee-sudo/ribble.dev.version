@@ -10,6 +10,11 @@ import {
 let supabaseInstance: SupabaseClient | null = null;
 let hasWarned = false;
 
+// Supabase publishable keys are safe to ship in browser code. These defaults keep
+// hosted builds working when the deployment platform does not inject VITE_* vars.
+const DEFAULT_SUPABASE_URL = 'https://yxsxgchrkpmgqrhygmcl.supabase.co';
+const DEFAULT_SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_AXQ7QRg0UJZcv4TbaTBIXA_qgyNt2qQ';
+
 export interface SupabaseSyncPayload {
   id?: string;
   email?: string;
@@ -29,13 +34,14 @@ export interface SupabaseSyncPayload {
 export function getSupabase(): SupabaseClient | null {
   if (supabaseInstance) return supabaseInstance;
 
-  const url = String(import.meta.env.VITE_SUPABASE_URL || '').trim();
-  const key = String(import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
+  const env = (import.meta.env || {}) as Record<string, string | undefined>;
+  const url = String(env.VITE_SUPABASE_URL || DEFAULT_SUPABASE_URL).trim();
+  const key = String(env.VITE_SUPABASE_ANON_KEY || DEFAULT_SUPABASE_PUBLISHABLE_KEY).trim();
   const isValidUrl = /^https?:\/\//.test(url);
 
   if (!isValidUrl || !key || url.includes('placeholder') || key.includes('placeholder')) {
     if (!hasWarned) {
-      console.warn('Supabase configuration is missing. Define VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
+      console.warn('Supabase configuration is invalid. Check VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
       hasWarned = true;
     }
     return null;
