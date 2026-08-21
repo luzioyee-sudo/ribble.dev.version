@@ -58,20 +58,23 @@ import { Home, LayoutGrid, User, Search, ArrowLeft, BookMarked, Globe, ChevronDo
 import { AppView } from './types';
 import { getTranslation } from './utils/i18n';
 import { getEffectiveAvatar } from './utils/defaultAvatars';
-import { sanitizeForFirestore } from './utils/sanitize';
-import { auth, db } from './lib/firebase';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { doc, setDoc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore';
-import { getSupabase, syncToSupabase, fetchFromSupabase } from './lib/supabase';
-import { isFirestoreQuotaExceeded, handleFirestoreError } from './utils/firestoreQuotaTracker';
+import { sanitizeForBackend } from './utils/sanitize';
+import {
+  getSupabase,
+  syncToSupabase,
+  fetchFromSupabase,
+  onSupabaseAuthStateChange,
+  subscribeToSupabaseProgress,
+  signOutFromSupabase,
+} from './lib/supabase';
 import { UserActivityLogger } from './utils/userActivityLogger';
 
 
 // Main Application Wrapper Component
 // Handles:
-// 1. Firebase Authentication state and multi-account switching
+// 1. Supabase Authentication state and multi-account switching
 // 2. Global state management (documents, vocabulary, folders, settings)
-// 3. Cloud synchronization logic with Firestore
+// 3. Cloud synchronization logic with Supabase Postgres
 // 4. View routing between different modules (Reader, Study, Admin, etc.)
 // Helper function to merge array records by ID so no user items are ever lost across sessions
 function mergeArraysById<T extends { id?: string }>(primary: T[], secondary: T[]): T[] {
@@ -499,451 +502,197 @@ export default function App() {
   }, [activeUserId, settings.targetLanguage]);
 
   // Sync Progress Trigger
-
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        setUser({
-          name: firebaseUser.displayName || 'User',
-          email: firebaseUser.email || ''
+    let cancelled = false;
+    let removeProgressSubscription: (() => void) | null = null;
+
+    const resetToGuest = () => {
+      if (removeProgressSubscription) {
+        removeProgressSubscription();
+        removeProgressSubscription = null;
+      }
+      setUser(null);
+      activityTracker.setCurrentUserId('usr-1');
+      setActiveUserId('usr-1');
+      setIsBlocked(false);
+      setSettings(storage.getSettings('usr-1'));
+      setUserStats(storage.getUserStats('usr-1'));
+      setDocuments(storage.getDocuments('usr-1'));
+      setHighlights(storage.getHighlights('usr-1'));
+      setAnnotations(storage.getAnnotations('usr-1'));
+      setStickyNotes(storage.getStickyNotes('usr-1'));
+      setVocabulary(storage.getVocabulary('usr-1'));
+      setQuizHistory(storage.getQuizHistory('usr-1'));
+      setFolders(INITIAL_FOLDERS);
+      setDecks(INITIAL_DECKS);
+    };
+
+    const applySession = async (session: any) => {
+      if (cancelled) return;
+      const supabaseUser = session?.user || null;
+      if (!supabaseUser) {
+        resetToGuest();
+        return;
+      }
+
+      const uid = supabaseUser.id;
+      const email = supabaseUser.email || '';
+      const displayName = supabaseUser.user_metadata?.full_name || email.split('@')[0] || 'User';
+      setUser({ name: displayName, email });
+      activityTracker.setCurrentUserId(uid);
+      setActiveUserId(uid);
+
+      const currentAccounts = activityTracker.getUserAccounts();
+      const accountIndex = currentAccounts.findIndex((account) => account.id === uid);
+      if (accountIndex === -1) {
+        currentAccounts.push({
+          id: uid,
+          name: displayName,
+          email,
+          role: 'Student',
+          status: 'Active',
+          joinedAt: new Date().toISOString().split('T')[0],
+          wordsLearned: vocabulary.length,
+          lastLogin: 'Just now',
+          targetLanguage: settings.targetLanguage || 'English',
+          notes: 'Supabase account',
+          totalTimeSpent: '0s',
+          sessionCount: 1,
+          activityLogs: [],
         });
-        
-        // Synchronize active user ID to Firebase UID to keep profiles fully isolated and correct
-        activityTracker.setCurrentUserId(firebaseUser.uid);
-        setActiveUserId(firebaseUser.uid);
-        
-        // Ensure they are registered in the local userAccounts list immediately!
-        const currentAccounts = activityTracker.getUserAccounts();
-        let accIndex = currentAccounts.findIndex(a => a.id === firebaseUser.uid);
-        if (accIndex === -1) {
-          const newAcc: UserAccount = {
-            id: firebaseUser.uid,
-            name: firebaseUser.displayName || settings.userName || 'Learner',
-            email: firebaseUser.email || '',
-            role: 'Student',
-            status: 'Active',
-            joinedAt: new Date().toISOString().split('T')[0],
-            wordsLearned: vocabulary.length,
-            lastLogin: 'Just now',
-            targetLanguage: settings.targetLanguage || 'English',
-            notes: 'Registered account',
-            totalTimeSpent: '0s',
-            sessionCount: 1,
-            activityLogs: [
-              {
-                id: `act-init-${Date.now()}`,
-                timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
-                dateLabel: `Day 1 (${new Date().toISOString().split('T')[0]})`,
-                section: 'Onboarding',
-                action: 'Account registered and synchronized',
-                duration: '5s',
-                device: 'Web Browser',
-                location: 'Active App Session',
-                type: 'auth'
-              }
-            ]
-          };
-          currentAccounts.push(newAcc);
-          activityTracker.saveUserAccounts(currentAccounts);
-          setAllAccounts(currentAccounts);
-        } else {
-          currentAccounts[accIndex].lastLogin = 'Just now';
-          activityTracker.saveUserAccounts(currentAccounts);
-          setAllAccounts(currentAccounts);
-        }
-
-        // Load data from Firestore and Supabase
-        try {
-          setIsSyncing(true);
-          const docRef = doc(db, 'users', firebaseUser.uid);
-          const docSnap = await getDoc(docRef);
-
-          // Retrieve local data for this user (with fallbacks so pre-login data is never lost)
-          const localDocs = storage.getDocuments(firebaseUser.uid);
-          const localVocab = storage.getVocabulary(firebaseUser.uid);
-          const localHighlights = storage.getHighlights(firebaseUser.uid);
-          const localAnnotations = storage.getAnnotations(firebaseUser.uid);
-          const localStickyNotes = storage.getStickyNotes(firebaseUser.uid);
-          const localFolders = storage.getFolders(firebaseUser.uid);
-          const localDecks = storage.getDecks(firebaseUser.uid);
-          const localSettings = storage.getSettings(firebaseUser.uid);
-          const localStats = storage.getUserStats(firebaseUser.uid);
-
-          // Attempt loading from Supabase first
-          let cloudData: any = null;
-          const isSupabaseConfigured = !!getSupabase();
-          if (isSupabaseConfigured) {
-            try {
-              cloudData = await fetchFromSupabase(firebaseUser.uid);
-            } catch (err) {
-              console.warn("Supabase fetch notice:", err);
-            }
-          }
-
-          // Fallback to Firestore if no Supabase data or Supabase not configured
-          if (!cloudData && docSnap.exists()) {
-            cloudData = docSnap.data();
-          }
-
-          if (cloudData) {
-            if (cloudData.status) {
-              const currentAccountsList = activityTracker.getUserAccounts();
-              const idx = currentAccountsList.findIndex(a => a.id === firebaseUser.uid);
-              if (idx !== -1) {
-                currentAccountsList[idx].status = cloudData.status;
-                if (cloudData.role) currentAccountsList[idx].role = cloudData.role;
-                activityTracker.saveUserAccounts(currentAccountsList);
-                setAllAccounts(currentAccountsList);
-              }
-              setIsBlocked(cloudData.status === 'Blocked');
-            }
-
-            // Merge Cloud data with Local data so NO items are erased!
-            const mergedSettings = { ...defaultSettings, ...localSettings, ...(cloudData.settings || {}) };
-            if (firebaseUser.email) {
-              mergedSettings.userEmail = firebaseUser.email;
-            }
-            if (firebaseUser.displayName && !mergedSettings.userName) {
-              mergedSettings.userName = firebaseUser.displayName;
-            }
-            storage.saveSettings(mergedSettings, firebaseUser.uid);
-            
-            // Extract profiles logic
-            const profiles = cloudData.profiles || {};
-            const currentLangKey = (mergedSettings.targetLanguage || 'English').toLowerCase().trim().replace(/\s+/g, '_');
-            
-            // Migrate legacy root data into the current active profile if not yet migrated
-            if (!cloudData.migrated && cloudData.vocabulary) {
-              if (!profiles[currentLangKey]) profiles[currentLangKey] = {};
-              profiles[currentLangKey].documents = cloudData.documents || [];
-              profiles[currentLangKey].vocabulary = cloudData.vocabulary || [];
-              profiles[currentLangKey].highlights = cloudData.highlights || [];
-              profiles[currentLangKey].annotations = cloudData.annotations || [];
-              profiles[currentLangKey].stickyNotes = cloudData.stickyNotes || [];
-              profiles[currentLangKey].folders = cloudData.folders || [];
-              profiles[currentLangKey].decks = cloudData.decks || [];
-              profiles[currentLangKey].userStats = cloudData.userStats || null;
-            }
-            
-            // Process ALL profiles stored in cloud to ensure local storage has every language
-            let activeMergedStats: any = null;
-            let activeMergedDocs: any = null;
-            let activeMergedVocab: any = null;
-            let activeMergedHighlights: any = null;
-            let activeMergedAnnotations: any = null;
-            let activeMergedNotes: any = null;
-            let activeMergedFolders: any = null;
-            let activeMergedDecks: any = null;
-            let activeMergedQuizHistory: any = null;
-
-            if (Object.keys(profiles).length === 0) {
-               profiles[currentLangKey] = {};
-            }
-
-            Object.keys(profiles).forEach(langKey => {
-              const pData = profiles[langKey];
-              const lDocs = storage.getDocuments(firebaseUser.uid, langKey);
-              const lVocab = storage.getVocabulary(firebaseUser.uid, langKey);
-              const lHighlights = storage.getHighlights(firebaseUser.uid, langKey);
-              const lAnnotations = storage.getAnnotations(firebaseUser.uid, langKey);
-              const lNotes = storage.getStickyNotes(firebaseUser.uid, langKey);
-              const lFolders = storage.getFolders(firebaseUser.uid, langKey);
-              const lDecks = storage.getDecks(firebaseUser.uid, langKey);
-              const lStats = storage.getUserStats(firebaseUser.uid, langKey);
-              const lHistory = storage.getQuizHistory(firebaseUser.uid, langKey);
-              
-              const mergedDocs = mergeArraysById(pData.documents || [], lDocs);
-              const mergedVocab = mergeArraysById(pData.vocabulary || [], lVocab);
-              const mergedHighlights = mergeArraysById(pData.highlights || [], lHighlights);
-              const mergedAnnotations = mergeArraysById(pData.annotations || [], lAnnotations);
-              const mergedNotes = mergeArraysById(pData.stickyNotes || [], lNotes);
-              const mergedFolders = mergeArraysById(pData.folders || [], lFolders);
-              const mergedDecks = mergeArraysById(pData.decks || [], lDecks);
-              const mergedHistory = mergeArraysById(pData.quizHistory || [], lHistory);
-              
-              let history = (pData.userStats && pData.userStats.activityHistory) || lStats.activityHistory || {};
-              if (Object.keys(history).length >= 50 || (pData.userStats && pData.userStats.currentStreak === 100)) {
-                history = {};
-              }
-              const streak = calculateStreak(history, (pData.userStats && pData.userStats.dailyGoal) || 10);
-              const mergedStats = {
-                ...defaultUserStats,
-                ...lStats,
-                ...(pData.userStats || {}),
-                currentStreak: streak,
-                activityHistory: history
-              };
-              
-              const finalFolders = mergedFolders.length > 0 ? mergedFolders : INITIAL_FOLDERS;
-              const finalDecks = mergedDecks.length > 0 ? mergedDecks : INITIAL_DECKS;
-              
-              storage.saveDocuments(mergedDocs, firebaseUser.uid, langKey);
-              storage.saveVocabulary(mergedVocab, firebaseUser.uid, langKey);
-              storage.saveHighlights(mergedHighlights, firebaseUser.uid, langKey);
-              storage.saveAnnotations(mergedAnnotations, firebaseUser.uid, langKey);
-              storage.saveStickyNotes(mergedNotes, firebaseUser.uid, langKey);
-              storage.saveFolders(finalFolders, firebaseUser.uid, langKey);
-              storage.saveDecks(finalDecks, firebaseUser.uid, langKey);
-              storage.saveUserStats(mergedStats, firebaseUser.uid, langKey);
-              storage.saveQuizHistory(mergedHistory, firebaseUser.uid, langKey);
-              
-              if (langKey === currentLangKey) {
-                 activeMergedStats = mergedStats;
-                 activeMergedDocs = mergedDocs;
-                 activeMergedVocab = mergedVocab;
-                 activeMergedHighlights = mergedHighlights;
-                 activeMergedAnnotations = mergedAnnotations;
-                 activeMergedNotes = mergedNotes;
-                 activeMergedFolders = finalFolders;
-                 activeMergedDecks = finalDecks;
-                 activeMergedQuizHistory = mergedHistory;
-              }
-            });
-            
-            // For the active UI state, if it wasn't populated from cloud, load from local fallback
-            if (!activeMergedDocs) {
-               activeMergedDocs = localDocs;
-               activeMergedVocab = localVocab;
-               activeMergedHighlights = localHighlights;
-               activeMergedAnnotations = localAnnotations;
-               activeMergedNotes = localStickyNotes;
-               activeMergedFolders = localFolders.length > 0 ? localFolders : INITIAL_FOLDERS;
-               activeMergedDecks = localDecks.length > 0 ? localDecks : INITIAL_DECKS;
-               activeMergedStats = localStats;
-               activeMergedQuizHistory = storage.getQuizHistory(firebaseUser.uid, currentLangKey);
-               
-               storage.saveDocuments(activeMergedDocs, firebaseUser.uid, currentLangKey);
-               storage.saveVocabulary(activeMergedVocab, firebaseUser.uid, currentLangKey);
-               storage.saveHighlights(activeMergedHighlights, firebaseUser.uid, currentLangKey);
-               storage.saveAnnotations(activeMergedAnnotations, firebaseUser.uid, currentLangKey);
-               storage.saveStickyNotes(activeMergedNotes, firebaseUser.uid, currentLangKey);
-               storage.saveFolders(activeMergedFolders, firebaseUser.uid, currentLangKey);
-               storage.saveDecks(activeMergedDecks, firebaseUser.uid, currentLangKey);
-               storage.saveUserStats(activeMergedStats, firebaseUser.uid, currentLangKey);
-               storage.saveQuizHistory(activeMergedQuizHistory, firebaseUser.uid, currentLangKey);
-            }
-
-            setSettings(mergedSettings);
-            setUserStats(activeMergedStats);
-            setDocuments(activeMergedDocs);
-            setHighlights(activeMergedHighlights);
-            setAnnotations(activeMergedAnnotations);
-            setStickyNotes(activeMergedNotes);
-            setFolders(activeMergedFolders);
-            setDecks(activeMergedDecks);
-            setVocabulary(activeMergedVocab);
-            setQuizHistory(activeMergedQuizHistory);
-
-            const sanitizedData = sanitizeForFirestore({
-              id: firebaseUser.uid,
-              name: mergedSettings.userName,
-              email: mergedSettings.userEmail,
-              role: activeAccount?.role || 'Student',
-              status: activeAccount?.status || 'Active',
-              joinedAt: activeAccount?.joinedAt || new Date().toISOString().split('T')[0],
-              wordsLearned: activeMergedVocab.length,
-              lastLogin: new Date().toISOString(),
-              targetLanguage: mergedSettings.targetLanguage,
-              totalTimeSpent: activeAccount?.totalTimeSpent || '0s',
-              sessionCount: activeAccount?.sessionCount || 1,
-              settings: mergedSettings,
-              migrated: true,
-              lastSynced: Date.now()
-            });
-            sanitizedData[`profiles.${currentLangKey}`] = sanitizeForFirestore({
-              documents: activeMergedDocs,
-              vocabulary: activeMergedVocab,
-              highlights: activeMergedHighlights,
-              annotations: activeMergedAnnotations,
-              stickyNotes: activeMergedNotes,
-              folders: activeMergedFolders,
-              decks: activeMergedDecks,
-              userStats: activeMergedStats
-            });
-
-            // Update Firestore doc with merged items
-            if (!isFirestoreQuotaExceeded()) {
-              await updateDoc(docRef, sanitizedData).catch(err => {
-                if (err.code === 'not-found') return setDoc(docRef, sanitizedData, { merge: true });
-                return handleFirestoreError(err, 'AppMergeSync');
-              });
-            }
-
-            // Sync merged data back to Supabase
-            if (isSupabaseConfigured) {
-              await syncToSupabase(firebaseUser.uid, sanitizedData as any);
-            }
-          } else {
-            // New user profile document: preserve local/migrated data and upload it!
-            const targetName = firebaseUser.displayName || localSettings.userName || settings.userName || 'Primary Learner';
-            const targetEmail = firebaseUser.email || localSettings.userEmail || '';
-            const targetLang = localSettings.targetLanguage || settings.targetLanguage || 'English';
-
-            const initialSettings = { ...localSettings, userEmail: targetEmail, userName: targetName, targetLanguage: targetLang };
-            const finalFolders = localFolders.length > 0 ? localFolders : INITIAL_FOLDERS;
-            const finalDecks = localDecks.length > 0 ? localDecks : INITIAL_DECKS;
-
-            setSettings(initialSettings);
-            setUserStats(localStats);
-            setDocuments(localDocs);
-            setHighlights(localHighlights);
-            setAnnotations(localAnnotations);
-            setStickyNotes(localStickyNotes);
-            setFolders(finalFolders);
-            setDecks(finalDecks);
-            setVocabulary(localVocab);
-
-            storage.saveSettings(initialSettings, firebaseUser.uid);
-            storage.saveUserStats(localStats, firebaseUser.uid);
-            storage.saveDocuments(localDocs, firebaseUser.uid);
-            storage.saveHighlights(localHighlights, firebaseUser.uid);
-            storage.saveAnnotations(localAnnotations, firebaseUser.uid);
-            storage.saveStickyNotes(localStickyNotes, firebaseUser.uid);
-            storage.saveFolders(finalFolders, firebaseUser.uid);
-            storage.saveDecks(finalDecks, firebaseUser.uid);
-            storage.saveVocabulary(localVocab, firebaseUser.uid);
-
-            const initialUserData = sanitizeForFirestore({
-              id: firebaseUser.uid,
-              name: targetName,
-              email: targetEmail,
-              role: 'Student',
-              status: 'Active',
-              joinedAt: new Date().toISOString().split('T')[0],
-              wordsLearned: localVocab.length,
-              lastLogin: new Date().toISOString(),
-              targetLanguage: targetLang,
-              totalTimeSpent: '0s',
-              sessionCount: 1,
-              settings: initialSettings,
-              userStats: localStats,
-              documents: localDocs,
-              highlights: localHighlights,
-              stickyNotes: localStickyNotes,
-              folders: finalFolders,
-              decks: finalDecks,
-              vocabulary: localVocab,
-              lastSynced: Date.now()
-            });
-
-            if (!isFirestoreQuotaExceeded()) {
-              await setDoc(docRef, initialUserData, { merge: true }).catch(err => handleFirestoreError(err, 'AppInitialSync'));
-            }
-
-            if (isSupabaseConfigured) {
-              await syncToSupabase(firebaseUser.uid, initialUserData as any);
-            }
-          }
-        } catch (err) {
-          handleFirestoreError(err, 'AppAuthSync');
-        } finally {
-          setIsSyncing(false);
-        }
-
-        // Attach real-time snapshot listener for multi-device live sync
-        try {
-          if (snapshotUnsubRef.current) {
-            snapshotUnsubRef.current();
-          }
-          const docRefForSnapshot = doc(db, 'users', firebaseUser.uid);
-          snapshotUnsubRef.current = onSnapshot(docRefForSnapshot, (snapshot) => {
-            if (snapshot.exists() && !snapshot.metadata.hasPendingWrites) {
-              const cloudData = snapshot.data();
-              if (cloudData) {
-                if (Array.isArray(cloudData.documents)) {
-                  setDocuments(cloudData.documents);
-                  storage.saveDocuments(cloudData.documents, firebaseUser.uid);
-                }
-                if (Array.isArray(cloudData.vocabulary)) {
-                  setVocabulary(cloudData.vocabulary);
-                  storage.saveVocabulary(cloudData.vocabulary, firebaseUser.uid);
-                }
-                if (Array.isArray(cloudData.highlights)) {
-                  setHighlights(cloudData.highlights);
-                  storage.saveHighlights(cloudData.highlights, firebaseUser.uid);
-                }
-                if (Array.isArray(cloudData.annotations)) {
-                  setAnnotations(cloudData.annotations);
-                  storage.saveAnnotations(cloudData.annotations, firebaseUser.uid);
-                }
-                if (Array.isArray(cloudData.stickyNotes)) {
-                  setStickyNotes(cloudData.stickyNotes);
-                  storage.saveStickyNotes(cloudData.stickyNotes, firebaseUser.uid);
-                }
-                if (Array.isArray(cloudData.folders)) {
-                  setFolders(cloudData.folders);
-                  storage.saveFolders(cloudData.folders, firebaseUser.uid);
-                }
-                if (Array.isArray(cloudData.decks)) {
-                  setDecks(cloudData.decks);
-                  storage.saveDecks(cloudData.decks, firebaseUser.uid);
-                }
-                if (cloudData.settings) {
-                  setSettings(prev => {
-                    const updated = { ...prev, ...cloudData.settings };
-                    storage.saveSettings(updated, firebaseUser.uid);
-                    return updated;
-                  });
-                }
-                if (cloudData.userStats) {
-                  setUserStats(prev => {
-                    const updated = { ...prev, ...cloudData.userStats };
-                    storage.saveUserStats(updated, firebaseUser.uid);
-                    return updated;
-                  });
-                }
-                if (Array.isArray(cloudData.quizHistory)) {
-                  setQuizHistory(cloudData.quizHistory);
-                  storage.saveQuizHistory(cloudData.quizHistory, firebaseUser.uid);
-                }
-                setSyncStatus('registered');
-              }
-            }
-          }, (err) => {
-            handleFirestoreError(err, 'AppRealtimeSync');
-          });
-        } catch (err) {
-          handleFirestoreError(err, 'AppSnapshotAttach');
-        }
       } else {
-        if (snapshotUnsubRef.current) {
-          snapshotUnsubRef.current();
-          snapshotUnsubRef.current = null;
-        }
-        setUser(null);
-        activityTracker.setCurrentUserId('usr-1');
-        setActiveUserId('usr-1');
-        setIsBlocked(false);
-        
-        // Reset to default local user data on logout
-        setSettings(storage.getSettings('usr-1'));
-        setUserStats(storage.getUserStats('usr-1'));
-        setDocuments(storage.getDocuments('usr-1'));
-        setHighlights(storage.getHighlights('usr-1'));
-        setAnnotations(storage.getAnnotations('usr-1'));
-        setStickyNotes(storage.getStickyNotes('usr-1'));
-        setVocabulary(storage.getVocabulary('usr-1'));
-        setQuizHistory(storage.getQuizHistory('usr-1'));
-        setFolders(INITIAL_FOLDERS);
-        setDecks(INITIAL_DECKS);
+        currentAccounts[accountIndex] = {
+          ...currentAccounts[accountIndex],
+          lastLogin: 'Just now',
+          email: email || currentAccounts[accountIndex].email,
+        };
       }
+      activityTracker.saveUserAccounts(currentAccounts);
+      setAllAccounts(currentAccounts);
+
+      setIsSyncing(true);
+      try {
+        const localDocs = storage.getDocuments(uid);
+        const localVocab = storage.getVocabulary(uid);
+        const localHighlights = storage.getHighlights(uid);
+        const localAnnotations = storage.getAnnotations(uid);
+        const localStickyNotes = storage.getStickyNotes(uid);
+        const localFolders = storage.getFolders(uid);
+        const localDecks = storage.getDecks(uid);
+        const localSettings = storage.getSettings(uid);
+        const localStats = storage.getUserStats(uid);
+        const localQuizHistory = storage.getQuizHistory(uid);
+        const cloudData = await fetchFromSupabase(uid);
+
+        const mergedSettings = {
+          ...defaultSettings,
+          ...localSettings,
+          ...(cloudData?.settings || {}),
+          userEmail: email || localSettings.userEmail || '',
+          userName: cloudData?.settings?.userName || localSettings.userName || displayName,
+        };
+        const mergedDocs = mergeArraysById(cloudData?.documents || [], localDocs);
+        const mergedVocab = mergeArraysById(cloudData?.vocabulary || [], localVocab);
+        const mergedHighlights = mergeArraysById(cloudData?.highlights || [], localHighlights);
+        const mergedAnnotations = mergeArraysById(cloudData?.annotations || [], localAnnotations);
+        const mergedStickyNotes = mergeArraysById(cloudData?.stickyNotes || [], localStickyNotes);
+        const mergedFolders = (cloudData?.folders?.length ? cloudData.folders : localFolders.length ? localFolders : INITIAL_FOLDERS);
+        const mergedDecks = (cloudData?.decks?.length ? cloudData.decks : localDecks.length ? localDecks : INITIAL_DECKS);
+        const mergedStats = { ...defaultUserStats, ...localStats, ...(cloudData?.userStats || {}) };
+        const mergedQuizHistory = mergeArraysById(cloudData?.quizHistory || [], localQuizHistory);
+
+        setSettings(mergedSettings);
+        setUserStats(mergedStats);
+        setDocuments(mergedDocs);
+        setHighlights(mergedHighlights);
+        setAnnotations(mergedAnnotations);
+        setStickyNotes(mergedStickyNotes);
+        setFolders(mergedFolders);
+        setDecks(mergedDecks);
+        setVocabulary(mergedVocab);
+        setQuizHistory(mergedQuizHistory);
+        setIsBlocked(cloudData?.status === 'Blocked');
+
+        storage.saveSettings(mergedSettings, uid);
+        storage.saveUserStats(mergedStats, uid);
+        storage.saveDocuments(mergedDocs, uid);
+        storage.saveVocabulary(mergedVocab, uid);
+        storage.saveHighlights(mergedHighlights, uid);
+        storage.saveAnnotations(mergedAnnotations, uid);
+        storage.saveStickyNotes(mergedStickyNotes, uid);
+        storage.saveFolders(mergedFolders, uid);
+        storage.saveDecks(mergedDecks, uid);
+        storage.saveQuizHistory(mergedQuizHistory, uid);
+
+        await syncToSupabase(uid, {
+          id: uid,
+          email,
+          settings: mergedSettings,
+          userStats: mergedStats,
+          documents: mergedDocs,
+          vocabulary: mergedVocab,
+          highlights: mergedHighlights,
+          annotations: mergedAnnotations,
+          stickyNotes: mergedStickyNotes,
+          folders: mergedFolders,
+          decks: mergedDecks,
+          quizHistory: mergedQuizHistory,
+          lastSynced: Date.now(),
+        });
+
+        if (removeProgressSubscription) removeProgressSubscription();
+        removeProgressSubscription = subscribeToSupabaseProgress(uid, (payload) => {
+          if (cancelled) return;
+          if (payload.settings) setSettings((previous) => ({ ...previous, ...payload.settings }));
+          if (payload.userStats) setUserStats((previous) => ({ ...previous, ...payload.userStats }));
+          if (Array.isArray(payload.documents)) setDocuments(payload.documents);
+          if (Array.isArray(payload.vocabulary)) setVocabulary(payload.vocabulary);
+          if (Array.isArray(payload.highlights)) setHighlights(payload.highlights);
+          if (Array.isArray(payload.annotations)) setAnnotations(payload.annotations);
+          if (Array.isArray(payload.stickyNotes)) setStickyNotes(payload.stickyNotes);
+          if (Array.isArray(payload.folders)) setFolders(payload.folders);
+          if (Array.isArray(payload.decks)) setDecks(payload.decks);
+          if (Array.isArray(payload.quizHistory)) setQuizHistory(payload.quizHistory);
+        });
+      } catch (error) {
+        console.warn('Supabase account sync notice:', error);
+      } finally {
+        if (!cancelled) setIsSyncing(false);
+      }
+    };
+
+    const client = getSupabase();
+    if (!client) {
+      console.warn('Supabase is not configured; the app will remain in local guest mode.');
+      resetToGuest();
+      return () => undefined;
+    }
+
+    void client.auth.getSession().then(({ data }) => applySession(data.session));
+    const authSubscription = onSupabaseAuthStateChange((_event, session) => {
+      // Defer work outside Supabase's auth callback to avoid blocking token refresh.
+      window.setTimeout(() => void applySession(session), 0);
     });
-    
+
     return () => {
-      unsubscribe();
-      if (snapshotUnsubRef.current) {
-        snapshotUnsubRef.current();
-        snapshotUnsubRef.current = null;
-      }
+      cancelled = true;
+      authSubscription.data.subscription.unsubscribe();
+      if (removeProgressSubscription) removeProgressSubscription();
     };
   }, []);
 
   const syncToCloud = async () => {
-    if (!auth.currentUser) return;
+    const client = getSupabase();
+    if (!client || activeUserId === 'usr-1') return;
+    const { data } = await client.auth.getUser();
+    const currentUser = data.user;
+    if (!currentUser) return;
+
     try {
       setSyncStatus('syncing');
-      const docRef = doc(db, 'users', auth.currentUser.uid);
-      const sanitizedPayload = sanitizeForFirestore({
+      await syncToSupabase(currentUser.id, {
+        id: currentUser.id,
+        email: currentUser.email || settings.userEmail || '',
         settings,
         userStats,
         documents,
@@ -954,26 +703,11 @@ export default function App() {
         decks,
         vocabulary,
         quizHistory,
-        lastSynced: Date.now()
+        lastSynced: Date.now(),
       });
-
-      if (!isFirestoreQuotaExceeded()) {
-        await setDoc(docRef, sanitizedPayload, { merge: true }).catch(err => handleFirestoreError(err, 'AppManualSync'));
-      }
-
-      // Sync to Supabase in parallel
-      const isSupabaseConfigured = !!getSupabase();
-      if (isSupabaseConfigured) {
-        await syncToSupabase(auth.currentUser.uid, {
-          id: auth.currentUser.uid,
-          email: auth.currentUser.email || settings.userEmail || '',
-          ...sanitizedPayload
-        } as any);
-      }
-
       setSyncStatus('registered');
-    } catch (err) {
-      console.error("Error syncing to cloud:", err);
+    } catch (error) {
+      console.error('Error syncing to Supabase:', error);
       setSyncStatus('idle');
     }
   };
@@ -1029,150 +763,41 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stickyNotes]);
 
-  // Synchronize state with backend server and Firestore (with a 1.5s debounce to protect performance)
+  // Synchronize authenticated application state to Supabase Postgres with a debounce.
   useEffect(() => {
-    if (isSyncing || activeUserId !== loadedUserIdRef.current) return;
+    if (isSyncing || activeUserId === 'usr-1' || activeUserId !== loadedUserIdRef.current) return;
     const syncTimeout = setTimeout(async () => {
-      const currentUser = auth.currentUser;
+      const client = getSupabase();
+      if (!client) return;
+      const { data } = await client.auth.getUser();
+      if (!data.user) return;
 
-      // Sanitize documents payload for background sync so large PDF base64 buffers don't cause network payload errors
-      const sanitizedDocsForSync = documents.map(d => {
-        if (d.contentData && d.contentData.length > 100000) {
-          const { contentData, ...rest } = d;
+      const sanitizedDocsForSync = documents.map((document) => {
+        if (document.contentData && document.contentData.length > 100000) {
+          const { contentData: _contentData, ...rest } = document;
           return rest;
         }
-        return d;
+        return document;
       });
 
-      // 1. Sync to Express Backend
-      const syncPayload = {
-        email: settings.userEmail || '',
+      await syncToSupabase(data.user.id, {
+        id: data.user.id,
+        email: data.user.email || settings.userEmail || '',
+        settings,
+        userStats,
         documents: sanitizedDocsForSync,
         vocabulary,
         highlights,
+        annotations,
         stickyNotes,
-        userStats,
-        settings,
         folders,
         decks,
-        timestamp: Date.now()
-      };
-
-      try {
-        const res = await fetch('/api/progress/sync', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(syncPayload),
-        });
-        if (!res.ok) {
-          console.warn('LingoFlow backend progress sync status:', res.status);
-          if (!offlineSyncManager.getIsOnline()) {
-            offlineSyncManager.addToQueue('PROGRESS_SYNC', syncPayload);
-          }
-        }
-      } catch (err) {
-        console.warn('LingoFlow background sync notice:', err instanceof Error ? err.message : String(err));
-        offlineSyncManager.addToQueue('PROGRESS_SYNC', syncPayload);
-      }
-
-      // 2. Sync to Firestore & Supabase (if logged in)
-      if (currentUser) {
-        try {
-          const docRef = doc(db, 'users', currentUser.uid);
-          const targetName = settings.userName || currentUser.displayName || 'Primary Learner';
-          const targetEmail = currentUser.email || settings.userEmail || '';
-          const targetLang = settings.targetLanguage || 'English';
-          const currentLangKey = targetLang.toLowerCase().trim().replace(/\s+/g, '_');
-          
-          const sanitizedAutoSyncData = sanitizeForFirestore({
-            id: currentUser.uid,
-            name: targetName,
-            email: targetEmail,
-            role: activeAccount?.role || 'Student',
-            status: activeAccount?.status || 'Active',
-            joinedAt: activeAccount?.joinedAt || new Date().toISOString().split('T')[0],
-            wordsLearned: vocabulary.length,
-            lastLogin: new Date().toISOString(),
-            targetLanguage: targetLang,
-            totalTimeSpent: activeAccount?.totalTimeSpent || '0s',
-            sessionCount: activeAccount?.sessionCount || 1,
-            settings,
-            migrated: true,
-            lastSynced: Date.now()
-          });
-          
-          sanitizedAutoSyncData[`profiles.${currentLangKey}`] = sanitizeForFirestore({
-            documents: sanitizedDocsForSync,
-            vocabulary,
-            highlights,
-            annotations,
-            stickyNotes,
-            folders,
-            decks,
-            userStats
-          });
-
-          if (!isFirestoreQuotaExceeded()) {
-            await updateDoc(docRef, sanitizedAutoSyncData).catch(err => {
-               if (err.code === 'not-found') return setDoc(docRef, sanitizedAutoSyncData, { merge: true });
-               return handleFirestoreError(err, 'AppAutoSync');
-            });
-
-            // Automatic background synchronization of any unsynced local activity logs to Firestore
-            try {
-              const currentAccounts = activityTracker.getUserAccounts();
-              const myAcc = currentAccounts.find(a => a.id === currentUser.uid);
-              if (myAcc && Array.isArray(myAcc.activityLogs)) {
-                const unsyncedLogs = myAcc.activityLogs.filter(l => !l.syncedToCloud);
-                if (unsyncedLogs.length > 0) {
-                  let updatedAny = false;
-                  // Sync up to 10 logs per loop iteration to avoid overloading
-                  for (const log of unsyncedLogs.slice(0, 10)) {
-                    const success = await UserActivityLogger.logEvent(log, currentUser.uid);
-                    if (success) {
-                      log.syncedToCloud = true;
-                      updatedAny = true;
-                    }
-                  }
-                  if (updatedAny) {
-                    const freshAccounts = activityTracker.getUserAccounts();
-                    const fIdx = freshAccounts.findIndex(a => a.id === currentUser.uid);
-                    if (fIdx !== -1) {
-                      freshAccounts[fIdx].activityLogs = (freshAccounts[fIdx].activityLogs || []).map(fl => {
-                        const matchedSynced = myAcc.activityLogs?.find(ul => ul.id === fl.id);
-                        if (matchedSynced && matchedSynced.syncedToCloud) {
-                          return { ...fl, syncedToCloud: true };
-                        }
-                        return fl;
-                      });
-                      activityTracker.saveUserAccounts(freshAccounts);
-                    }
-                  }
-                }
-              }
-            } catch (syncErr) {
-              console.warn('[ActivitySync] Log sync background process notice:', syncErr);
-            }
-          }
-
-          // Background sync to Supabase
-          const isSupabaseConfigured = !!getSupabase();
-          if (isSupabaseConfigured) {
-            await syncToSupabase(currentUser.uid, sanitizedAutoSyncData as any);
-          }
-        } catch (err: any) {
-          const msg = err instanceof Error ? err.message : String(err);
-          if (msg.includes('resource-exhausted') || msg.includes('Quota limit exceeded')) {
-            console.warn('[Firestore AutoSync] Free daily write quota reached. Switched to LocalStorage & Express API offline sync mode.');
-          } else {
-            console.warn("Auto-sync user profile notice:", msg);
-          }
-        }
-      }
+        quizHistory,
+        lastSynced: Date.now(),
+      });
     }, 1500);
-
     return () => clearTimeout(syncTimeout);
-  }, [vocabulary, documents, highlights, stickyNotes, userStats, settings, folders, decks, activeAccount]);
+  }, [vocabulary, documents, highlights, stickyNotes, userStats, settings, folders, decks, quizHistory, activeUserId, isSyncing]);
 
   // Synchronize dynamic dark/light CSS mode based on app settings
   useEffect(() => {
@@ -1233,8 +858,8 @@ export default function App() {
     authenticatedUserId?: string,
     authenticatedEmail?: string,
   ) => {
-    const resolvedUserId = authenticatedUserId || auth.currentUser?.uid || activityTracker.getCurrentUserId();
-    const resolvedEmail = authenticatedEmail || auth.currentUser?.email || settings.userEmail || '';
+    const resolvedUserId = authenticatedUserId || activeUserId || activityTracker.getCurrentUserId();
+    const resolvedEmail = authenticatedEmail || settings.userEmail || '';
 
     // Set the identity before saving so completion never lands in the guest profile.
     if (resolvedUserId && resolvedUserId !== 'usr-1') {
@@ -1278,11 +903,11 @@ export default function App() {
 
   const handleLogout = async () => {
     try {
-      if (auth.currentUser) {
-        await signOut(auth);
+      if (getSupabase()) {
+        await signOutFromSupabase();
       }
     } catch (err) {
-      console.error("Error signing out:", err);
+      console.error("Error signing out of Supabase:", err);
     }
     
     // Clear user and reset to default anonymous profile

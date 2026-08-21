@@ -1,6 +1,5 @@
 import { ActivityRecord, UserAccount, VocabularyItem } from '../types';
-import { UserActivityLogger } from './userActivityLogger';
-import { auth } from '../lib/firebase';
+import { recordUserActivity } from '../lib/supabase';
 
 const STORAGE_KEY = 'lingoflow_user_accounts';
 
@@ -139,8 +138,6 @@ export const activityTracker = {
   // Get active current user ID
   getCurrentUserId: (): string => {
     try {
-      const firebaseUid = auth.currentUser?.uid;
-      if (firebaseUid) return firebaseUid;
       return localStorage.getItem('lingoflow_current_user_id') || 'usr-1';
     } catch {
       return 'usr-1';
@@ -176,12 +173,11 @@ export const activityTracker = {
     let userIndex = accounts.findIndex((u) => u.id === userId);
 
     if (userIndex === -1) {
-      // Create new real account from auth/settings context
-      const fbUser = auth.currentUser;
-      let userName = fbUser?.displayName || '';
-      let userEmail = fbUser?.email || '';
+      // Create a local account index from the Supabase-authenticated profile settings.
+      let userName = '';
+      let userEmail = '';
       let targetLang = 'English';
-      let avatar = fbUser?.photoURL || '';
+      let avatar = '';
 
       try {
         const rawSettings = localStorage.getItem(`lingoflow_settings_${userId}`) || localStorage.getItem('lingoflow_settings');
@@ -290,8 +286,9 @@ export const activityTracker = {
 
       activityTracker.saveUserAccounts(accounts);
 
-      // Background sync to Firestore with updated parent summary
-      UserActivityLogger.logEvent(newLog, activeId, {
+      // Persist the activity record in Supabase when this is a real authenticated user.
+      recordUserActivity(activeId, {
+        ...newLog,
         name: user.name,
         email: user.email,
         totalTimeSpent: totalTimeSpentFormatted,
@@ -299,21 +296,19 @@ export const activityTracker = {
         targetLanguage: user.targetLanguage,
         role: user.role,
         status: user.status,
-        joinedAt: user.joinedAt
+        joinedAt: user.joinedAt,
       }).then((success) => {
-        if (success) {
-          // Re-retrieve fresh accounts to avoid race condition over-writing
-          const freshAccounts = activityTracker.getUserAccounts();
-          const fIdx = freshAccounts.findIndex(a => a.id === activeId);
-          if (fIdx !== -1) {
-            freshAccounts[fIdx].activityLogs = (freshAccounts[fIdx].activityLogs || []).map(l =>
-              l.id === newLog.id ? { ...l, syncedToCloud: true } : l
-            );
-            activityTracker.saveUserAccounts(freshAccounts);
-          }
+        if (!success) return;
+        const freshAccounts = activityTracker.getUserAccounts();
+        const fIdx = freshAccounts.findIndex(a => a.id === activeId);
+        if (fIdx !== -1) {
+          freshAccounts[fIdx].activityLogs = (freshAccounts[fIdx].activityLogs || []).map(l =>
+            l.id === newLog.id ? { ...l, syncedToCloud: true } : l
+          );
+          activityTracker.saveUserAccounts(freshAccounts);
         }
       }).catch((err) => {
-        console.error('Failed to sync log to Firestore:', err);
+        console.error('Failed to sync activity to Supabase:', err);
       });
     } catch (e) {
       console.error('Failed to log real user activity:', e);

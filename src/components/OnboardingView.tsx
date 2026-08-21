@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { auth, googleProvider } from '../lib/firebase';
-import { signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import {
+  signInWithEmail,
+  signUpWithEmail,
+  signInWithGoogle,
+} from '../lib/supabase';
 import { Eye, EyeOff, User, Sparkles, ArrowRight, ShieldCheck, Mail } from 'lucide-react';
 import { RibbleLogo } from './RibbleLogo';
 import { getTranslation } from '../utils/i18n';
@@ -30,7 +33,7 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete, sett
     const rawMessage = String(error?.message || '');
 
     if (code.includes('operation-not-allowed') || code.includes('admin-restricted-operation') || code.includes('password-login-disabled')) {
-      return 'Email and password sign-in is disabled for this app. Enable the Email/Password provider in Firebase Authentication, then try again.';
+      return 'Email and password sign-in is disabled for this app. Enable email/password authentication in Supabase Auth, then try again.';
     }
     if (code.includes('email-already-in-use')) {
       return 'An account already exists for this email. Switch to Sign In or use a different email address.';
@@ -51,7 +54,7 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete, sett
       return 'A network error prevented authentication. Check your connection and try again.';
     }
     if (rawMessage.includes('PASSWORD_LOGIN_DISABLED')) {
-      return 'Email and password sign-in is disabled for this app. Enable the Email/Password provider in Firebase Authentication, then try again.';
+      return 'Email and password sign-in is disabled for this app. Enable email/password authentication in Supabase Auth, then try again.';
     }
 
     return rawMessage || `Unable to ${mode === 'login' ? 'sign in' : 'create your account'}. Please try again.`;
@@ -72,17 +75,26 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete, sett
     setAuthError('');
     setIsLoading(true);
     try {
-      const credential = isLogin
-        ? await signInWithEmailAndPassword(auth, normalizedEmail, trimmedPassword)
-        : await createUserWithEmailAndPassword(auth, normalizedEmail, trimmedPassword);
-      const authenticatedUser = credential.user;
+      const result = isLogin
+        ? await signInWithEmail(normalizedEmail, trimmedPassword)
+        : await signUpWithEmail(normalizedEmail, trimmedPassword, name);
+      if (result.error) throw result.error;
+
+      const authenticatedUser = result.data.user;
+      if (!authenticatedUser) {
+        throw new Error('Supabase did not return a user account. Please try again.');
+      }
+      if (!result.data.session) {
+        setAuthError('Account created. Check your email to confirm your account, then sign in.');
+        return;
+      }
 
       tracker.trackEvent(isLogin ? 'user_logged_in' : 'user_registered', 'auth', { method: 'email' }, true);
       tracker.trackEvent('onboarding_completed', 'funnel', { method: 'email' }, true);
       onComplete(
-        name.trim() || authenticatedUser.displayName || normalizedEmail.split('@')[0] || 'User',
+        name.trim() || authenticatedUser.user_metadata?.full_name || normalizedEmail.split('@')[0] || 'User',
         language,
-        authenticatedUser.uid,
+        authenticatedUser.id,
         authenticatedUser.email || normalizedEmail,
       );
     } catch (err: any) {
@@ -330,15 +342,10 @@ export const OnboardingView: React.FC<OnboardingViewProps> = ({ onComplete, sett
                     setAuthError('');
                     setIsLoading(true);
                     try {
-                      const credential = await signInWithPopup(auth, googleProvider);
+                      const result = await signInWithGoogle();
+                      if (result.error) throw result.error;
+                      // OAuth redirects back to the app; App listens for the resulting Supabase session.
                       tracker.trackEvent('user_logged_in', 'auth', { method: 'google' }, true);
-                      tracker.trackEvent('onboarding_completed', 'funnel', { method: 'google' }, true);
-                      onComplete(
-                        name.trim() || credential.user.displayName || credential.user.email?.split('@')[0] || 'User',
-                        language,
-                        credential.user.uid,
-                        credential.user.email || '',
-                      );
                     } catch (err: any) {
                       setAuthError(formatAuthError(err, 'login'));
                     } finally {

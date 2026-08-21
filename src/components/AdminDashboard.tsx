@@ -64,10 +64,7 @@ import {
 import { activityTracker } from '../utils/activityTracker';
 import { storage } from '../utils/storage';
 import { UserActivityLogger } from '../utils/userActivityLogger';
-import { db, auth, firebaseConfig } from '../lib/firebase';
-import { collection, getDocs, doc, updateDoc, deleteDoc, setDoc } from 'firebase/firestore';
-import { initializeApp, deleteApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserAsAdmin, getSupabase } from '../lib/supabase';
 import { AdminAdsManager } from './AdminAdsManager';
 
 interface AdminDashboardProps {
@@ -91,7 +88,7 @@ type AdminTab = 'overview' | 'analytics' | 'database' | 'ads-broadcasts' | 'secu
 // AdminDashboard Component
 // This is a secure administrative interface providing:
 // 1. Cross-user analytics and database metrics (Overview tab)
-// 2. Real-time Firebase user registry management (creation, deletion, blocking)
+// 2. Real-time Supabase user registry management (deletion and blocking)
 // 3. Global vocabulary and document database inspection
 // 4. Passcode security configuration
 // 5. System-wide broadcasts, ads injection, and direct messaging
@@ -433,7 +430,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     // Always retain active current user
     const currentId = activityTracker.getCurrentUserId();
     if (u.id === currentId) return true;
-    if (auth.currentUser && (u.id === auth.currentUser.uid || u.email === auth.currentUser.email)) return true;
     
     // Filter out only known static mock placeholders
     const mockEmails = ['sarah.chen@example.com', 'marcus.v@example.com', 'elena.r@example.com', 'kenji.s@example.com', 'amira.m@example.com'];
@@ -456,39 +452,39 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
   }, [isRealUser]);
 
-  // User Accounts State (100% Real Data live from activityTracker & Firestore)
+  // User Accounts State (live from activityTracker and Supabase)
   const [userAccounts, setUserAccounts] = useState<UserAccount[]>(() => 
     activityTracker.getUserAccounts().filter(isRealUser)
   );
   const [selectedUser, setSelectedUser] = useState<UserAccount | null>(null);
-  const [isSyncingFirestoreUsers, setIsSyncingFirestoreUsers] = useState(false);
+  const [isSyncingSupabaseUsers, setIsSyncingSupabaseUsers] = useState(false);
 
-  const fetchUsersFromFirestore = React.useCallback(async () => {
+  const fetchUsersFromSupabase = React.useCallback(async () => {
     try {
-      setIsSyncingFirestoreUsers(true);
-      const colRef = collection(db, 'users');
-      const snapshot = await getDocs(colRef);
-      const fetchedAccounts: UserAccount[] = [];
-      
-      snapshot.forEach((docSnap) => {
-        const data = docSnap.data();
-        // Unconditionally add all users found in Firestore
-        fetchedAccounts.push({
-          id: docSnap.id,
-          name: data.name || data.settings?.userName || 'Learner',
-          email: data.email || data.settings?.userEmail || 'No Email',
-          role: data.role || 'Student',
-          status: data.status || 'Active',
-          joinedAt: data.joinedAt || (data.lastSynced ? new Date(data.lastSynced).toISOString().split('T')[0] : new Date().toISOString().split('T')[0]),
-          wordsLearned: typeof data.wordsLearned === 'number' ? data.wordsLearned : (data.vocabulary ? data.vocabulary.length : 0),
-          lastLogin: data.lastLogin || (data.lastSynced ? new Date(data.lastSynced).toLocaleString() : 'Just now'),
-          targetLanguage: data.targetLanguage || data.settings?.targetLanguage || 'English',
-          totalTimeSpent: data.totalTimeSpent || '0s',
-          sessionCount: data.sessionCount || 1,
-          avatar: data.avatar || data.settings?.userAvatar || '',
-          notes: data.notes || '',
-        });
-      });
+      setIsSyncingSupabaseUsers(true);
+      const client = getSupabase();
+      if (!client) throw new Error('Supabase is not configured.');
+      const { data: rows, error } = await client
+        .from('user_profiles')
+        .select('id,email,name,role,status,created_at,data')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      const fetchedAccounts: UserAccount[] = (rows || []).map((row: any) => ({
+        id: row.id,
+        name: row.name || row.data?.settings?.userName || 'Learner',
+        email: row.email || row.data?.settings?.userEmail || 'No Email',
+        role: row.role || 'Student',
+        status: row.status || 'Active',
+        joinedAt: row.data?.joinedAt || row.created_at?.split('T')[0] || new Date().toISOString().split('T')[0],
+        wordsLearned: typeof row.data?.wordsLearned === 'number' ? row.data.wordsLearned : (row.data?.vocabulary?.length || 0),
+        lastLogin: row.data?.lastLogin || 'Just now',
+        targetLanguage: row.data?.targetLanguage || row.data?.settings?.targetLanguage || 'English',
+        totalTimeSpent: row.data?.totalTimeSpent || '0s',
+        sessionCount: row.data?.sessionCount || 1,
+        avatar: row.data?.avatar || row.data?.settings?.userAvatar || '',
+        notes: row.data?.notes || '',
+        activityLogs: row.data?.activityLogs || [],
+      }));
 
       // Filter to retain only real user accounts
       const realFetched = fetchedAccounts.filter(isRealUser);
@@ -511,20 +507,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       if (msg.includes('resource-exhausted') || msg.includes('Quota limit exceeded')) {
         console.warn('AdminDashboard: Quota limit exceeded');
       } else {
-        console.error("Failed to load users from Firestore:", err);
+        console.error("Failed to load users from Supabase:", err);
       }
     } finally {
-      setIsSyncingFirestoreUsers(false);
+      setIsSyncingSupabaseUsers(false);
     }
   }, [isRealUser]);
 
   React.useEffect(() => {
-    fetchUsersFromFirestore();
+    fetchUsersFromSupabase();
     const pollInterval = setInterval(() => {
-      fetchUsersFromFirestore();
+      fetchUsersFromSupabase();
     }, 6000);
     return () => clearInterval(pollInterval);
-  }, [fetchUsersFromFirestore]);
+  }, [fetchUsersFromSupabase]);
 
   // Keep state synchronized in real-time with activityTracker events
   React.useEffect(() => {
@@ -548,7 +544,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     };
   }, [selectedUser, isRealUser]);
 
-  // Load activity logs from Firestore for selected user
+  // Load activity logs from Supabase for selected user
   const [isLoadingLogs, setIsLoadingLogs] = useState(false);
 
   React.useEffect(() => {
@@ -558,17 +554,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     const loadLogs = async () => {
       try {
         setIsLoadingLogs(true);
-        const firestoreLogs = await UserActivityLogger.fetchUserLogs(selectedUser.id);
+        const supabaseLogs = await UserActivityLogger.fetchUserLogs(selectedUser.id);
         if (!isMounted) return;
 
-        // Merge firestore logs with existing local logs (prevent duplicates based on ID)
+        // Merge Supabase logs with existing local logs (prevent duplicates based on ID)
         const localLogs = selectedUser.activityLogs || [];
-        const allLogs = [...firestoreLogs];
+        const allLogs = [...supabaseLogs];
         
-        // Add any local logs that are not already in firestoreLogs
-        const firestoreLogIds = new Set(firestoreLogs.map(l => l.id));
+        // Add any local logs that are not already in supabaseLogs
+        const supabaseLogIds = new Set(supabaseLogs.map(l => l.id));
         localLogs.forEach(log => {
-          if (!firestoreLogIds.has(log.id)) {
+          if (!supabaseLogIds.has(log.id)) {
             allLogs.push(log);
           }
         });
@@ -584,7 +580,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           };
         });
       } catch (err) {
-        console.error("Failed to fetch activity logs from Firestore:", err);
+        console.error("Failed to fetch activity logs from Supabase:", err);
       } finally {
         if (isMounted) {
           setIsLoadingLogs(false);
@@ -860,13 +856,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         if (selectedUser?.id === id) {
           setSelectedUser(updatedUser);
         }
-        // Write to Firestore as well!
-        try {
-          updateDoc(doc(db, 'users', id), { status: updatedStatus }).catch((err) => {
-            console.error("Failed to update status in Firestore:", err);
+        const client = getSupabase();
+        if (client) {
+          void client.from('user_profiles').update({ status: updatedStatus }).eq('id', id).then(({ error }) => {
+            if (error) console.error('Failed to update status in Supabase:', error);
           });
-        } catch (err) {
-          console.error(err);
         }
         return updatedUser;
       }
@@ -879,12 +873,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     if (confirm('Are you sure you want to delete this user account from the database?')) {
       const updated = userAccounts.filter((u) => u.id !== id);
       saveAccountsToTracker(updated);
-      try {
-        deleteDoc(doc(db, 'users', id)).catch((err) => {
-          console.error("Failed to delete user in Firestore:", err);
+      const client = getSupabase();
+      if (client) {
+        void client.from('user_profiles').delete().eq('id', id).then(({ error }) => {
+          if (error) console.error('Failed to delete user in Supabase:', error);
         });
-      } catch (err) {
-        console.error(err);
       }
       if (selectedUser?.id === id) {
         setSelectedUser(null);
@@ -897,13 +890,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       if (u.id === id) {
         const updatedUser = { ...u, role };
         if (selectedUser?.id === id) setSelectedUser(updatedUser);
-        // Write to Firestore as well!
-        try {
-          updateDoc(doc(db, 'users', id), { role }).catch((err) => {
-            console.error("Failed to update role in Firestore:", err);
+        const client = getSupabase();
+        if (client) {
+          void client.from('user_profiles').update({ role }).eq('id', id).then(({ error }) => {
+            if (error) console.error('Failed to update role in Supabase:', error);
           });
-        } catch (err) {
-          console.error(err);
         }
         return updatedUser;
       }
@@ -914,25 +905,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newUserName.trim() || !newUserEmail.trim() || !newUserPassword.trim()) return;
+    if (!newUserName.trim() || !newUserEmail.trim() || !newUserPassword.trim()) {
+      setAddUserError('Name, email, and password are required.');
+      return;
+    }
     setAddUserError('');
     setIsAddingUser(true);
-    
     try {
-      // Create a secondary app to register user without signing out the admin
-      const secondaryApp = initializeApp(firebaseConfig, 'SecondaryApp' + Date.now());
-      const secondaryAuth = getAuth(secondaryApp);
-      
-      const userCredential = await createUserWithEmailAndPassword(secondaryAuth, newUserEmail.trim(), newUserPassword.trim());
-      const uid = userCredential.user.uid;
-      
-      // Clean up secondary app
-      await deleteApp(secondaryApp);
-
-      const newUser: UserAccount = {
-        id: uid,
+      const { data, error } = await createUserAsAdmin({
         name: newUserName.trim(),
         email: newUserEmail.trim(),
+        password: newUserPassword,
+        role: newUserRole,
+        targetLanguage: newUserLang,
+      });
+      if (error) throw error;
+      if (!data?.user?.id) throw new Error('Supabase did not return the created user.');
+      const newUser: UserAccount = {
+        id: data.user.id,
+        name: newUserName.trim(),
+        email: newUserEmail.trim().toLowerCase(),
         role: newUserRole,
         status: 'Active',
         joinedAt: new Date().toISOString().split('T')[0],
@@ -943,47 +935,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         notes: 'Account created via Admin Console',
         totalTimeSpent: '0s',
         sessionCount: 0,
-        activityLogs: [
-          {
-            id: `act-init-${Date.now()}`,
-            timestamp: new Date().toISOString().replace('T', ' ').substring(0, 19),
-            dateLabel: `Day 1 (${new Date().toISOString().split('T')[0]})`,
-            section: 'Onboarding',
-            action: `Account created by Admin (${newUserRole})`,
-            duration: '0s',
-            device: 'Admin Console',
-            location: 'Database Management',
-            type: 'auth'
-          }
-        ]
+        activityLogs: [],
       };
-      
       saveAccountsToTracker([newUser, ...userAccounts]);
-      
-      await setDoc(doc(db, 'users', uid), {
-        id: newUser.id,
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role,
-        status: newUser.status,
-        joinedAt: newUser.joinedAt,
-        targetLanguage: newUser.targetLanguage,
-        notes: newUser.notes,
-        lastSynced: Date.now()
-      }, { merge: true });
-      
       setNewUserName('');
       setNewUserEmail('');
       setNewUserPassword('');
       setIsAddUserOpen(false);
-    } catch (err: any) {
-      console.error("Failed to create user account", err);
-      setAddUserError(err.message || 'Failed to create user');
+    } catch (error: any) {
+      console.error('Failed to create user account in Supabase:', error);
+      setAddUserError(error?.message || 'Failed to create user account.');
     } finally {
       setIsAddingUser(false);
     }
   };
-
   // Handlers for Password Protection
   const handleSavePasswordConfig = (e: React.FormEvent) => {
     e.preventDefault();
@@ -1210,14 +1175,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </button>
             <button
               onClick={() => {
-                fetchUsersFromFirestore();
+                fetchUsersFromSupabase();
                 activityTracker.triggerRealtimeSync();
               }}
-              disabled={isSyncingFirestoreUsers}
+              disabled={isSyncingSupabaseUsers}
               className="px-4 py-2.5 rounded-xl bg-[#222222] dark:bg-[#A4F5A6] text-white dark:text-[#222222] font-bold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-xs disabled:opacity-60"
             >
-              <RefreshCw className={`w-4 h-4 ${isSyncingFirestoreUsers ? 'animate-spin' : ''}`} />
-              {isSyncingFirestoreUsers ? 'Syncing...' : 'Sync Realtime Data'}
+              <RefreshCw className={`w-4 h-4 ${isSyncingSupabaseUsers ? 'animate-spin' : ''}`} />
+              {isSyncingSupabaseUsers ? 'Syncing...' : 'Sync Realtime Data'}
             </button>
           </div>
         </div>
@@ -2317,12 +2282,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <p className="text-xs text-stone-400 mt-0.5">Click any profile row to inspect user info, change roles, or toggle account block status</p>
               </div>
               <button
-                onClick={fetchUsersFromFirestore}
-                disabled={isSyncingFirestoreUsers}
+                onClick={fetchUsersFromSupabase}
+                disabled={isSyncingSupabaseUsers}
                 className="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 transition-all cursor-pointer flex items-center justify-center disabled:opacity-55"
                 title="Refresh from Database"
               >
-                <RefreshCw className={`w-4 h-4 ${isSyncingFirestoreUsers ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`w-4 h-4 ${isSyncingSupabaseUsers ? 'animate-spin' : ''}`} />
               </button>
             </div>
             
@@ -3142,7 +3107,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       {isLoadingLogs && (
                         <div className="flex items-center justify-center py-10 text-stone-400 gap-2.5 bg-[#EFF1EE]/50 dark:bg-stone-900/40 rounded-2xl border border-[#D0D2CF]/50 dark:border-stone-800/50">
                           <span className="w-5 h-5 border-2 border-[#222222] dark:border-[#A4F5A6] border-t-transparent rounded-full animate-spin" />
-                          <span className="text-xs font-bold">Fetching latest activities from Firestore...</span>
+                          <span className="text-xs font-bold">Fetching latest activities from Supabase...</span>
                         </div>
                       )}
                       {!isLoadingLogs && filteredActivityLogs.length === 0 && (
@@ -3158,7 +3123,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                               <Info className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Why is this list empty?
                             </span>
                             <p className="leading-relaxed">
-                              This student profile (<strong>{selectedUser.name}</strong>) is fresh and has not recorded any granular learning logs (such as dictionary lookups, story reading, or SRS reviews) in Firestore yet.
+                              This student profile (<strong>{selectedUser.name}</strong>) is fresh and has not recorded any granular learning logs (such as dictionary lookups, story reading, or SRS reviews) in Supabase yet.
                             </p>
                             <ul className="list-disc list-inside ps-1 space-y-1 mt-1.5 text-[11px] text-blue-700/95 dark:text-blue-300/80">
                               <li><strong>Manually Log:</strong> Click the <code className="bg-blue-100/60 dark:bg-blue-900/50 px-1 py-0.5 rounded font-bold text-blue-900 dark:text-blue-200">+ Log Event</code> button above to add custom audit remarks.</li>

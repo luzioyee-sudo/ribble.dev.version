@@ -1,5 +1,3 @@
-import { auth } from '../lib/firebase';
-
 export interface TrackingEvent {
   event_id: string;
   event_name: string;
@@ -208,7 +206,7 @@ class ActionTracker {
     }
 
     // Capture fallback current user if unset
-    const userId = this.currentUserId || auth.currentUser?.uid || null;
+    const userId = this.currentUserId || (typeof window !== 'undefined' ? localStorage.getItem('lingoflow_current_user_id') : null) || null;
 
     // Build consistent structured tracking event
     const event: TrackingEvent = {

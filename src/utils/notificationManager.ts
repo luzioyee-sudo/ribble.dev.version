@@ -1,6 +1,5 @@
 import { AppNotification, AppAd } from '../types';
-import { db, auth } from '../lib/firebase';
-import { collection, doc, getDocs, setDoc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { getSupabase } from '../lib/supabase';
 
 const NOTIFICATIONS_STORAGE_KEY = 'lingoflow_app_notifications_v6';
 const ADS_STORAGE_KEY = 'lingoflow_app_ads_v6';
@@ -9,7 +8,6 @@ const ADS_STORAGE_KEY = 'lingoflow_app_ads_v6';
 const INITIAL_NOTIFICATIONS: AppNotification[] = [];
 const INITIAL_ADS: AppAd[] = [];
 
-import { isFirestoreQuotaExceeded, handleFirestoreError } from './firestoreQuotaTracker';
 
 class NotificationManager {
   private notifyListeners() {
@@ -101,13 +99,20 @@ class NotificationManager {
     const updated = [newNotif, ...current];
     this.saveNotifications(updated);
 
-    // Sync to Firestore asynchronously if connected
     try {
-      if (db && !isFirestoreQuotaExceeded()) {
-        await setDoc(doc(db, 'notifications', newNotif.id), newNotif);
+      const client = getSupabase();
+      if (client) {
+        await client.from('notifications').upsert({
+          id: newNotif.id,
+          target_user_id: newNotif.targetUserId && newNotif.targetUserId !== 'all' ? newNotif.targetUserId : null,
+          is_broadcast: !newNotif.targetUserId || newNotif.targetUserId === 'all',
+          data: newNotif,
+          read_by: [],
+          dismissed_by: [],
+        });
       }
     } catch (err) {
-      handleFirestoreError(err, 'NotificationManager');
+      console.warn('Notification Supabase sync notice:', err);
     }
 
     return newNotif;
@@ -159,11 +164,10 @@ class NotificationManager {
     this.saveNotifications(updated);
 
     try {
-      if (db && !isFirestoreQuotaExceeded()) {
-        await deleteDoc(doc(db, 'notifications', notificationId));
-      }
+      const client = getSupabase();
+      if (client) await client.from('notifications').delete().eq('id', notificationId);
     } catch (err) {
-      handleFirestoreError(err, 'NotificationManager');
+      console.warn('Notification Supabase delete notice:', err);
     }
   }
 
@@ -366,13 +370,11 @@ class NotificationManager {
       });
     }
 
-    // Sync to Firestore if available
     try {
-      if (db && !isFirestoreQuotaExceeded()) {
-        await setDoc(doc(db, 'ads', newAd.id), newAd);
-      }
+      const client = getSupabase();
+      if (client) await client.from('ads').upsert({ id: newAd.id, data: newAd, active: newAd.active });
     } catch (err) {
-      handleFirestoreError(err, 'NotificationManager');
+      console.warn('Ad Supabase sync notice:', err);
     }
 
     return newAd;
@@ -388,11 +390,12 @@ class NotificationManager {
     this.saveAds(updated);
 
     try {
-      if (db && !isFirestoreQuotaExceeded()) {
-        updateDoc(doc(db, 'ads', adId), withTimestamp).catch((err) => handleFirestoreError(err, 'NotificationManager'));
+      const client = getSupabase();
+      if (client) {
+        void client.from('ads').update({ data: { ...updated.find((ad) => ad.id === adId), ...withTimestamp }, active: Boolean((updated.find((ad) => ad.id === adId) as AppAd | undefined)?.active) }).eq('id', adId);
       }
     } catch (err) {
-      handleFirestoreError(err, 'NotificationManager');
+      console.warn('Ad Supabase update notice:', err);
     }
   }
 
@@ -402,11 +405,10 @@ class NotificationManager {
     this.saveAds(updated);
 
     try {
-      if (db && !isFirestoreQuotaExceeded()) {
-        await deleteDoc(doc(db, 'ads', adId));
-      }
+      const client = getSupabase();
+      if (client) await client.from('ads').delete().eq('id', adId);
     } catch (err) {
-      handleFirestoreError(err, 'NotificationManager');
+      console.warn('Ad Supabase delete notice:', err);
     }
   }
 
@@ -429,14 +431,13 @@ class NotificationManager {
     this.saveAds(updated);
 
     try {
-      if (db && !isFirestoreQuotaExceeded()) {
-        updateDoc(doc(db, 'ads', adId), {
-          active: newStatus,
-          updatedAt: new Date().toISOString(),
-        }).catch((err) => handleFirestoreError(err, 'NotificationManager'));
+      const client = getSupabase();
+      if (client) {
+        const ad = updated.find((item) => item.id === adId);
+        void client.from('ads').update({ data: ad, active: newStatus }).eq('id', adId);
       }
     } catch (err) {
-      handleFirestoreError(err, 'NotificationManager');
+      console.warn('Ad Supabase toggle notice:', err);
     }
 
     return newStatus;
@@ -569,62 +570,45 @@ class NotificationManager {
     this.saveAds(updated);
   }
 
-  // Dual sync from Firestore to local cache
+  // Pull notifications and ads from Supabase into the local UI cache.
   public async fetchCloudSync() {
     try {
-      if (!db) return;
-      const notifSnap = await getDocs(collection(db, 'notifications'));
-      if (!notifSnap.empty) {
-        const cloudNotifs: AppNotification[] = [];
-        notifSnap.forEach((d) => {
-          if (
-            d.id.startsWith('notif-streak-') ||
-            d.id.startsWith('notif-vocab-') ||
-            d.id.startsWith('notif-goal-') ||
-            d.id.startsWith('notif-practice-') ||
-            d.id.startsWith('notif-writing-') ||
-            d.id.startsWith('notif-boost-')
-          ) {
-            deleteDoc(doc(db, 'notifications', d.id)).catch(() => {});
-          } else {
-            cloudNotifs.push({ ...(d.data() as AppNotification), id: d.id });
-          }
-        });
-        if (cloudNotifs.length > 0) {
-          // Merge local and cloud by ID
-          const local = this.getNotifications();
-          const map = new Map<string, AppNotification>();
-          [...local, ...cloudNotifs].forEach((n) => map.set(n.id, n));
-          this.saveNotifications(Array.from(map.values()));
-        } else {
-          this.saveNotifications([]);
-        }
+      const client = getSupabase();
+      if (!client) return;
+
+      const { data: notificationRows, error: notificationError } = await client
+        .from('notifications')
+        .select('id,data,read_by,dismissed_by')
+        .order('created_at', { ascending: false });
+      if (notificationError) throw notificationError;
+      if (notificationRows?.length) {
+        const cloudNotifs = notificationRows.map((row) => ({
+          ...(row.data as AppNotification),
+          id: row.id,
+          readBy: row.read_by || [],
+          dismissedBy: row.dismissed_by || [],
+        }));
+        const local = this.getNotifications();
+        const map = new Map<string, AppNotification>();
+        [...local, ...cloudNotifs].forEach((notification) => map.set(notification.id, notification));
+        this.saveNotifications(Array.from(map.values()));
       }
 
-      const adsSnap = await getDocs(collection(db, 'ads'));
-      if (!adsSnap.empty) {
-        const cloudAds: AppAd[] = [];
-        adsSnap.forEach((d) => {
-          if (
-            d.id.startsWith('ad-fluent-mastery-') ||
-            d.id.startsWith('ad-reader-booster-')
-          ) {
-            deleteDoc(doc(db, 'ads', d.id)).catch(() => {});
-          } else {
-            cloudAds.push({ ...(d.data() as AppAd), id: d.id });
-          }
-        });
-        if (cloudAds.length > 0) {
-          const local = this.getAds();
-          const map = new Map<string, AppAd>();
-          [...local, ...cloudAds].forEach((a) => map.set(a.id, a));
-          this.saveAds(Array.from(map.values()));
-        } else {
-          this.saveAds([]);
-        }
+      const { data: adRows, error: adError } = await client
+        .from('ads')
+        .select('id,data,active')
+        .eq('active', true)
+        .order('created_at', { ascending: false });
+      if (adError) throw adError;
+      if (adRows?.length) {
+        const cloudAds = adRows.map((row) => ({ ...(row.data as AppAd), id: row.id, active: row.active }));
+        const local = this.getAds();
+        const map = new Map<string, AppAd>();
+        [...local, ...cloudAds].forEach((ad) => map.set(ad.id, ad));
+        this.saveAds(Array.from(map.values()));
       }
-    } catch (e) {
-      console.warn('Cloud sync error (using local storage):', e);
+    } catch (error) {
+      console.warn('Supabase notification sync error (using local cache):', error);
     }
   }
 }

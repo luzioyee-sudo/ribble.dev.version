@@ -1,7 +1,5 @@
-import { doc, setDoc } from 'firebase/firestore';
-import { db, auth } from '../lib/firebase';
-import { sanitizeForFirestore } from './sanitize';
-import { isFirestoreQuotaExceeded, handleFirestoreError } from './firestoreQuotaTracker';
+import { getSupabase, syncToSupabase } from '../lib/supabase';
+import { sanitizeForBackend } from './sanitize';
 
 export interface QueuedSyncItem {
   id: string;
@@ -27,11 +25,9 @@ class OfflineSyncQueueManager {
   private loadQueueFromStorage() {
     try {
       const stored = localStorage.getItem(QUEUE_STORAGE_KEY);
-      if (stored) {
-        this.queue = JSON.parse(stored);
-      }
-    } catch (err) {
-      console.warn('Failed to load offline sync queue from storage:', err);
+      if (stored) this.queue = JSON.parse(stored);
+    } catch (error) {
+      console.warn('Failed to load offline sync queue:', error);
       this.queue = [];
     }
   }
@@ -39,31 +35,22 @@ class OfflineSyncQueueManager {
   private saveQueueToStorage() {
     try {
       localStorage.setItem(QUEUE_STORAGE_KEY, JSON.stringify(this.queue));
-    } catch (err) {
-      console.warn('Failed to save offline sync queue to storage:', err);
+    } catch (error) {
+      console.warn('Failed to save offline sync queue:', error);
     }
     this.notifyListeners();
   }
 
   private setupListeners() {
     if (typeof window === 'undefined') return;
-
     window.addEventListener('online', () => {
-      console.log('[OfflineSync] Connection restored! Processing queued items...');
       this.notifyListeners();
-      this.processOfflineQueue();
+      void this.processOfflineQueue();
     });
-
-    window.addEventListener('offline', () => {
-      console.log('[OfflineSync] Network offline. Queueing future updates locally.');
-      this.notifyListeners();
-    });
-
-    if ('navigator' in window && 'serviceWorker' in navigator) {
+    window.addEventListener('offline', () => this.notifyListeners());
+    if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('message', (event) => {
-        if (event.data && event.data.type === 'PROCESS_OFFLINE_QUEUE') {
-          this.processOfflineQueue();
-        }
+        if (event.data?.type === 'PROCESS_OFFLINE_QUEUE') void this.processOfflineQueue();
       });
     }
   }
@@ -83,70 +70,40 @@ class OfflineSyncQueueManager {
       payload,
       timestamp: Date.now(),
     };
-
-    // If a full progress sync is queued, merge or replace older full sync items to prevent redundant requests
-    if (type === 'PROGRESS_SYNC') {
-      this.queue = this.queue.filter(q => q.type !== 'PROGRESS_SYNC');
-    }
-
+    if (type === 'PROGRESS_SYNC') this.queue = this.queue.filter((queued) => queued.type !== 'PROGRESS_SYNC');
     this.queue.push(item);
     this.saveQueueToStorage();
-
-    // If online, attempt immediate sync
-    if (this.getIsOnline() && !this.isSyncing) {
-      this.processOfflineQueue();
-    }
+    if (this.getIsOnline() && !this.isSyncing) void this.processOfflineQueue();
   }
 
   public async processOfflineQueue(userId?: string, onBatchSuccess?: () => void) {
-    if (this.queue.length === 0 || this.isSyncing || !this.getIsOnline()) {
-      return;
-    }
+    if (this.queue.length === 0 || this.isSyncing || !this.getIsOnline()) return;
+
+    const client = getSupabase();
+    if (!client) return;
+    const { data } = await client.auth.getUser();
+    const uid = userId || data.user?.id;
+    if (!uid) return;
 
     this.isSyncing = true;
     this.notifyListeners();
-
-    const uid = userId || auth.currentUser?.uid || 'usr-1';
-    console.log(`[OfflineSync] Processing ${this.queue.length} items for user: ${uid}`);
-
     try {
-      const currentQueue = [...this.queue];
-
-      for (const item of currentQueue) {
-        try {
-          if (item.type === 'PROGRESS_SYNC' || item.type === 'DOC_SAVE') {
-            const sanitized = sanitizeForFirestore(item.payload);
-
-            // 1. Sync to server API
-            await fetch('/api/progress/sync', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(sanitized),
-            }).catch(() => {});
-
-            // 2. Sync to Firestore if authenticated user
-            if (auth.currentUser && !isFirestoreQuotaExceeded()) {
-              const userDocRef = doc(db, 'users', auth.currentUser.uid);
-              await setDoc(userDocRef, sanitized, { merge: true }).catch((err: any) => {
-                handleFirestoreError(err, 'OfflineSync');
-              });
-            }
-          }
-
-          // Remove item from queue upon successful processing
-          this.queue = this.queue.filter(q => q.id !== item.id);
-          this.saveQueueToStorage();
-        } catch (itemErr) {
-          console.warn('[OfflineSync] Failed to process single sync item:', item.id, itemErr);
-          // Break loop on network failure, retain remaining items in queue
-          break;
-        }
+      for (const item of [...this.queue]) {
+        const sanitized = sanitizeForBackend(item.payload);
+        const success = await syncToSupabase(uid, {
+          ...sanitized,
+          id: uid,
+          email: sanitized.email || data.user?.email || '',
+          lastSynced: Date.now(),
+        });
+        if (!success) break;
+        this.queue = this.queue.filter((queued) => queued.id !== item.id);
+        this.saveQueueToStorage();
       }
-
       this.lastSyncedAt = Date.now();
-      if (onBatchSuccess) onBatchSuccess();
-    } catch (err) {
-      console.error('[OfflineSync] Queue processing error:', err);
+      onBatchSuccess?.();
+    } catch (error) {
+      console.error('[OfflineSync] Queue processing error:', error);
     } finally {
       this.isSyncing = false;
       this.notifyListeners();
@@ -160,17 +117,13 @@ class OfflineSyncQueueManager {
 
   public subscribe(callback: SyncStatusCallback): () => void {
     this.listeners.add(callback);
-    // Send immediate initial state
     callback({
       isOnline: this.getIsOnline(),
       pendingCount: this.getPendingCount(),
       isSyncing: this.isSyncing,
       lastSyncedAt: this.lastSyncedAt,
     });
-
-    return () => {
-      this.listeners.delete(callback);
-    };
+    return () => this.listeners.delete(callback);
   }
 
   private notifyListeners() {
