@@ -22,7 +22,7 @@ import { tracker, useTrackScrollMilestones } from './utils/tracker';
 // Components
 import { Header } from './components/Header';
 import { DualFlagLanguageSelector, FlagIcon, LANGUAGE_OPTIONS } from './components/DualFlagLanguageSelector';
-import { HomeView } from './components/HomeView';
+import { AutonomousHomeView } from './components/AutonomousHomeView';
 import { MyLearningView } from './components/MyLearningView';
 import { LibraryShelf } from './components/LibraryShelf';
 import { PdfReader } from './components/PdfReader';
@@ -1749,25 +1749,17 @@ export default function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <HomeView
-                userStats={userStats}
-                vocabulary={vocabulary}
+              <AutonomousHomeView
+                userName={activeAccount?.name || settings.userName}
                 documents={documents}
-                onSelectDocument={handleSelectDocument}
+                vocabulary={vocabulary}
+                userStats={userStats}
                 settings={settings}
                 onNavigate={(view) => handleNavigateWithHistory(view)}
-                onTriggerOnboarding={() => {
-                  console.log("Triggering onboarding from HomeView...");
-                  const updated = { ...settings, hasCompletedOnboarding: false };
-                  setSettings(updated);
-                  storage.saveSettings(updated);
-                  setActiveView('home');
-                }}
-                currentUserRole={activeAccount?.role || 'Student'}
-                userName={activeAccount?.name || settings.userName}
-                onOpenSearch={() => setIsQuickSearchOpen(true)}
-                onOpenNotifications={() => setIsNotificationCenterOpen(true)}
-                unreadNotificationsCount={unreadNotificationsCount}
+                onSelectDocument={handleSelectDocument}
+                onUploadClick={() => setIsUploadOpen(true)}
+                onSaveFlashcard={handleSaveFlashcard}
+                onTrack={(description) => handleTrackUserActivity(description, 'Library Shelf')}
               />
             </motion.div>
           )}
