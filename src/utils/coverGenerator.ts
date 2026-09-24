@@ -15,6 +15,19 @@ export interface CoverPalette {
 
 export const BRAND_COVER_PALETTES: CoverPalette[] = [
   {
+    id: 'color-0F4C5C',
+    name: 'The Blue Notebook Deep Ocean Teal',
+    hex: '#0F4C5C',
+    gradient: 'from-[#0F4C5C] via-[#163F50] to-[#0A2E38]',
+    spineGradient: 'from-black/45 via-black/20 to-transparent',
+    spineHighlight: 'bg-amber-300/35',
+    accentColor: 'text-[#F3B34C]',
+    textColor: 'text-[#F3B34C]',
+    patternType: 'classic-serif',
+    bgHex: '#0F4C5C',
+    titleHex: '#F3B34C'
+  },
+  {
     id: 'color-1856B7',
     name: 'Read People Dark Teal',
     hex: '#1A3A4B',

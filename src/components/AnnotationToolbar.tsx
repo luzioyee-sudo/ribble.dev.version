@@ -36,9 +36,9 @@ export const LANGUAGES_LIST = [
 
 export const HIGHLIGHT_COLORS = [
   { name: 'Yellow Highlight', value: '#FFEB83', bg: 'bg-[#FFEB83]', border: 'border-yellow-400' },
-  { name: 'Mint Green', value: '#A4F5A6', bg: 'bg-[#A4F5A6]', border: 'border-[#A4F5A6]' },
-  { name: 'Lavender', value: '#B2A1FF', bg: 'bg-[#B2A1FF]', border: 'border-[#B2A1FF]' },
-  { name: 'Soft Gray', value: '#D0D2CF', bg: 'bg-[#D0D2CF]', border: 'border-[#D0D2CF]' },
+  { name: 'Mint Green', value: '#34C759', bg: 'bg-[#34C759]', border: 'border-[#34C759]' },
+  { name: 'Lavender', value: '#007AFF', bg: 'bg-[#007AFF]', border: 'border-[#007AFF]' },
+  { name: 'Soft Gray', value: '#D1D1D6', bg: 'bg-[#D1D1D6]', border: 'border-[#D1D1D6]' },
   { name: 'Charcoal', value: '#222222', bg: 'bg-[#222222]', border: 'border-[#222222]' },
   { name: 'Terracotta Coral', value: '#D67D6D', bg: 'bg-[#D67D6D]', border: 'border-[#D67D6D]' },
 ];
@@ -77,7 +77,7 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
   const t = getTranslation(settings.interfaceLanguage || settings.targetLanguage);
 
   return (
-    <div id="annotation-toolbar" className="sticky top-0 md:top-[43px] z-30 w-full flex flex-wrap items-center justify-between gap-1.5 px-3 py-1.5 md:p-2 rounded-none md:rounded-2xl bg-[#EFF1EE]/95 dark:bg-[#1E221B]/95 backdrop-blur-md border-b md:border border-[#D0D2CF] dark:border-stone-800 shadow-xs transition-all">
+    <div id="annotation-toolbar" className="sticky top-0 md:top-[43px] z-30 w-full flex flex-wrap items-center justify-between gap-1.5 px-3 py-1.5 md:p-2 rounded-none md:rounded-2xl bg-[#F5F5F7]/95 dark:bg-[#1E221B]/95 backdrop-blur-md border-b md:border border-[#D1D1D6] dark:border-stone-800 shadow-xs transition-all">
       
       {/* Left Group: Tools Selection & Palette */}
       <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap shrink-0">
@@ -91,8 +91,8 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
           }}
           className={`flex items-center gap-1 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTool === 'select'
-              ? 'bg-[#A4F5A6] text-[#222222] shadow-xs'
-              : 'text-[#222222] dark:text-[#EFF1EE] hover:bg-[#D0D2CF]/50 dark:hover:bg-stone-800'
+              ? 'bg-[#34C759] text-[#222222] shadow-xs'
+              : 'text-[#222222] dark:text-[#F5F5F7] hover:bg-[#D1D1D6]/50 dark:hover:bg-stone-800'
           }`}
           title={t.clickAnyWord || "Click word for instant translation"}
         >
@@ -109,8 +109,8 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
           }}
           className={`flex items-center gap-1 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTool === 'highlight'
-              ? 'bg-[#A4F5A6] text-[#222222] shadow-xs'
-              : 'text-[#222222] dark:text-[#EFF1EE] hover:bg-[#D0D2CF]/50 dark:hover:bg-stone-800'
+              ? 'bg-[#34C759] text-[#222222] shadow-xs'
+              : 'text-[#222222] dark:text-[#F5F5F7] hover:bg-[#D1D1D6]/50 dark:hover:bg-stone-800'
           }`}
           title={t.toolHighlight}
         >
@@ -132,8 +132,8 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
             }}
             className={`flex items-center gap-1 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeTool === 'pen'
-                ? 'bg-[#A4F5A6] text-[#222222] shadow-xs ring-2 ring-[#A4F5A6]/40'
-                : 'text-[#222222] dark:text-[#EFF1EE] hover:bg-[#D0D2CF]/50 dark:hover:bg-stone-800'
+                ? 'bg-[#34C759] text-[#222222] shadow-xs ring-2 ring-[#34C759]/40'
+                : 'text-[#222222] dark:text-[#F5F5F7] hover:bg-[#D1D1D6]/50 dark:hover:bg-stone-800'
             }`}
             title={t.toolDraw}
           >
@@ -148,11 +148,11 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
 
           {/* Pen Customization Popover Menu */}
           {showPenOptions && activeTool === 'pen' && (
-            <div className="absolute top-full start-0 mt-2 w-72 sm:w-80 p-3 sm:p-4 rounded-2xl bg-white dark:bg-stone-900 border border-[#D0D2CF] dark:border-stone-800 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2">
+            <div className="absolute top-full start-0 mt-2 w-72 sm:w-80 p-3 sm:p-4 rounded-2xl bg-white dark:bg-stone-900 border border-[#D1D1D6] dark:border-stone-800 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2">
               
-              <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#D0D2CF] dark:border-stone-800">
+              <div className="flex items-center justify-between pb-2 mb-3 border-b border-[#D1D1D6] dark:border-stone-800">
                 <div className="flex items-center gap-2">
-                  <Pen className="w-4 h-4 text-[#222222] dark:text-[#A4F5A6]" />
+                  <Pen className="w-4 h-4 text-[#222222] dark:text-[#34C759]" />
                   <h4 className="text-xs font-bold text-[#222222] dark:text-stone-100">
                     {t.drawingToolOptions}
                   </h4>
@@ -191,8 +191,8 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
                         }}
                         className={`flex flex-col items-center justify-center p-2 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-[#222222] text-[#EFF1EE] shadow-xs font-bold'
-                            : 'bg-[#EFF1EE] dark:bg-stone-800 text-[#222222] dark:text-[#EFF1EE] hover:bg-[#D0D2CF]'
+                            ? 'bg-[#222222] text-[#F5F5F7] shadow-xs font-bold'
+                            : 'bg-[#F5F5F7] dark:bg-stone-800 text-[#222222] dark:text-[#F5F5F7] hover:bg-[#D1D1D6]'
                         }`}
                       >
                         <Icon className="w-3.5 h-3.5 mb-1" />
@@ -209,7 +209,7 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
                   <label className="text-[11px] font-semibold text-stone-500 dark:text-stone-400">
                     {t.strokeSize}
                   </label>
-                  <span className="text-xs font-bold text-[#222222] dark:text-[#A4F5A6]">
+                  <span className="text-xs font-bold text-[#222222] dark:text-[#34C759]">
                     {settings.strokeWidth || 3}px
                   </span>
                 </div>
@@ -219,7 +219,7 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
                   max="30"
                   value={settings.strokeWidth || 3}
                   onChange={(e) => onUpdateSettings({ strokeWidth: Number(e.target.value) })}
-                  className="w-full accent-[#222222] dark:accent-[#A4F5A6] cursor-pointer h-1.5 rounded-lg bg-stone-200 dark:bg-stone-700"
+                  className="w-full accent-[#222222] dark:accent-[#34C759] cursor-pointer h-1.5 rounded-lg bg-stone-200 dark:bg-stone-700"
                 />
               </div>
 
@@ -229,7 +229,7 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
                   <label className="text-[11px] font-semibold text-stone-500 dark:text-stone-400">
                     {t.opacity}
                   </label>
-                  <span className="text-xs font-bold text-[#222222] dark:text-[#A4F5A6]">
+                  <span className="text-xs font-bold text-[#222222] dark:text-[#34C759]">
                     {Math.round((settings.strokeOpacity ?? 1.0) * 100)}%
                   </span>
                 </div>
@@ -240,7 +240,7 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
                   step="0.05"
                   value={settings.strokeOpacity ?? 1.0}
                   onChange={(e) => onUpdateSettings({ strokeOpacity: Number(e.target.value) })}
-                  className="w-full accent-[#222222] dark:accent-[#A4F5A6] cursor-pointer h-1.5 rounded-lg bg-stone-200 dark:bg-stone-700"
+                  className="w-full accent-[#222222] dark:accent-[#34C759] cursor-pointer h-1.5 rounded-lg bg-stone-200 dark:bg-stone-700"
                 />
               </div>
 
@@ -257,8 +257,8 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
           }}
           className={`flex items-center gap-1 px-2.5 py-1.5 sm:px-3 sm:py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTool === 'note'
-              ? 'bg-[#B2A1FF] text-[#222222] shadow-xs font-bold'
-              : 'text-[#222222] dark:text-[#EFF1EE] hover:bg-[#D0D2CF]/50 dark:hover:bg-stone-800'
+              ? 'bg-[#007AFF] text-[#222222] shadow-xs font-bold'
+              : 'text-[#222222] dark:text-[#F5F5F7] hover:bg-[#D1D1D6]/50 dark:hover:bg-stone-800'
           }`}
           title={t.toolNote}
         >
@@ -275,15 +275,15 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
           }}
           className={`p-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTool === 'eraser'
-              ? 'bg-[#222222] text-[#EFF1EE] shadow-xs'
-              : 'text-[#222222] dark:text-[#EFF1EE] hover:bg-[#D0D2CF]/50 dark:hover:bg-stone-800'
+              ? 'bg-[#222222] text-[#F5F5F7] shadow-xs'
+              : 'text-[#222222] dark:text-[#F5F5F7] hover:bg-[#D1D1D6]/50 dark:hover:bg-stone-800'
           }`}
           title={t.toolEraser}
         >
           <Eraser className="w-3.5 h-3.5" />
         </button>
 
-        <div className="h-4 w-[1px] bg-[#D0D2CF] dark:bg-stone-800 mx-0.5 hidden sm:block" />
+        <div className="h-4 w-[1px] bg-[#D1D1D6] dark:bg-stone-800 mx-0.5 hidden sm:block" />
 
         {/* Quick Color Swatches */}
         <div className="flex items-center gap-1">
@@ -305,7 +305,7 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
             />
           ))}
           <label
-            className="relative flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 rounded-full border border-dashed border-[#D0D2CF] cursor-pointer hover:bg-[#D0D2CF]/40 transition-colors"
+            className="relative flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 rounded-full border border-dashed border-[#D1D1D6] cursor-pointer hover:bg-[#D1D1D6]/40 transition-colors"
             title="Custom color picker"
           >
             <Palette className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-[#222222]" />
@@ -328,14 +328,14 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
         
         {/* PDF Reader Sidebars Group: Thumbnails */}
         {onTogglePdfSidebar && (
-          <div className="hidden md:flex items-center gap-0.5 bg-[#EFF1EE] dark:bg-stone-800 rounded-xl p-0.5 border border-[#D0D2CF] dark:border-stone-700">
+          <div className="hidden md:flex items-center gap-0.5 bg-[#F5F5F7] dark:bg-stone-800 rounded-xl p-0.5 border border-[#D1D1D6] dark:border-stone-700">
             <button
               id="btn-sidebar-thumbnails"
               onClick={() => onTogglePdfSidebar('thumbnails')}
               className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs transition-all cursor-pointer ${
                 activePdfSidebar === 'thumbnails'
-                  ? 'bg-[#222222] text-[#EFF1EE] shadow-xs font-bold'
-                  : 'text-[#222222] dark:text-[#EFF1EE] hover:bg-[#D0D2CF]/60 dark:hover:bg-stone-700'
+                  ? 'bg-[#222222] text-[#F5F5F7] shadow-xs font-bold'
+                  : 'text-[#222222] dark:text-[#F5F5F7] hover:bg-[#D1D1D6]/60 dark:hover:bg-stone-700'
               }`}
               title={t.thumbnails}
             >
@@ -355,10 +355,10 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
               <button
                 id="btn-translation-lang"
                 onClick={() => setShowLangDropdown(!showLangDropdown)}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#EFF1EE] dark:bg-stone-800 rounded-xl border border-[#D0D2CF] dark:border-stone-700 text-[#222222] dark:text-[#EFF1EE] hover:bg-[#A4F5A6]/40 transition-all text-xs font-bold cursor-pointer"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#F5F5F7] dark:bg-stone-800 rounded-xl border border-[#D1D1D6] dark:border-stone-700 text-[#222222] dark:text-[#F5F5F7] hover:bg-[#34C759]/40 transition-all text-xs font-bold cursor-pointer"
                 title={`Translate reader words to: ${matchedLang.label} (${matchedLang.native})`}
               >
-                <Globe className="w-3.5 h-3.5 text-[#222222] dark:text-[#A4F5A6]" />
+                <Globe className="w-3.5 h-3.5 text-[#222222] dark:text-[#34C759]" />
                 <span className="hidden sm:inline text-[11px] font-bold">
                   {matchedLang.native}
                 </span>
@@ -373,7 +373,7 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
                     className="fixed inset-0 z-40" 
                     onClick={() => setShowLangDropdown(false)} 
                   />
-                  <div className="absolute end-0 bottom-full sm:bottom-auto sm:top-full mt-2 w-48 max-h-72 overflow-y-auto p-1.5 rounded-2xl bg-white dark:bg-stone-900 border border-[#D0D2CF] dark:border-stone-800 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 custom-scrollbar">
+                  <div className="absolute end-0 bottom-full sm:bottom-auto sm:top-full mt-2 w-48 max-h-72 overflow-y-auto p-1.5 rounded-2xl bg-white dark:bg-stone-900 border border-[#D1D1D6] dark:border-stone-800 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 custom-scrollbar">
                     <span className="block text-[9px] font-bold text-stone-400 dark:text-stone-500 uppercase tracking-widest px-2.5 py-1 mb-1">
                       Translate reader text to:
                     </span>
@@ -388,8 +388,8 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
                           }}
                           className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-medium text-start transition-colors cursor-pointer ${
                             isSelected
-                              ? 'bg-[#A4F5A6] text-[#222222] font-bold'
-                              : 'text-stone-700 dark:text-[#EFF1EE] hover:bg-[#EFF1EE] dark:hover:bg-stone-800'
+                              ? 'bg-[#34C759] text-[#222222] font-bold'
+                              : 'text-stone-700 dark:text-[#F5F5F7] hover:bg-[#F5F5F7] dark:hover:bg-stone-800'
                           }`}
                         >
                           <div className="flex flex-col">
@@ -413,21 +413,21 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
           const phoneZoomText = `${phoneZoomPercent > 0 ? '+' : ''}${phoneZoomPercent}%`;
 
           return (
-            <div id="toolbar-zoom-control" className="flex items-center gap-0.5 sm:gap-1 bg-[#EFF1EE] dark:bg-stone-800 rounded-xl p-0.5 border border-[#D0D2CF] dark:border-stone-700">
+            <div id="toolbar-zoom-control" className="flex items-center gap-0.5 sm:gap-1 bg-[#F5F5F7] dark:bg-stone-800 rounded-xl p-0.5 border border-[#D1D1D6] dark:border-stone-700">
               <button
                 onClick={() => onUpdateSettings({ fontSize: Math.max(12, settings.fontSize - 2) })}
-                className="p-1 text-[#222222] dark:text-[#EFF1EE] hover:text-black cursor-pointer"
+                className="p-1 text-[#222222] dark:text-[#F5F5F7] hover:text-black cursor-pointer"
                 title="Decrease text size / zoom"
               >
                 <ZoomOut className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </button>
-              <span className="text-[10px] sm:text-[11px] font-bold text-[#222222] dark:text-[#EFF1EE] min-w-[22px] sm:w-5 text-center">
+              <span className="text-[10px] sm:text-[11px] font-bold text-[#222222] dark:text-[#F5F5F7] min-w-[22px] sm:w-5 text-center">
                 <span className="sm:hidden">{phoneZoomText}</span>
                 <span className="hidden sm:inline">{settings.fontSize}</span>
               </span>
               <button
                 onClick={() => onUpdateSettings({ fontSize: Math.min(32, settings.fontSize + 2) })}
-                className="p-1 text-[#222222] dark:text-[#EFF1EE] hover:text-black cursor-pointer"
+                className="p-1 text-[#222222] dark:text-[#F5F5F7] hover:text-black cursor-pointer"
                 title="Increase text size / zoom"
               >
                 <ZoomIn className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
@@ -438,11 +438,11 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
 
         {/* Page Selector */}
         {totalPages > 0 && (
-          <div className="flex items-center gap-0.5 sm:gap-1 bg-[#EFF1EE] dark:bg-stone-800 rounded-xl p-0.5 border border-[#D0D2CF] dark:border-stone-700">
+          <div className="flex items-center gap-0.5 sm:gap-1 bg-[#F5F5F7] dark:bg-stone-800 rounded-xl p-0.5 border border-[#D1D1D6] dark:border-stone-700">
             <button
               disabled={currentPage <= 1}
               onClick={() => onPageChange(currentPage - 1)}
-              className="p-1 text-[#222222] dark:text-[#EFF1EE] disabled:opacity-30 hover:text-black cursor-pointer"
+              className="p-1 text-[#222222] dark:text-[#F5F5F7] disabled:opacity-30 hover:text-black cursor-pointer"
             >
               <ChevronLeft className="w-3 h-3 sm:w-3.5 sm:h-3.5 rtl:rotate-180" />
             </button>
@@ -452,7 +452,7 @@ export const AnnotationToolbar: React.FC<AnnotationToolbarProps> = ({
             <button
               disabled={currentPage >= totalPages}
               onClick={() => onPageChange(currentPage + 1)}
-              className="p-1 text-[#222222] dark:text-[#EFF1EE] disabled:opacity-30 hover:text-black cursor-pointer"
+              className="p-1 text-[#222222] dark:text-[#F5F5F7] disabled:opacity-30 hover:text-black cursor-pointer"
             >
               <ChevronRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 rtl:rotate-180" />
             </button>

@@ -435,7 +435,13 @@ export const activityTracker = {
   },
 
   logSettingsChanged: (settingName: string, value: any) => {
-    activityTracker.logActivity('Settings', `Updated setting "${settingName}" -> ${JSON.stringify(value)}`, 5, 'settings');
+    let valStr = '';
+    try {
+      valStr = typeof value === 'object' ? JSON.stringify(value) : String(value);
+    } catch {
+      valStr = String(value);
+    }
+    activityTracker.logActivity('Settings', `Updated setting "${settingName}" -> ${valStr}`, 5, 'settings');
   },
 
   logAdminAction: (actionDesc: string) => {

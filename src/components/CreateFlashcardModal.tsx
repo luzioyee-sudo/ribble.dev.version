@@ -158,72 +158,72 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
-        className="w-full max-w-xl bg-white dark:bg-[#1D201A] rounded-[28px] shadow-2xl border border-[#D0D2CF] dark:border-stone-800 overflow-hidden"
+        className="w-full max-w-xl bg-white dark:bg-[#1C1C1E] rounded-[28px] shadow-2xl border border-[#D1D1D6] dark:border-stone-800 overflow-hidden"
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between p-6 pb-4 border-b border-[#D0D2CF] dark:border-stone-800">
+        <div className="flex items-center justify-between p-6 pb-4 border-b border-[#D1D1D6] dark:border-[#38383A]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#EFF1EE] dark:bg-stone-800 flex items-center justify-center text-[#222222] dark:text-[#A4F5A6]">
+            <div className="w-10 h-10 rounded-full bg-[#F5F5F7] dark:bg-[#2C2C2E] flex items-center justify-center text-[#007AFF] dark:text-[#0A84FF]">
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold font-serif text-stone-900 dark:text-white leading-tight">
+              <h3 className="text-lg font-bold font-serif text-[#1D1D1F] dark:text-white leading-tight">
                 {editCard ? (t.editDeck || 'Edit Flashcard') : (t.createFlashcardModalTitle || 'Create Flashcard')}
               </h3>
-              <p className="text-xs text-stone-500 dark:text-stone-400">
+              <p className="text-xs text-[#6E6E73] dark:text-[#98989D]">
                 {t.createFlashcardModalDesc || 'Design a detailed study card or use AI to auto-fill details'}
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-400 hover:text-stone-600 transition-colors"
+            className="p-1.5 rounded-full hover:bg-[#F5F5F7] dark:hover:bg-[#2C2C2E] text-[#8E8E93] hover:text-[#1D1D1F] transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex border-b border-[#D0D2CF] dark:border-stone-800 px-6">
+        <div className="flex border-b border-[#D1D1D6] dark:border-[#38383A] px-6">
           <button
             onClick={() => setActiveTab('basic')}
             className={`py-3 px-4 text-xs font-bold uppercase tracking-wider relative transition-colors ${
-              activeTab === 'basic' ? 'text-[#222222] dark:text-[#A4F5A6]' : 'text-stone-500 hover:text-stone-800 dark:hover:text-stone-300'
+              activeTab === 'basic' ? 'text-[#007AFF] dark:text-[#0A84FF]' : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7]'
             }`}
           >
             {t.tabBasicInfo || 'Basic Info'}
             {activeTab === 'basic' && (
               <motion.div
                 layoutId="modal-active-tab-indicator"
-                className="absolute bottom-0 start-4 end-4 h-0.5 bg-[#222222] dark:bg-[#A4F5A6]"
+                className="absolute bottom-0 start-4 end-4 h-0.5 bg-[#007AFF] dark:bg-[#0A84FF]"
               />
             )}
           </button>
           <button
             onClick={() => setActiveTab('context')}
             className={`py-3 px-4 text-xs font-bold uppercase tracking-wider relative transition-colors ${
-              activeTab === 'context' ? 'text-[#222222] dark:text-[#A4F5A6]' : 'text-stone-500 hover:text-stone-800 dark:hover:text-stone-300'
+              activeTab === 'context' ? 'text-[#007AFF] dark:text-[#0A84FF]' : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7]'
             }`}
           >
             {t.tabContextMemory || 'Context & Memory'}
             {activeTab === 'context' && (
               <motion.div
                 layoutId="modal-active-tab-indicator"
-                className="absolute bottom-0 start-4 end-4 h-0.5 bg-[#222222] dark:bg-[#A4F5A6]"
+                className="absolute bottom-0 start-4 end-4 h-0.5 bg-[#007AFF] dark:bg-[#0A84FF]"
               />
             )}
           </button>
           <button
             onClick={() => setActiveTab('upload')}
             className={`py-3 px-4 text-xs font-bold uppercase tracking-wider relative transition-colors ${
-              activeTab === 'upload' ? 'text-[#222222] dark:text-[#A4F5A6]' : 'text-stone-500 hover:text-stone-800 dark:hover:text-stone-300'
+              activeTab === 'upload' ? 'text-[#007AFF] dark:text-[#0A84FF]' : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7]'
             }`}
           >
             {t.tabUploadFile || 'Upload File'}
             {activeTab === 'upload' && (
               <motion.div
                 layoutId="modal-active-tab-indicator"
-                className="absolute bottom-0 start-4 end-4 h-0.5 bg-[#222222] dark:bg-[#A4F5A6]"
+                className="absolute bottom-0 start-4 end-4 h-0.5 bg-[#007AFF] dark:bg-[#0A84FF]"
               />
             )}
           </button>
@@ -241,7 +241,7 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
                 className="space-y-4"
               >
                 {autoFillError && (
-                  <div className="p-3 bg-[#EFF1EE] text-[#222222] dark:text-stone-200 rounded-xl text-xs font-medium border border-[#D0D2CF]">
+                  <div className="p-3 bg-[#F5F5F7] text-[#222222] dark:text-stone-200 rounded-xl text-xs font-medium border border-[#D1D1D6]">
                     {autoFillError}
                   </div>
                 )}
@@ -254,7 +254,7 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
                     <select
                       value={selectedDeckId}
                       onChange={(e) => setSelectedDeckId(e.target.value)}
-                      className="w-full p-2.5 bg-[#EFF1EE] dark:bg-stone-800 border border-[#D0D2CF] dark:border-stone-700 rounded-xl text-xs font-semibold text-stone-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#222222]"
+                      className="w-full p-2.5 bg-[#F5F5F7] dark:bg-stone-800 border border-[#D1D1D6] dark:border-stone-700 rounded-xl text-xs font-semibold text-stone-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#222222]"
                     >
                       {decks.map(d => (
                         <option key={d.id} value={d.id}>{d.name} ({d.language})</option>
@@ -269,7 +269,7 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
                     <select
                       value={partOfSpeech}
                       onChange={(e) => setPartOfSpeech(e.target.value)}
-                      className="w-full p-2.5 bg-[#EFF1EE] dark:bg-stone-800 border border-[#D0D2CF] dark:border-stone-700 rounded-xl text-xs font-semibold text-stone-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#222222]"
+                      className="w-full p-2.5 bg-[#F5F5F7] dark:bg-stone-800 border border-[#D1D1D6] dark:border-stone-700 rounded-xl text-xs font-semibold text-stone-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#222222]"
                     >
                       {['Noun', 'Verb', 'Adjective', 'Adverb', 'Phrase', 'Preposition', 'Pronoun', 'Conjunction', 'Interjection'].map(pos => (
                         <option key={pos} value={pos}>{pos}</option>
@@ -288,12 +288,12 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
                       value={targetWord}
                       onChange={(e) => setTargetWord(e.target.value)}
                       placeholder="e.g. Je suis en train d'apprendre"
-                      className="flex-1 p-2.5 bg-[#EFF1EE] dark:bg-stone-800 border border-[#D0D2CF] dark:border-stone-700 rounded-xl text-xs font-semibold text-stone-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#222222]"
+                      className="flex-1 p-2.5 bg-[#F5F5F7] dark:bg-stone-800 border border-[#D1D1D6] dark:border-stone-700 rounded-xl text-xs font-semibold text-stone-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#222222]"
                     />
                     <button
                       onClick={handleAutoFill}
                       disabled={isAutoFilling}
-                      className="px-4 bg-[#222222] dark:bg-[#A4F5A6] hover:opacity-90 disabled:bg-stone-300 text-white dark:text-[#222222] font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all cursor-pointer"
+                      className="px-4 bg-[#007AFF] hover:bg-[#0066D6] disabled:bg-[#8E8E93] text-white font-bold text-xs rounded-xl flex items-center gap-1.5 transition-all cursor-pointer"
                     >
                       {isAutoFilling ? (
                         <span className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
@@ -306,7 +306,7 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-extrabold text-stone-500 uppercase tracking-wider mb-1.5">
+                  <label className="block text-[10px] font-extrabold text-[#6E6E73] dark:text-[#98989D] uppercase tracking-wider mb-1.5">
                     {t.translation || 'Translation (Front of Card)'} *
                   </label>
                   <input
@@ -314,13 +314,13 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
                     value={translation}
                     onChange={(e) => setTranslation(e.target.value)}
                     placeholder="e.g. I am currently learning"
-                    className="w-full p-2.5 bg-[#EFF1EE] dark:bg-stone-800 border border-[#D0D2CF] dark:border-stone-700 rounded-xl text-xs font-semibold text-stone-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#222222]"
+                    className="w-full p-2.5 bg-[#F5F5F7] dark:bg-[#2C2C2E] border border-[#D1D1D6] dark:border-[#38383A] rounded-xl text-xs font-semibold text-[#1D1D1F] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-extrabold text-stone-500 uppercase tracking-wider mb-1.5">
+                    <label className="block text-[10px] font-extrabold text-[#6E6E73] dark:text-[#98989D] uppercase tracking-wider mb-1.5">
                       {t.phoneticGuide || 'Phonetic Guide / IPA'}
                     </label>
                     <input
@@ -328,20 +328,20 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
                       value={phonetic}
                       onChange={(e) => setPhonetic(e.target.value)}
                       placeholder="e.g. /ʒə sɥi ɑ̃ tʁɛ̃/"
-                      className="w-full p-2.5 bg-[#EFF1EE] dark:bg-stone-800 border border-[#D0D2CF] dark:border-stone-700 rounded-xl text-xs font-semibold text-stone-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#222222]"
+                      className="w-full p-2.5 bg-[#F5F5F7] dark:bg-[#2C2C2E] border border-[#D1D1D6] dark:border-[#38383A] rounded-xl text-xs font-semibold text-[#1D1D1F] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#007AFF]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-[10px] font-extrabold text-stone-500 uppercase tracking-wider mb-1.5">
+                    <label className="block text-[10px] font-extrabold text-[#6E6E73] dark:text-[#98989D] uppercase tracking-wider mb-1.5">
                       {t.pronunciationAudio || 'Pronunciation Audio'}
                     </label>
                     <button
                       onClick={handleTestPronunciation}
                       disabled={!targetWord.trim()}
-                      className="w-full flex items-center justify-center gap-2 p-2.5 bg-white dark:bg-stone-900 border border-[#D0D2CF] dark:border-stone-700 hover:bg-[#EFF1EE] dark:hover:bg-stone-800 rounded-xl text-xs font-bold text-stone-700 dark:text-stone-300 disabled:opacity-50 transition-colors cursor-pointer"
+                      className="w-full flex items-center justify-center gap-2 p-2.5 bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] hover:bg-[#F5F5F7] dark:hover:bg-[#2C2C2E] rounded-xl text-xs font-bold text-[#1D1D1F] dark:text-[#F5F5F7] disabled:opacity-50 transition-colors cursor-pointer"
                     >
-                      <Volume2 className="w-4 h-4 text-[#222222] dark:text-[#A4F5A6]" />
+                      <Volume2 className="w-4 h-4 text-[#007AFF] dark:text-[#0A84FF]" />
                       <span>{t.testPronunciation || 'Test Pronunciation'}</span>
                     </button>
                   </div>
@@ -366,7 +366,7 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
                     value={memoryHook}
                     onChange={(e) => setMemoryHook(e.target.value)}
                     placeholder="e.g. 'en train' is like a learning train!"
-                    className="w-full p-2.5 bg-[#EFF1EE] dark:bg-stone-800 border border-[#D0D2CF] dark:border-stone-700 rounded-xl text-xs font-medium text-stone-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#222222] resize-none"
+                    className="w-full p-2.5 bg-[#F5F5F7] dark:bg-stone-800 border border-[#D1D1D6] dark:border-stone-700 rounded-xl text-xs font-medium text-stone-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#222222] resize-none"
                   />
                 </div>
 
@@ -379,7 +379,7 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
                     value={contextSentence}
                     onChange={(e) => setContextSentence(e.target.value)}
                     placeholder="e.g. Désolé, je suis en train d'apprendre le français."
-                    className="w-full p-2.5 bg-[#EFF1EE] dark:bg-stone-800 border border-[#D0D2CF] dark:border-stone-700 rounded-xl text-xs font-medium text-stone-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#222222] resize-none"
+                    className="w-full p-2.5 bg-[#F5F5F7] dark:bg-stone-800 border border-[#D1D1D6] dark:border-stone-700 rounded-xl text-xs font-medium text-stone-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#222222] resize-none"
                   />
                 </div>
 
@@ -392,7 +392,7 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
                     value={definition}
                     onChange={(e) => setDefinition(e.target.value)}
                     placeholder="A beginner-friendly grammar or vocabulary definition."
-                    className="w-full p-2.5 bg-[#EFF1EE] dark:bg-stone-800 border border-[#D0D2CF] dark:border-stone-700 rounded-xl text-xs font-medium text-stone-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#222222] resize-none"
+                    className="w-full p-2.5 bg-[#F5F5F7] dark:bg-stone-800 border border-[#D1D1D6] dark:border-stone-700 rounded-xl text-xs font-medium text-stone-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#222222] resize-none"
                   />
                 </div>
               </motion.div>
@@ -406,8 +406,8 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
                 exit={{ opacity: 0, x: 10 }}
                 className="space-y-4"
               >
-                <div className="border-2 border-dashed border-[#D0D2CF] dark:border-stone-700 rounded-2xl p-8 text-center flex flex-col items-center justify-center space-y-3 bg-[#EFF1EE] dark:bg-stone-900 hover:bg-[#EFF1EE]/80 transition-all cursor-pointer">
-                  <div className="w-12 h-12 rounded-full bg-[#EFF1EE] dark:bg-stone-800 flex items-center justify-center text-[#222222] dark:text-[#A4F5A6]">
+                <div className="border-2 border-dashed border-[#D1D1D6] dark:border-stone-700 rounded-2xl p-8 text-center flex flex-col items-center justify-center space-y-3 bg-[#F5F5F7] dark:bg-stone-900 hover:bg-[#F5F5F7]/80 transition-all cursor-pointer">
+                  <div className="w-12 h-12 rounded-full bg-[#F5F5F7] dark:bg-stone-800 flex items-center justify-center text-[#222222] dark:text-[#34C759]">
                     <Upload className="w-6 h-6" />
                   </div>
                   <div>
@@ -420,7 +420,7 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
                   </div>
                 </div>
 
-                <div className="p-4 bg-[#EFF1EE] dark:bg-stone-800 border border-[#D0D2CF] dark:border-stone-700 rounded-xl flex items-center gap-3">
+                <div className="p-4 bg-[#F5F5F7] dark:bg-stone-800 border border-[#D1D1D6] dark:border-stone-700 rounded-xl flex items-center gap-3">
                   <FileText className="w-5 h-5 text-stone-400" />
                   <div className="flex-1">
                     <p className="text-xs font-bold text-stone-700 dark:text-stone-300">French Vocabulary List.txt</p>
@@ -445,7 +445,7 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="flex items-center justify-between p-6 border-t border-[#D0D2CF] dark:border-stone-800">
+        <div className="flex items-center justify-between p-6 border-t border-[#D1D1D6] dark:border-stone-800">
           <span className="text-[10px] font-bold text-stone-400 uppercase tracking-wider">
             * {t.requiredFields || 'Required fields'}
           </span>
@@ -458,7 +458,7 @@ export const CreateFlashcardModal: React.FC<CreateFlashcardModalProps> = ({
             </button>
             <button
               onClick={handleSave}
-              className="px-5 py-2.5 bg-[#222222] dark:bg-[#A4F5A6] text-white dark:text-[#222222] font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
+              className="px-5 py-2.5 bg-[#007AFF] hover:bg-[#0066D6] text-white font-bold text-xs rounded-xl shadow-xs transition-all cursor-pointer"
             >
               {t.saveFlashcard || 'Save Flashcard'}
             </button>

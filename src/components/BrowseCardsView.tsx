@@ -19,7 +19,7 @@ interface BrowseCardsViewProps {
 }
 
 type BrowseViewStep = 'libraryHome' | 'levelView' | 'deckView';
-type LanguageOption = 'English' | 'Spanish' | 'German' | 'Arabic' | 'French';
+type LanguageOption = 'English' | 'Spanish' | 'German' | 'Arabic' | 'French' | 'Italian';
 
 // --- INTERACTIVE SWIPE DECK COMPONENT ---
 const InteractiveDeck: React.FC<{
@@ -116,8 +116,8 @@ const InteractiveDeck: React.FC<{
 
   if (!isReady) {
     return (
-      <div className="fixed inset-0 z-[60] bg-[#EFF1EE] dark:bg-[#1E1E1E] flex flex-col items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#A4F5A6] border-t-transparent rounded-full animate-spin"></div>
+      <div className="fixed inset-0 z-[60] bg-[#F5F5F7] dark:bg-[#1C1C1E] flex flex-col items-center justify-center">
+        <div className="w-8 h-8 border-4 border-[#34C759] border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -142,31 +142,31 @@ const InteractiveDeck: React.FC<{
   };
 
   return (
-    <div className="fixed inset-0 z-[60] bg-[#EFF1EE] dark:bg-[#121212] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-[60] bg-[#F5F5F7] dark:bg-[#121212] flex flex-col overflow-hidden">
       {/* Header */}
       <div className="pt-4 sm:pt-8 px-4 py-4 flex items-center justify-between z-30">
-        <button onClick={onClose} className="p-2 text-[#666666] hover:text-[#222222] dark:hover:text-white transition-colors bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 rounded-full shadow-xs cursor-pointer">
+        <button onClick={onClose} className="p-2 text-[#6E6E73] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] transition-colors bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-white/10 rounded-full shadow-xs cursor-pointer">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex flex-col items-center">
           <div className="flex items-center gap-2 mb-0.5">
-            <span className="text-[10px] font-black uppercase tracking-wider text-[#666666] dark:text-[#D0D2CF]">{language}</span>
-            <span className="w-1 h-1 bg-[#D0D2CF] rounded-full"></span>
-            <span className="text-[10px] font-black uppercase tracking-wider text-[#666666] dark:text-[#D0D2CF]">{level}</span>
+            <span className="text-[10px] font-black uppercase tracking-wider text-[#6E6E73] dark:text-[#D1D1D6]">{language}</span>
+            <span className="w-1 h-1 bg-[#D1D1D6] rounded-full"></span>
+            <span className="text-[10px] font-black uppercase tracking-wider text-[#6E6E73] dark:text-[#D1D1D6]">{level}</span>
           </div>
-          <h2 className="text-base font-bold text-[#222222] dark:text-white capitalize leading-none">{deckName}</h2>
+          <h2 className="text-base font-bold text-[#1D1D1F] dark:text-white capitalize leading-none">{deckName}</h2>
         </div>
         
         <div className="flex items-center gap-2 z-50">
           {/* View Mode Toggle Pill */}
-          <div className="flex items-center bg-white dark:bg-[#1E1E1E] p-1 rounded-2xl border border-[#D0D2CF] dark:border-white/10 shadow-xs">
+          <div className="flex items-center bg-white dark:bg-[#1C1C1E] p-1 rounded-2xl border border-[#D1D1D6] dark:border-white/10 shadow-xs">
             <button
               onClick={() => setViewMode('swipe')}
               title="Flashcards Stack Mode"
               className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 viewMode === 'swipe'
-                  ? 'bg-[#222222] text-[#EFF1EE] shadow-xs'
-                  : 'text-[#666666] hover:text-[#222222] dark:hover:text-white'
+                  ? 'bg-[#007AFF] text-white shadow-xs'
+                  : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7]'
               }`}
             >
               <Layers className="w-3.5 h-3.5" />
@@ -177,8 +177,8 @@ const InteractiveDeck: React.FC<{
               title="Scrollable Grid Mode"
               className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 viewMode === 'grid'
-                  ? 'bg-[#222222] text-[#EFF1EE] shadow-xs'
-                  : 'text-[#666666] hover:text-[#222222] dark:hover:text-white'
+                  ? 'bg-[#007AFF] text-white shadow-xs'
+                  : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7]'
               }`}
             >
               <LayoutGrid className="w-3.5 h-3.5" />
@@ -187,7 +187,7 @@ const InteractiveDeck: React.FC<{
           </div>
 
           <div className="relative">
-            <button onClick={() => setShowOptions(!showOptions)} className="p-2 text-[#666666] hover:text-[#222222] dark:hover:text-white transition-colors bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 rounded-full shadow-xs cursor-pointer">
+            <button onClick={() => setShowOptions(!showOptions)} className="p-2 text-[#6E6E73] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] transition-colors bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-white/10 rounded-full shadow-xs cursor-pointer">
               <MoreVertical className="w-5 h-5" />
             </button>
             
@@ -199,35 +199,35 @@ const InteractiveDeck: React.FC<{
                   exit={{ opacity: 0, scale: 0.95, y: -10, rotateX: -10 }}
                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                   style={{ transformOrigin: 'top right' }}
-                  className="absolute end-0 top-full mt-2 w-64 bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 rounded-2xl shadow-xl overflow-hidden py-2"
+                  className="absolute end-0 top-full mt-2 w-64 bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-white/10 rounded-2xl shadow-xl overflow-hidden py-2"
                 >
-                  <div className="px-4 py-2 border-b border-[#D0D2CF] dark:border-white/10">
-                    <h4 className="text-[10px] font-bold text-[#666666] uppercase tracking-wider">{t.displayOptions || 'Display Options'}</h4>
+                  <div className="px-4 py-2 border-b border-[#D1D1D6] dark:border-white/10">
+                    <h4 className="text-[10px] font-bold text-[#6E6E73] uppercase tracking-wider">{t.displayOptions || 'Display Options'}</h4>
                   </div>
                   
                   <div className="p-2 space-y-1">
-                    <button onClick={() => setViewMode(viewMode === 'swipe' ? 'grid' : 'swipe')} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-[#222222] dark:text-[#EFF1EE] hover:bg-[#EFF1EE] dark:hover:bg-white/5 rounded-xl transition-colors cursor-pointer">
+                    <button onClick={() => setViewMode(viewMode === 'swipe' ? 'grid' : 'swipe')} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#F5F5F7] dark:hover:bg-white/5 rounded-xl transition-colors cursor-pointer">
                       <span>{t.viewMode || 'View Mode'}</span>
-                      <span className="text-xs bg-[#EFF1EE] dark:bg-black/40 text-[#222222] dark:text-[#EFF1EE] px-2 py-1 rounded-md font-bold uppercase tracking-wider">{viewMode}</span>
+                      <span className="text-xs bg-[#F5F5F7] dark:bg-black/40 text-[#1D1D1F] dark:text-[#F5F5F7] px-2 py-1 rounded-md font-bold uppercase tracking-wider">{viewMode}</span>
                     </button>
 
-                    <button onClick={() => setTranslationOnFront(!translationOnFront)} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-[#222222] dark:text-[#EFF1EE] hover:bg-[#EFF1EE] dark:hover:bg-white/5 rounded-xl transition-colors cursor-pointer">
+                    <button onClick={() => setTranslationOnFront(!translationOnFront)} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#F5F5F7] dark:hover:bg-white/5 rounded-xl transition-colors cursor-pointer">
                       <span>{t.translationOnFront || 'Translation on Front'}</span>
-                      <div className={`w-10 h-6 rounded-full transition-colors flex items-center px-1 ${translationOnFront ? 'bg-[#A4F5A6]' : 'bg-[#D0D2CF] dark:bg-stone-700'}`}>
-                        <div className={`w-4 h-4 bg-[#222222] rounded-full transition-transform ${translationOnFront ? 'translate-x-4' : 'translate-x-0'}`} />
+                      <div className={`w-10 h-6 rounded-full transition-colors flex items-center px-1 ${translationOnFront ? 'bg-[#007AFF]' : 'bg-[#D1D1D6] dark:bg-stone-700'}`}>
+                        <div className={`w-4 h-4 bg-white rounded-full shadow-xs transition-transform ${translationOnFront ? 'translate-x-4' : 'translate-x-0'}`} />
                       </div>
                     </button>
                     
-                    <button onClick={() => setAutoPlay(!autoPlay)} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-[#222222] dark:text-[#EFF1EE] hover:bg-[#EFF1EE] dark:hover:bg-white/5 rounded-xl transition-colors cursor-pointer">
+                    <button onClick={() => setAutoPlay(!autoPlay)} className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-medium text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#F5F5F7] dark:hover:bg-white/5 rounded-xl transition-colors cursor-pointer">
                       <span>{t.autoPlayAudio || 'Auto-play Audio'}</span>
-                      <div className={`w-10 h-6 rounded-full transition-colors flex items-center px-1 ${autoPlay ? 'bg-[#A4F5A6]' : 'bg-[#D0D2CF] dark:bg-stone-700'}`}>
-                        <div className={`w-4 h-4 bg-[#222222] rounded-full transition-transform ${autoPlay ? 'translate-x-4' : 'translate-x-0'}`} />
+                      <div className={`w-10 h-6 rounded-full transition-colors flex items-center px-1 ${autoPlay ? 'bg-[#007AFF]' : 'bg-[#D1D1D6] dark:bg-stone-700'}`}>
+                        <div className={`w-4 h-4 bg-white rounded-full shadow-xs transition-transform ${autoPlay ? 'translate-x-4' : 'translate-x-0'}`} />
                       </div>
                     </button>
                   </div>
 
-                  <div className="p-2 border-t border-[#D0D2CF] dark:border-white/10 mt-1">
-                    <button onClick={() => { restartDeck(); setShowOptions(false); }} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-xl transition-colors cursor-pointer">
+                  <div className="p-2 border-t border-[#D1D1D6] dark:border-white/10 mt-1">
+                    <button onClick={() => { restartDeck(); setShowOptions(false); }} className="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-bold text-[#FF3B30] hover:bg-[#FF3B30]/10 rounded-xl transition-colors cursor-pointer">
                       <RotateCcw className="w-4 h-4" />
                       <span>{t.restartDeck || 'Restart Deck'}</span>
                     </button>
@@ -241,12 +241,12 @@ const InteractiveDeck: React.FC<{
 
       {/* Progress */}
       <div className="px-8 pb-4 z-30 max-w-md mx-auto w-full">
-        <div className="w-full bg-[#D0D2CF] dark:bg-white/10 h-1.5 rounded-full overflow-hidden flex">
-          <div className="bg-[#A4F5A6] h-full transition-all duration-300" style={{ width: `${(processedCount / Math.max(totalCount, 1)) * 100}%` }} />
+        <div className="w-full bg-[#D1D1D6] dark:bg-white/10 h-1.5 rounded-full overflow-hidden flex">
+          <div className="bg-[#007AFF] dark:bg-[#0A84FF] h-full transition-all duration-300" style={{ width: `${(processedCount / Math.max(totalCount, 1)) * 100}%` }} />
         </div>
         <div className="flex justify-between mt-2">
-          <span className="text-[9px] font-bold uppercase tracking-wider text-[#666666] dark:text-[#D0D2CF]">{processedCount} {t.processed || 'Processed'}</span>
-          <span className="text-[9px] font-bold uppercase tracking-wider text-[#666666] dark:text-[#D0D2CF]">{localQueue.length} {t.remaining || 'Remaining'}</span>
+          <span className="text-[9px] font-bold uppercase tracking-wider text-[#6E6E73] dark:text-[#D1D1D6]">{processedCount} {t.processed || 'Processed'}</span>
+          <span className="text-[9px] font-bold uppercase tracking-wider text-[#6E6E73] dark:text-[#D1D1D6]">{localQueue.length} {t.remaining || 'Remaining'}</span>
         </div>
       </div>
 
@@ -271,10 +271,10 @@ const InteractiveDeck: React.FC<{
                 return (
                   <div 
                     key={card.id} 
-                    className="bg-white dark:bg-[#1E1E1E] rounded-3xl overflow-hidden shadow-xs hover:shadow-md border border-[#D0D2CF] dark:border-white/10 flex flex-col h-full transition-all relative group"
+                    className="bg-white dark:bg-[#1C1C1E] rounded-3xl overflow-hidden shadow-xs hover:shadow-md border border-[#D1D1D6] dark:border-white/10 flex flex-col h-full transition-all relative group"
                   >
                     {/* Topic Picture Header */}
-                    <div className="relative h-36 w-full overflow-hidden bg-[#EFF1EE] dark:bg-stone-800 shrink-0">
+                    <div className="relative h-36 w-full overflow-hidden bg-[#F5F5F7] dark:bg-stone-800 shrink-0">
                       <img 
                         src={visual.imageUrl} 
                         alt={card.word}
@@ -298,7 +298,7 @@ const InteractiveDeck: React.FC<{
                             );
                           }}
                           title={t.listenAudio || "Listen pronunciation"}
-                          className="p-2 bg-white/95 text-[#222222] rounded-full hover:scale-110 active:scale-95 transition-transform cursor-pointer shadow-md backdrop-blur-md"
+                          className="p-2 bg-white/95 text-[#1D1D1F] rounded-full hover:scale-110 active:scale-95 transition-transform cursor-pointer shadow-md backdrop-blur-md"
                         >
                           <Volume2 className="w-3.5 h-3.5" />
                         </button>
@@ -306,7 +306,7 @@ const InteractiveDeck: React.FC<{
 
                       {/* Bottom Image Tags */}
                       <div className="absolute bottom-2.5 start-3 flex items-center gap-1.5 z-10">
-                        <span className="text-[9px] font-black uppercase tracking-wider bg-[#A4F5A6] text-[#222222] px-2 py-0.5 rounded-md">
+                        <span className="text-[9px] font-black uppercase tracking-wider bg-[#34C759] text-[#1D1D1F] px-2 py-0.5 rounded-md">
                           {card.cefr || level}
                         </span>
                         {card.partOfSpeech && (
@@ -323,29 +323,29 @@ const InteractiveDeck: React.FC<{
                       className="p-5 flex-1 flex flex-col cursor-pointer select-none group/body"
                       title={t.tapToFlip || "Click to flip translation"}
                     >
-                      <h3 className="text-2xl font-black text-[#222222] dark:text-white tracking-tight leading-snug mb-1 group-hover/body:text-[#B2A1FF] transition-colors">
+                      <h3 className="text-2xl font-black text-[#1D1D1F] dark:text-white tracking-tight leading-snug mb-1 group-hover/body:text-[#007AFF] transition-colors">
                         {primaryText}
                       </h3>
                       {!translationOnFront && !isFlipped && card.phonetic && (
-                        <p className="text-xs text-[#666666] font-mono mb-3">{card.phonetic}</p>
+                        <p className="text-xs text-[#6E6E73] font-mono mb-3">{card.phonetic}</p>
                       )}
                       
                       {example && example !== card.word && (
-                        <p className="text-xs text-[#666666] dark:text-[#D0D2CF] italic mb-4 line-clamp-2 mt-1">
+                        <p className="text-xs text-[#6E6E73] dark:text-[#D1D1D6] italic mb-4 line-clamp-2 mt-1">
                           "{example}"
                         </p>
                       )}
 
-                      <div className="mt-auto pt-4 border-t border-[#D0D2CF] dark:border-white/10 flex items-center justify-between">
+                      <div className="mt-auto pt-4 border-t border-[#D1D1D6] dark:border-white/10 flex items-center justify-between">
                         <div>
-                          <span className="text-[9px] uppercase font-bold text-[#666666] tracking-widest block mb-0.5">
+                          <span className="text-[9px] uppercase font-bold text-[#6E6E73] tracking-widest block mb-0.5">
                             {isFlipped ? (translationOnFront ? card.language : (t.originalText || 'Original')) : (translationOnFront ? card.language : (t.translation || 'Translation'))}
                           </span>
-                          <h4 className="text-base font-bold text-[#222222] dark:text-white truncate max-w-[180px]">
+                          <h4 className="text-base font-bold text-[#1D1D1F] dark:text-white truncate max-w-[180px]">
                             {secondaryText}
                           </h4>
                         </div>
-                        <span className="text-[10px] font-medium text-[#666666] dark:text-[#D0D2CF] bg-[#EFF1EE] dark:bg-white/5 px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] font-medium text-[#6E6E73] dark:text-[#D1D1D6] bg-[#F5F5F7] dark:bg-white/5 px-2 py-0.5 rounded-full">
                           {t.tapToFlip || 'Tap to flip'}
                         </span>
                       </div>
@@ -356,7 +356,7 @@ const InteractiveDeck: React.FC<{
                       <button 
                         onClick={() => handleAction(card, 'down')}
                         title={t.dismissAlreadyKnow || "Dismiss / Already Know"}
-                        className="flex-1 py-2.5 bg-[#EFF1EE] hover:bg-[#D0D2CF] dark:bg-white/5 dark:hover:bg-white/10 text-[#222222] dark:text-[#EFF1EE] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                        className="flex-1 py-2.5 bg-[#F5F5F7] hover:bg-[#D1D1D6] dark:bg-white/5 dark:hover:bg-white/10 text-[#1D1D1F] dark:text-[#F5F5F7] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                       >
                         <X className="w-4 h-4" />
                         <span>{t.dismiss || 'Dismiss'}</span>
@@ -364,7 +364,7 @@ const InteractiveDeck: React.FC<{
                       <button 
                         onClick={() => handleAction(card, 'up')}
                         title={t.addToLearnDeck || "Add to Learn Deck"}
-                        className="flex-1 py-2.5 bg-[#A4F5A6] hover:bg-[#8ee590] active:scale-95 text-[#222222] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer"
+                        className="flex-1 py-2.5 bg-[#34C759] hover:bg-[#30D158] active:scale-95 text-[#1D1D1F] rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition-all cursor-pointer"
                       >
                         <BookOpen className="w-4 h-4" />
                         <span>{t.learn || 'Learn'}</span>
@@ -375,12 +375,12 @@ const InteractiveDeck: React.FC<{
               })}
               {localQueue.length === 0 && (
                 <div className="col-span-full flex flex-col items-center justify-center py-20 text-center">
-                  <div className="w-16 h-16 bg-[#A4F5A6] rounded-full flex items-center justify-center mb-4 text-[#222222]">
+                  <div className="w-16 h-16 bg-[#34C759] rounded-full flex items-center justify-center mb-4 text-[#1D1D1F]">
                     <Check className="w-8 h-8 stroke-[3]" />
                   </div>
-                  <h2 className="text-2xl font-black text-[#222222] dark:text-white mb-2">{t.deckComplete || 'Deck Complete'}</h2>
-                  <p className="text-sm text-[#666666] mb-6">{t.processedAllCardsDesc || 'You have processed all cards in this topic.'}</p>
-                  <button onClick={restartDeck} className="px-6 py-2.5 bg-[#222222] hover:bg-black text-[#EFF1EE] rounded-xl font-bold hover:scale-105 transition-transform cursor-pointer">
+                  <h2 className="text-2xl font-black text-[#1D1D1F] dark:text-white mb-2">{t.deckComplete || 'Deck Complete'}</h2>
+                  <p className="text-sm text-[#6E6E73] mb-6">{t.processedAllCardsDesc || 'You have processed all cards in this topic.'}</p>
+                  <button onClick={restartDeck} className="px-6 py-2.5 bg-[#222222] hover:bg-black text-[#F5F5F7] rounded-xl font-bold hover:scale-105 transition-transform cursor-pointer">
                     {t.restartDeck || 'Restart Deck'}
                   </button>
                 </div>
@@ -391,17 +391,17 @@ const InteractiveDeck: React.FC<{
           <>
 
         {/* Top Destination - To Learn */}
-        <motion.div style={{ opacity: topZoneOpacity }} className="absolute top-0 start-0 w-full h-[40%] bg-gradient-to-b from-[#A4F5A6]/20 to-transparent flex flex-col items-center justify-start pt-12 z-10 pointer-events-none">
-          <div className="bg-[#A4F5A6] text-[#222222] p-4 rounded-full shadow-lg mb-3">
+        <motion.div style={{ opacity: topZoneOpacity }} className="absolute top-0 start-0 w-full h-[40%] bg-gradient-to-b from-[#34C759]/20 to-transparent flex flex-col items-center justify-start pt-12 z-10 pointer-events-none">
+          <div className="bg-[#34C759] text-[#1D1D1F] p-4 rounded-full shadow-lg mb-3">
             <BookOpen className="w-8 h-8" />
           </div>
-          <span className="text-[#222222] dark:text-[#A4F5A6] font-black uppercase tracking-widest text-sm drop-shadow-sm">{t.toLearn || 'To Learn'}</span>
+          <span className="text-[#1D1D1F] dark:text-[#34C759] font-black uppercase tracking-widest text-sm drop-shadow-sm">{t.toLearn || 'To Learn'}</span>
         </motion.div>
 
         {/* Bottom Destination - Already Know */}
-        <motion.div style={{ opacity: bottomZoneOpacity }} className="absolute bottom-0 start-0 w-full h-[40%] bg-gradient-to-t from-[#D0D2CF]/30 to-transparent flex flex-col items-center justify-end pb-12 z-10 pointer-events-none">
-          <span className="text-[#666666] dark:text-[#D0D2CF] font-black uppercase tracking-widest text-sm mb-3 drop-shadow-sm">{t.alreadyKnow || 'Already Know'}</span>
-          <div className="bg-[#D0D2CF] dark:bg-stone-700 text-[#222222] dark:text-white p-4 rounded-full shadow-lg">
+        <motion.div style={{ opacity: bottomZoneOpacity }} className="absolute bottom-0 start-0 w-full h-[40%] bg-gradient-to-t from-[#D1D1D6]/30 to-transparent flex flex-col items-center justify-end pb-12 z-10 pointer-events-none">
+          <span className="text-[#6E6E73] dark:text-[#D1D1D6] font-black uppercase tracking-widest text-sm mb-3 drop-shadow-sm">{t.alreadyKnow || 'Already Know'}</span>
+          <div className="bg-[#D1D1D6] dark:bg-stone-700 text-[#1D1D1F] dark:text-white p-4 rounded-full shadow-lg">
             <Check className="w-8 h-8" />
           </div>
         </motion.div>
@@ -413,19 +413,19 @@ const InteractiveDeck: React.FC<{
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center p-8 text-center bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-xl border border-[#D0D2CF] dark:border-white/10 pointer-events-auto"
+                className="flex flex-col items-center justify-center p-8 text-center bg-white dark:bg-[#1C1C1E] rounded-3xl shadow-xl border border-[#D1D1D6] dark:border-white/10 pointer-events-auto"
               >
-                <div className="w-20 h-20 bg-[#A4F5A6] text-[#222222] rounded-full flex items-center justify-center mb-6">
+                <div className="w-20 h-20 bg-[#34C759] text-[#1D1D1F] rounded-full flex items-center justify-center mb-6">
                   <Check className="w-10 h-10 stroke-[3]" />
                 </div>
-                <h2 className="text-2xl font-black text-[#222222] dark:text-white mb-2">{t.deckComplete || 'Deck Complete'}</h2>
-                <p className="text-sm text-[#666666] dark:text-[#D0D2CF] mb-8 max-w-xs">{t.processedAllCardsDesc || 'You have processed all cards in this topic.'}</p>
+                <h2 className="text-2xl font-black text-[#1D1D1F] dark:text-white mb-2">{t.deckComplete || 'Deck Complete'}</h2>
+                <p className="text-sm text-[#6E6E73] dark:text-[#D1D1D6] mb-8 max-w-xs">{t.processedAllCardsDesc || 'You have processed all cards in this topic.'}</p>
                 
                 <div className="w-full space-y-3">
-                  <button onClick={onClose} className="w-full py-3.5 bg-[#222222] hover:bg-black text-[#EFF1EE] rounded-2xl font-bold shadow-md hover:scale-105 transition-transform cursor-pointer">
+                  <button onClick={onClose} className="w-full py-3.5 bg-[#222222] hover:bg-black text-[#F5F5F7] rounded-2xl font-bold shadow-md hover:scale-105 transition-transform cursor-pointer">
                     {t.returnToLibrary || 'Return to Library'}
                   </button>
-                  <button onClick={restartDeck} className="w-full py-3.5 bg-[#EFF1EE] hover:bg-[#D0D2CF] text-[#222222] rounded-2xl font-bold transition-colors cursor-pointer">
+                  <button onClick={restartDeck} className="w-full py-3.5 bg-[#F5F5F7] hover:bg-[#D1D1D6] text-[#1D1D1F] rounded-2xl font-bold transition-colors cursor-pointer">
                     {t.restartDeck || 'Restart Deck'}
                   </button>
                 </div>
@@ -474,11 +474,11 @@ const InteractiveDeck: React.FC<{
                     >
                       {/* --- FRONT FACE --- */}
                       <div 
-                        className="absolute inset-0 bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-2xl overflow-hidden p-5 flex flex-col justify-between border border-[#D0D2CF] dark:border-white/10"
+                        className="absolute inset-0 bg-white dark:bg-[#1C1C1E] rounded-3xl shadow-2xl overflow-hidden p-5 flex flex-col justify-between border border-[#D1D1D6] dark:border-white/10"
                         style={{ backfaceVisibility: 'hidden' }}
                       >
                         {/* Photo Banner with Controls */}
-                        <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-[#EFF1EE] dark:bg-stone-700/50 shrink-0">
+                        <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-[#F5F5F7] dark:bg-stone-700/50 shrink-0">
                           <img 
                             src={visual.imageUrl} 
                             alt={card.word}
@@ -510,7 +510,7 @@ const InteractiveDeck: React.FC<{
                                   e
                                 );
                               }}
-                              className="p-2.5 bg-white/95 dark:bg-[#1E1E1E]/95 text-[#222222] dark:text-white rounded-full shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer"
+                              className="p-2.5 bg-white/95 dark:bg-[#1C1C1E]/95 text-[#1D1D1F] dark:text-white rounded-full shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer"
                             >
                               <Volume2 className="w-4 h-4" />
                             </button>
@@ -520,24 +520,24 @@ const InteractiveDeck: React.FC<{
                         {/* Card Body */}
                         <div className="flex-1 flex flex-col items-center justify-center text-center py-2 space-y-2">
                           <div className="space-y-1">
-                            <h3 className="text-2xl sm:text-3xl font-black text-[#222222] dark:text-white tracking-tight leading-tight px-2">
+                            <h3 className="text-2xl sm:text-3xl font-black text-[#1D1D1F] dark:text-white tracking-tight leading-tight px-2">
                               {translationOnFront ? translation : card.word}
                             </h3>
                             {(!translationOnFront && card.phonetic) && (
-                              <p className="text-xs text-[#666666] font-mono">{card.phonetic}</p>
+                              <p className="text-xs text-[#6E6E73] font-mono">{card.phonetic}</p>
                             )}
                           </div>
 
                           {(!translationOnFront && example && example !== card.word) && (
-                            <p className="text-xs sm:text-sm text-[#666666] dark:text-[#D0D2CF] italic max-w-[95%] mx-auto line-clamp-2 leading-snug">
+                            <p className="text-xs sm:text-sm text-[#6E6E73] dark:text-[#D1D1D6] italic max-w-[95%] mx-auto line-clamp-2 leading-snug">
                               "{example}"
                             </p>
                           )}
                         </div>
                         
                         {/* Hint to flip */}
-                        <div className="flex justify-center pt-2.5 border-t border-[#D0D2CF] dark:border-white/10">
-                          <span className="text-[10px] font-bold text-[#666666] dark:text-[#D0D2CF] uppercase tracking-widest">
+                        <div className="flex justify-center pt-2.5 border-t border-[#D1D1D6] dark:border-white/10">
+                          <span className="text-[10px] font-bold text-[#6E6E73] dark:text-[#D1D1D6] uppercase tracking-widest">
                             {t.tapToReveal || 'Tap to reveal'} {translationOnFront ? card.language : (t.translation || 'translation')}
                           </span>
                         </div>
@@ -545,19 +545,19 @@ const InteractiveDeck: React.FC<{
 
                       {/* --- BACK FACE --- */}
                       <div 
-                        className="absolute inset-0 bg-[#EFF1EE] dark:bg-[#1E1E1E] rounded-3xl shadow-2xl p-6 flex flex-col items-center justify-center border border-[#D0D2CF] dark:border-white/10"
+                        className="absolute inset-0 bg-[#F5F5F7] dark:bg-[#1C1C1E] rounded-3xl shadow-2xl p-6 flex flex-col items-center justify-center border border-[#D1D1D6] dark:border-white/10"
                         style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
                       >
-                        <span className="text-[10px] uppercase font-bold text-[#666666] tracking-widest mb-3">
+                        <span className="text-[10px] uppercase font-bold text-[#6E6E73] tracking-widest mb-3">
                           {translationOnFront ? card.language : (t.translation || 'Translation')}
                         </span>
-                        <h3 className="text-2xl sm:text-3xl font-black text-[#222222] dark:text-white text-center leading-tight">
+                        <h3 className="text-2xl sm:text-3xl font-black text-[#1D1D1F] dark:text-white text-center leading-tight">
                           {translationOnFront ? card.word : translation}
                         </h3>
                         {translationOnFront && card.phonetic && (
-                          <p className="text-sm text-[#666666] font-mono mt-2">{card.phonetic}</p>
+                          <p className="text-sm text-[#6E6E73] font-mono mt-2">{card.phonetic}</p>
                         )}
-                        <p className="text-xs text-[#666666] font-medium mt-6 border px-3 py-1.5 rounded-full border-[#D0D2CF] dark:border-white/10">
+                        <p className="text-xs text-[#6E6E73] font-medium mt-6 border px-3 py-1.5 rounded-full border-[#D1D1D6] dark:border-white/10">
                           {t.tapToFlipBack || 'Tap to flip back'}
                         </p>
                       </div>
@@ -574,13 +574,13 @@ const InteractiveDeck: React.FC<{
           <div className="absolute bottom-8 start-0 w-full flex justify-center gap-6 z-30 pointer-events-auto">
             <button 
               onClick={() => handleAction(stack[stack.length - 1], 'down')} 
-              className="w-16 h-16 bg-white dark:bg-[#1E1E1E] rounded-full shadow-xl flex items-center justify-center text-[#666666] hover:text-[#222222] dark:hover:text-white hover:scale-105 transition-all border border-[#D0D2CF] dark:border-white/10 cursor-pointer"
+              className="w-16 h-16 bg-white dark:bg-[#1C1C1E] rounded-full shadow-xl flex items-center justify-center text-[#6E6E73] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] hover:scale-105 transition-all border border-[#D1D1D6] dark:border-white/10 cursor-pointer"
             >
               <X className="w-8 h-8" />
             </button>
             <button 
               onClick={() => handleAction(stack[stack.length - 1], 'up')} 
-              className="w-16 h-16 bg-[#A4F5A6] rounded-full shadow-xl flex items-center justify-center text-[#222222] hover:bg-[#8ee590] hover:scale-105 transition-all cursor-pointer"
+              className="w-16 h-16 bg-[#34C759] rounded-full shadow-xl flex items-center justify-center text-[#1D1D1F] hover:bg-[#30D158] hover:scale-105 transition-all cursor-pointer"
             >
               <BookOpen className="w-7 h-7" />
             </button>
@@ -605,7 +605,7 @@ export const BrowseCardsView: React.FC<BrowseCardsViewProps> = ({
   const [viewStep, setViewStep] = useState<BrowseViewStep>('libraryHome');
   const [activeLanguage, setActiveLanguage] = useState<LanguageOption>(() => {
     const target = settings?.targetLanguage;
-    if (target === 'Spanish' || target === 'German' || target === 'Arabic' || target === 'French' || target === 'English') {
+    if (target === 'Spanish' || target === 'German' || target === 'Arabic' || target === 'French' || target === 'English' || target === 'Italian') {
       return target;
     }
     return 'English';
@@ -616,7 +616,7 @@ export const BrowseCardsView: React.FC<BrowseCardsViewProps> = ({
 
   useEffect(() => {
     const target = settings?.targetLanguage;
-    if (target === 'Spanish' || target === 'German' || target === 'Arabic' || target === 'French' || target === 'English') {
+    if (target === 'Spanish' || target === 'German' || target === 'Arabic' || target === 'French' || target === 'English' || target === 'Italian') {
       setActiveLanguage(target);
     }
   }, [settings?.targetLanguage]);
@@ -626,7 +626,7 @@ export const BrowseCardsView: React.FC<BrowseCardsViewProps> = ({
   const [searchQuery, setSearchQuery] = useState<string>('');
   
   const LEVELS: string[] = ['A1/A2', 'B1', 'B2', 'C1', 'C2'];
-  const LANGUAGES: LanguageOption[] = ['English', 'Spanish', 'German', 'Arabic', 'French'];
+  const LANGUAGES: LanguageOption[] = ['English', 'Spanish', 'German', 'Arabic', 'French', 'Italian'];
 
   const userKnownCardIds = useMemo(() => new Set(userVocabulary.map(v => v.word.toLowerCase())), [userVocabulary]);
 
@@ -687,11 +687,14 @@ export const BrowseCardsView: React.FC<BrowseCardsViewProps> = ({
     if (lang === 'German') return t.langGerman || 'German';
     if (lang === 'Arabic') return t.langArabic || 'Arabic';
     if (lang === 'French') return t.langFrench || 'French';
+    if (lang === 'Italian') return t.langItalian || 'Italian';
     return lang;
   };
 
   const getTopicTitle = (topicName: string) => {
     const norm = topicName.toLowerCase().trim();
+    if (norm.includes('career') || norm.includes('business') || norm.includes('entrepreneur')) return t.topicCareerGoalsAndBusiness || topicName;
+    if (norm.includes('univers') || norm.includes('stud') || norm.includes('school') || norm.includes('academic')) return t.topicUniversityLifeAndStudies || topicName;
     if (norm.includes('introduce') || norm.includes('yourself')) return t.topicIntroducingYourself || topicName;
     if (norm.includes('family') || norm.includes('relationship')) return t.topicFamilyRelationships || topicName;
     if (norm.includes('routine')) return t.topicDailyRoutine || topicName;
@@ -749,10 +752,10 @@ export const BrowseCardsView: React.FC<BrowseCardsViewProps> = ({
   return (
     <div id="browse-cards-container" className="w-full max-w-7xl mx-auto space-y-6 pb-20">
       {/* TOP SEARCH AREA */}
-      <div id="browse-search-bar-wrap" className="sticky top-0 z-20 bg-[#EFF1EE]/80 dark:bg-[#121212]/80 backdrop-blur-xl border-b border-[#D0D2CF] dark:border-white/10 py-4 mb-8 -mx-4 px-4 sm:mx-0 sm:px-0 sm:bg-transparent sm:backdrop-blur-none sm:border-none sm:py-0">
+      <div id="browse-search-bar-wrap" className="sticky top-0 z-20 bg-[#F5F5F7]/80 dark:bg-[#121212]/80 backdrop-blur-xl border-b border-[#D1D1D6] dark:border-white/10 py-4 mb-8 -mx-4 px-4 sm:mx-0 sm:px-0 sm:bg-transparent sm:backdrop-blur-none sm:border-none sm:py-0">
         <div className="flex items-center gap-3">
           <div className="relative flex-1">
-            <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666]" />
+            <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6E6E73]" />
             <input
               id="browse-cards-search-input"
               type="text"
@@ -762,7 +765,7 @@ export const BrowseCardsView: React.FC<BrowseCardsViewProps> = ({
                 if (e.target.value && viewStep !== 'libraryHome') setViewStep('libraryHome');
               }}
               placeholder={t.quickSearchPlaceholder || "Search words, phrases, or topics..."}
-              className="w-full ps-11 pe-4 py-3 bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 rounded-2xl text-sm text-[#222222] dark:text-[#EFF1EE] focus:outline-none focus:ring-2 focus:ring-[#A4F5A6] transition-shadow shadow-xs"
+              className="w-full ps-11 pe-4 py-3 bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-white/10 rounded-2xl text-sm text-[#1D1D1F] dark:text-[#F5F5F7] focus:outline-none focus:ring-2 focus:ring-[#007AFF]/20 focus:border-[#007AFF] transition-shadow shadow-xs"
             />
           </div>
         </div>
@@ -770,10 +773,10 @@ export const BrowseCardsView: React.FC<BrowseCardsViewProps> = ({
 
       {/* BREADCRUMBS */}
       {viewStep !== 'libraryHome' && (
-        <div id="browse-breadcrumbs" className="flex items-center gap-2 text-sm font-medium text-[#666666] mb-6">
-          <button id="browse-breadcrumb-home-btn" onClick={handleNavHome} className="hover:text-[#222222] dark:hover:text-white transition-colors cursor-pointer">{t.navLibrary || 'Library'}</button>
+        <div id="browse-breadcrumbs" className="flex items-center gap-2 text-sm font-medium text-[#6E6E73] dark:text-[#98989D] mb-6">
+          <button id="browse-breadcrumb-home-btn" onClick={handleNavHome} className="hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] transition-colors cursor-pointer">{t.navLibrary || 'Library'}</button>
           <ChevronRight className="w-4 h-4" />
-          <span id="browse-breadcrumb-current-level" className="text-[#222222] dark:text-white font-semibold">{getLangLabel(activeLanguage)} {activeLevel}</span>
+          <span id="browse-breadcrumb-current-level" className="text-[#1D1D1F] dark:text-[#F5F5F7] font-semibold">{getLangLabel(activeLanguage)} {activeLevel}</span>
         </div>
       )}
 
@@ -782,7 +785,7 @@ export const BrowseCardsView: React.FC<BrowseCardsViewProps> = ({
         <div id="browse-library-home-section" className="space-y-10 animate-in fade-in duration-300">
           
           <div id="browse-select-language-container" className="space-y-4">
-            <h2 id="browse-select-language-heading" className="text-xl font-bold text-[#222222] dark:text-[#EFF1EE] tracking-tight">{t.selectLanguage || t.interfaceLanguage || 'Select Language'}</h2>
+            <h2 id="browse-select-language-heading" className="text-xl font-bold text-[#1D1D1F] dark:text-[#F5F5F7] tracking-tight">{t.selectLanguage || t.interfaceLanguage || 'Select Language'}</h2>
             <div id="browse-languages-selector-list" className="flex flex-wrap items-center gap-2">
               {LANGUAGES.map(lang => (
                 <button
@@ -791,8 +794,8 @@ export const BrowseCardsView: React.FC<BrowseCardsViewProps> = ({
                   onClick={() => setActiveLanguage(lang)}
                   className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all cursor-pointer ${
                     activeLanguage === lang
-                      ? 'bg-[#222222] text-[#EFF1EE] shadow-xs font-bold'
-                      : 'bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 text-[#666666] dark:text-[#D0D2CF] hover:border-[#222222]'
+                      ? 'bg-[#007AFF] text-white shadow-xs font-bold'
+                      : 'bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-white/10 text-[#6E6E73] dark:text-[#D1D1D6] hover:border-[#007AFF]'
                   }`}
                 >
                   {getLangLabel(lang)}
@@ -802,7 +805,7 @@ export const BrowseCardsView: React.FC<BrowseCardsViewProps> = ({
           </div>
 
           <div id="browse-levels-container" className="space-y-4">
-            <h2 id="browse-levels-heading" className="text-xl font-bold text-[#222222] dark:text-[#EFF1EE] tracking-tight">{t.languageLevels || 'Language Levels'}</h2>
+            <h2 id="browse-levels-heading" className="text-xl font-bold text-[#1D1D1F] dark:text-[#F5F5F7] tracking-tight">{t.languageLevels || 'Language Levels'}</h2>
             <div id="browse-levels-grid" className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
               {LEVELS.map(level => {
                 const count = filteredByLang.filter(e => level === 'A1/A2' ? (e.cefr === 'A1' || e.cefr === 'A2') : e.cefr === level).length;
@@ -811,11 +814,11 @@ export const BrowseCardsView: React.FC<BrowseCardsViewProps> = ({
                     key={level}
                     id={`browse-level-btn-${level.replace('/', '-').toLowerCase()}`}
                     onClick={() => handleNavLevel(level)}
-                    className="group flex flex-col items-start p-5 bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 rounded-3xl hover:border-[#222222] dark:hover:border-white/30 transition-all text-start shadow-xs hover:shadow-md cursor-pointer"
+                    className="group flex flex-col items-start p-5 bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] rounded-2xl hover:border-[#007AFF] dark:hover:border-[#0A84FF] transition-all text-start shadow-xs hover:shadow-md cursor-pointer"
                   >
-                    <FolderOpen className="w-6 h-6 text-[#666666] group-hover:text-[#222222] dark:group-hover:text-white transition-colors mb-4" />
-                    <h3 className="text-2xl font-bold text-[#222222] dark:text-[#EFF1EE] tracking-tight">{level}</h3>
-                    <p className="text-xs text-[#666666] font-medium mt-1">{count} {t.cards || 'cards'}</p>
+                    <div className="w-10 h-10 rounded-xl bg-[#007AFF]/10 dark:bg-[#0A84FF]/15 text-[#007AFF] dark:text-[#0A84FF] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform"><FolderOpen className="w-5 h-5" /></div>
+                    <h3 className="text-2xl font-bold text-[#1D1D1F] dark:text-[#F5F5F7] tracking-tight">{level}</h3>
+                    <p className="text-xs text-[#6E6E73] font-medium mt-1">{count} {t.cards || 'cards'}</p>
                   </button>
                 );
               })}
@@ -830,15 +833,15 @@ export const BrowseCardsView: React.FC<BrowseCardsViewProps> = ({
         <div id="browse-level-view-section" className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
           <div className="flex items-center justify-between">
             <div>
-              <h1 id="browse-level-header-title" className="text-3xl font-bold text-[#222222] dark:text-[#EFF1EE] tracking-tight">{getLangLabel(activeLanguage)} {activeLevel}</h1>
-              <p id="browse-level-card-count-sub" className="text-sm text-[#666666] mt-1">{cardsInActiveLevel.length} {t.totalCardsAvailable || 'total cards available'}</p>
+              <h1 id="browse-level-header-title" className="text-3xl font-bold text-[#1D1D1F] dark:text-[#F5F5F7] tracking-tight">{getLangLabel(activeLanguage)} {activeLevel}</h1>
+              <p id="browse-level-card-count-sub" className="text-sm text-[#6E6E73] dark:text-[#98989D] mt-1">{cardsInActiveLevel.length} {t.totalCardsAvailable || 'total cards available'}</p>
             </div>
           </div>
 
           {topicsInActiveLevel.length === 0 ? (
-            <div id="browse-no-decks-state" className="p-12 bg-white dark:bg-[#1E1E1E] rounded-3xl border border-[#D0D2CF] dark:border-white/10 text-center">
-              <Inbox className="w-10 h-10 text-[#666666] mx-auto mb-3" />
-              <p className="text-[#666666] font-medium">{t.noDecks || 'No topics available for this level yet.'}</p>
+            <div id="browse-no-decks-state" className="p-12 bg-white dark:bg-[#1C1C1E] rounded-3xl border border-[#D1D1D6] dark:border-white/10 text-center">
+              <Inbox className="w-10 h-10 text-[#6E6E73] mx-auto mb-3" />
+              <p className="text-[#6E6E73] font-medium">{t.noDecks || 'No topics available for this level yet.'}</p>
             </div>
           ) : (
             <div id="browse-topics-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -850,41 +853,47 @@ export const BrowseCardsView: React.FC<BrowseCardsViewProps> = ({
                     key={topic.name}
                     id={`browse-topic-card-${topic.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
                     onClick={() => handleNavDeck(topic.name)}
-                    className="group bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 rounded-3xl overflow-hidden hover:border-[#222222] dark:hover:border-white/30 transition-all cursor-pointer shadow-xs hover:shadow-xl flex flex-col"
+                    className="group bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] rounded-2xl overflow-hidden hover:border-[#007AFF] dark:hover:border-[#0A84FF] transition-all cursor-pointer shadow-xs hover:shadow-md flex flex-col"
                   >
                     {/* Visual Topic Header Image */}
-                    <div className="relative h-44 w-full overflow-hidden bg-[#EFF1EE] dark:bg-stone-800">
+                    <div className="relative h-44 w-full overflow-hidden bg-[#F5F5F7] dark:bg-[#2C2C2E]">
                       <img 
                         src={visual.imageUrl} 
                         alt={topic.name}
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/20" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/15 to-transparent" />
                       
-                      {/* Floating Badges */}
+                      {/* Floating Level & Card Badges (Clean Glassmorphic) */}
                       <div className="absolute top-3.5 start-3.5 end-3.5 flex justify-between items-center z-10">
-                        <span className="text-[10px] font-extrabold tracking-wider uppercase text-white bg-black/50 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/20">
+                        <span className="text-[11px] font-semibold tracking-wide text-white/95 bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/15">
                           {activeLevel}
                         </span>
-                        <span className="text-[10px] font-bold text-[#222222] bg-[#A4F5A6] backdrop-blur-md px-3 py-1 rounded-full flex items-center gap-1.5 shadow-xs">
-                          <BookOpen className="w-3 h-3" />
-                          {topic.cards.length} {t.cards || 'cards'}
+                        <span className="text-[11px] font-medium text-white/95 bg-black/40 backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/15 flex items-center gap-1.5">
+                          <BookOpen className="w-3.5 h-3.5 text-[#0A84FF]" />
+                          <span>{topic.cards.length} {t.cards || 'cards'}</span>
                         </span>
                       </div>
 
                       {/* Topic Name on Image Banner */}
                       <div className="absolute bottom-3.5 start-4 end-4 z-10">
-                        <h3 className="text-xl font-black text-white tracking-tight drop-shadow-md capitalize">
+                        <h3 className="text-xl font-bold text-white tracking-tight drop-shadow-sm capitalize">
                           {translatedTopicTitle}
                         </h3>
                       </div>
                     </div>
 
-                    {/* Bottom Metadata Bar */}
-                    <div className="p-4 sm:p-5 flex items-center justify-end bg-white dark:bg-[#1E1E1E]">
-                      <div className="p-2 rounded-xl bg-[#EFF1EE] dark:bg-white/10 text-[#222222] dark:text-white group-hover:bg-[#222222] group-hover:text-[#EFF1EE] transition-colors">
-                        <ChevronRight className="w-4 h-4" />
+                    {/* Bottom Metadata & Action Bar */}
+                    <div className="p-4 flex items-center justify-between bg-white dark:bg-[#1C1C1E] border-t border-[#D1D1D6]/40 dark:border-[#38383A]">
+                      <div className="flex items-center gap-2 text-xs text-[#6E6E73] dark:text-[#98989D] font-medium">
+                        <span>{getLangLabel(activeLanguage)}</span>
+                        <span aria-hidden="true">·</span>
+                        <span>{activeLevel}</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs font-semibold text-[#007AFF] dark:text-[#0A84FF] group-hover:translate-x-0.5 transition-transform">
+                        <span>{t.explore || 'Practice Deck'}</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
                       </div>
                     </div>
                   </div>

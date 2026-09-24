@@ -59,9 +59,9 @@ const modelCooldowns = new Map<string, number>();
 
 // Helper to call Gemini with retry logic and multi-model fallback handling for rate limits (429) & high demand (503)
 async function generateContentWithRetry(ai: GoogleGenAI, params: any): Promise<any> {
-  const primaryModel = params.model || "gemini-3.1-flash-lite";
+  const primaryModel = params.model || "gemini-3.8-flash";
   const candidateModels = Array.from(
-    new Set([primaryModel, "gemini-3.1-flash-lite", "gemini-flash-latest", "gemini-3.7-flash"])
+    new Set([primaryModel, "gemini-3.8-flash", "gemini-3.1-flash-lite", "gemini-flash-latest"])
   );
 
   let lastError: any = null;
@@ -71,42 +71,48 @@ async function generateContentWithRetry(ai: GoogleGenAI, params: any): Promise<a
   const activeCandidates = candidateModels.filter(m => (modelCooldowns.get(m) || 0) <= now);
   const modelsToTry = activeCandidates.length > 0 ? activeCandidates : candidateModels;
 
-  for (let i = 0; i < modelsToTry.length; i++) {
-    const model = modelsToTry[i];
-    try {
-      const response = await ai.models.generateContent({
-        ...params,
-        model,
-      });
-      return response;
-    } catch (err: any) {
-      lastError = err;
-      const errMsg = String(err?.message || err);
-      const errStr = errMsg.toLowerCase();
-      
-      let cooldownMs = 30000;
-      const retryMatch = errMsg.match(/retry in ([0-9.]+)s/i) || errMsg.match(/retryDelay"?:\s*"([0-9.]+)s/i);
-      if (retryMatch && retryMatch[1]) {
-        const parsedSeconds = parseFloat(retryMatch[1]);
-        if (!isNaN(parsedSeconds) && parsedSeconds > 0) {
-          cooldownMs = Math.ceil(parsedSeconds * 1000) + 1000;
+  for (let attempt = 0; attempt < 2; attempt++) {
+    for (let i = 0; i < modelsToTry.length; i++) {
+      const model = modelsToTry[i];
+      try {
+        const response = await ai.models.generateContent({
+          ...params,
+          model,
+        });
+        return response;
+      } catch (err: any) {
+        lastError = err;
+        const errMsg = String(err?.message || err);
+        const errStr = errMsg.toLowerCase();
+        
+        let cooldownMs = 20000;
+        const retryMatch = errMsg.match(/retry in ([0-9.]+)s/i) || errMsg.match(/retryDelay"?:\s*"([0-9.]+)s/i);
+        if (retryMatch && retryMatch[1]) {
+          const parsedSeconds = parseFloat(retryMatch[1]);
+          if (!isNaN(parsedSeconds) && parsedSeconds > 0) {
+            cooldownMs = Math.ceil(parsedSeconds * 1000) + 1000;
+          }
+        }
+
+        if (errStr.includes("429") || errStr.includes("quota") || errStr.includes("resource_exhausted")) {
+          modelCooldowns.set(model, Date.now() + cooldownMs);
+          console.warn(`[Gemini API] Model ${model} rate-limited (429), cooling down for ${Math.round(cooldownMs / 1000)}s`);
+        } else if (errStr.includes("503") || errStr.includes("unavailable") || errStr.includes("high demand")) {
+          modelCooldowns.set(model, Date.now() + 10000);
+          console.warn(`[Gemini API] Model ${model} temporarily experiencing high demand (503), falling back to alternative model`);
+        } else {
+          console.warn(`[Gemini API] Call with model ${model} failed:`, errMsg.substring(0, 120));
+        }
+
+        // Small 250ms pause before attempting next candidate model
+        if (i < modelsToTry.length - 1) {
+          await new Promise(r => setTimeout(r, 250));
         }
       }
+    }
 
-      if (errStr.includes("429") || errStr.includes("quota") || errStr.includes("resource_exhausted")) {
-        modelCooldowns.set(model, Date.now() + cooldownMs);
-        console.warn(`[Gemini API] Model ${model} rate-limited (429), cooling down for ${Math.round(cooldownMs / 1000)}s`);
-      } else if (errStr.includes("503") || errStr.includes("unavailable") || errStr.includes("high demand")) {
-        modelCooldowns.set(model, Date.now() + 15000);
-        console.warn(`[Gemini API] Model ${model} temporarily unavailable (503), cooling down for 15s`);
-      } else {
-        console.warn(`[Gemini API] Call with model ${model} failed:`, errMsg.substring(0, 120));
-      }
-
-      // Small 200ms pause before attempting next candidate model
-      if (i < modelsToTry.length - 1) {
-        await new Promise(r => setTimeout(r, 200));
-      }
+    if (attempt === 0) {
+      await new Promise(r => setTimeout(r, 600));
     }
   }
 
@@ -1261,7 +1267,7 @@ Return strictly valid JSON. Do not include markdown ticks or additional commenta
       
       return res.json(parsed);
     } catch (apiErr: any) {
-      console.error("Proofread API transient failure:", apiErr);
+      console.warn("[Proofread API] Transient model failure, applying resilient linguistic fallback:", apiErr?.message || apiErr);
       
       let score = 100;
       let issues: any[] = [];

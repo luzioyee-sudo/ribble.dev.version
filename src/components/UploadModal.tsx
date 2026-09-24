@@ -311,18 +311,18 @@ export const UploadModal: React.FC<UploadModalProps> = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 10 }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        className={`relative w-full ${pendingFile && !isProcessing ? 'max-w-2xl' : 'max-w-xl'} bg-white dark:bg-[#1D201A] rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-[#D0D2CF] dark:border-stone-800 space-y-6 max-h-[90vh] overflow-y-auto transition-all duration-300`}
+        className={`relative w-full ${pendingFile && !isProcessing ? 'max-w-2xl' : 'max-w-xl'} bg-white dark:bg-[#1C1C1E] rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-[#D1D1D6] dark:border-[#38383A] space-y-6 max-h-[90vh] overflow-y-auto transition-all duration-300`}
       >
         
         {isProcessing ? (
           <div className="py-12 text-center space-y-4">
-            <div className="w-12 h-12 mx-auto rounded-full bg-[#222222] dark:bg-[#A4F5A6] flex items-center justify-center text-white dark:text-[#222222] animate-spin">
+            <div className="w-12 h-12 mx-auto rounded-full bg-[#007AFF] flex items-center justify-center text-white animate-spin">
               <Sparkles className="w-6 h-6 animate-pulse" />
             </div>
-            <p className="text-sm font-bold text-[#222222] dark:text-stone-300">
+            <p className="text-sm font-bold text-[#1D1D1F] dark:text-[#F5F5F7]">
               {t.uploading || "Parsing document & generating cover..."}
             </p>
-            <p className="text-xs text-stone-500">
+            <p className="text-xs text-[#6E6E73] dark:text-[#98989D]">
               This may take a moment for larger documents.
             </p>
           </div>
@@ -330,18 +330,18 @@ export const UploadModal: React.FC<UploadModalProps> = ({
           /* Naming and Cover Customization View */
           <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-[#D0D2CF] dark:border-stone-800">
+            <div className="flex items-center justify-between pb-3 border-b border-[#D1D1D6] dark:border-[#38383A]">
               <div>
-                <h2 className="text-xl font-bold font-serif-classic text-[#222222] dark:text-white">
+                <h2 className="text-xl font-bold font-serif-classic text-[#1D1D1F] dark:text-white">
                   {local.nameYourBook}
                 </h2>
-                <p className="text-xs text-stone-500">
+                <p className="text-xs text-[#6E6E73] dark:text-[#98989D]">
                   {local.chooseNameDesc}
                 </p>
               </div>
               <button
                 onClick={() => setPendingFile(null)}
-                className="p-2 rounded-full text-stone-400 hover:bg-[#EFF1EE] dark:hover:bg-stone-800 cursor-pointer"
+                className="p-2 rounded-full text-[#8E8E93] hover:bg-[#F5F5F7] dark:hover:bg-white/5 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -349,7 +349,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-5 gap-6 items-center">
               {/* Dynamic Live Cover Preview */}
-              <div className="md:col-span-2 flex flex-col items-center justify-center p-4 bg-[#EFF1EE] dark:bg-stone-850 rounded-2xl border border-[#D0D2CF] dark:border-stone-800 min-h-[220px]">
+              <div className="md:col-span-2 flex flex-col items-center justify-center p-4 bg-[#F5F5F7] dark:bg-stone-850 rounded-2xl border border-[#D1D1D6] dark:border-stone-800 min-h-[220px]">
                 {(() => {
                   const palette = getCoverPaletteByTitle(customFileTitle);
                   const isBookAr = customFileLanguage === 'Arabic';
@@ -418,7 +418,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
               <div className="md:col-span-3 space-y-4">
                 {/* Book Title Input */}
                 <div className="space-y-1.5 text-start rtl:text-end">
-                  <label className="block text-xs font-bold text-stone-700 dark:text-stone-300">
+                  <label className="block text-xs font-bold text-[#1D1D1F] dark:text-[#F5F5F7]">
                     {local.bookTitleLabel}
                   </label>
                   <input
@@ -427,19 +427,19 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                     onChange={(e) => setCustomFileTitle(e.target.value)}
                     placeholder={local.titlePlaceholder}
                     required
-                    className="w-full px-4 py-2.5 rounded-2xl border border-[#D0D2CF] dark:border-stone-800 bg-[#EFF1EE]/60 dark:bg-stone-800/50 text-xs text-[#222222] dark:text-stone-200 placeholder-stone-400 focus:outline-none focus:ring-1 focus:ring-[#222222] focus:border-[#222222]"
+                    className="w-full px-4 py-2.5 rounded-2xl border border-[#D1D1D6] dark:border-[#38383A] bg-[#F5F5F7]/60 dark:bg-[#2C2C2E]/50 text-xs text-[#1D1D1F] dark:text-[#F5F5F7] placeholder-[#8E8E93] focus:outline-none focus:ring-1 focus:ring-[#007AFF] focus:border-[#007AFF]"
                   />
                 </div>
 
                 {/* Book Content Language Select */}
                 <div className="space-y-1.5 text-start rtl:text-end">
-                  <label className="block text-xs font-bold text-stone-700 dark:text-stone-300">
+                  <label className="block text-xs font-bold text-[#1D1D1F] dark:text-[#F5F5F7]">
                     {local.contentLangLabel}
                   </label>
                   <select
                     value={customFileLanguage}
                     onChange={(e) => setCustomFileLanguage(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-2xl border border-[#D0D2CF] dark:border-stone-800 bg-[#EFF1EE]/60 dark:bg-stone-800/50 text-xs text-[#222222] dark:text-stone-200 focus:outline-none focus:ring-1 focus:ring-[#222222] focus:border-[#222222] cursor-pointer"
+                    className="w-full px-4 py-2.5 rounded-2xl border border-[#D1D1D6] dark:border-[#38383A] bg-[#F5F5F7]/60 dark:bg-[#2C2C2E]/50 text-xs text-[#1D1D1F] dark:text-[#F5F5F7] focus:outline-none focus:ring-1 focus:ring-[#007AFF] focus:border-[#007AFF] cursor-pointer"
                   >
                     <option value="Auto">Auto (Detect)</option>
                     <option value="English">English</option>
@@ -451,7 +451,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                 </div>
 
                 {/* File Information display */}
-                <div className="p-3 bg-[#EFF1EE] dark:bg-stone-850 rounded-xl border border-[#D0D2CF]/60 dark:border-stone-800 flex items-center justify-between text-[10px] font-medium text-stone-600 dark:text-stone-400">
+                <div className="p-3 bg-[#F5F5F7] dark:bg-[#2C2C2E] rounded-xl border border-[#D1D1D6]/60 dark:border-[#38383A] flex items-center justify-between text-[10px] font-medium text-[#6E6E73] dark:text-[#98989D]">
                   <span className="truncate max-w-[180px]">File: {pendingFile.name}</span>
                   <span>Size: {(pendingFile.size / 1024 / 1024).toFixed(2)} MB</span>
                 </div>
@@ -469,7 +469,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                     type="button"
                     onClick={() => processFile(pendingFile, customFileTitle, customFileLanguage)}
                     disabled={!customFileTitle.trim()}
-                    className="flex-2 py-3 px-4 rounded-2xl bg-[#222222] dark:bg-[#A4F5A6] hover:opacity-90 disabled:opacity-40 text-white dark:text-[#222222] text-xs font-bold shadow-xs cursor-pointer transition-all flex items-center justify-center gap-2"
+                    className="flex-2 py-3 px-4 rounded-2xl bg-[#007AFF] hover:bg-[#0066D6] disabled:opacity-40 text-white text-xs font-bold shadow-xs cursor-pointer transition-all flex items-center justify-center gap-2"
                   >
                     <BookOpen className="w-4 h-4" />
                     <span>{local.generateBookBtn}</span>
@@ -482,7 +482,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
           /* Normal Tab Content */
           <>
             {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-[#D0D2CF] dark:border-stone-800">
+            <div className="flex items-center justify-between pb-3 border-b border-[#D1D1D6] dark:border-stone-800">
               <div>
                 <h2 className="text-xl font-bold font-serif-classic text-[#222222] dark:text-white">
                   {t.uploadTitle}
@@ -493,20 +493,20 @@ export const UploadModal: React.FC<UploadModalProps> = ({
               </div>
               <button
                 onClick={onClose}
-                className="p-2 rounded-full text-stone-400 hover:bg-[#EFF1EE] dark:hover:bg-stone-800 cursor-pointer"
+                className="p-2 rounded-full text-stone-400 hover:bg-[#F5F5F7] dark:hover:bg-stone-800 cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Modern Segmented Tab Controls */}
-            <div className="flex bg-[#EFF1EE] dark:bg-stone-850 p-1.5 rounded-2xl border border-[#D0D2CF] dark:border-stone-800">
+            <div className="flex bg-[#F5F5F7] dark:bg-[#2C2C2E] p-1.5 rounded-2xl border border-[#D1D1D6] dark:border-[#38383A]">
               <button
                 onClick={() => setActiveTab('file')}
                 className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   activeTab === 'file'
-                    ? 'bg-white dark:bg-stone-800 text-[#222222] dark:text-[#A4F5A6] shadow-xs'
-                    : 'text-stone-500 hover:text-[#222222] dark:hover:text-stone-300'
+                    ? 'bg-[#007AFF] text-white shadow-xs'
+                    : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:hover:text-stone-300'
                 }`}
               >
                 <Upload className="w-3.5 h-3.5" />
@@ -516,8 +516,8 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                 onClick={() => setActiveTab('paste')}
                 className={`flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   activeTab === 'paste'
-                    ? 'bg-white dark:bg-stone-800 text-[#222222] dark:text-[#A4F5A6] shadow-xs'
-                    : 'text-stone-500 hover:text-[#222222] dark:hover:text-stone-300'
+                    ? 'bg-[#007AFF] text-white shadow-xs'
+                    : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:hover:text-stone-300'
                 }`}
               >
                 <FileText className="w-3.5 h-3.5" />
@@ -537,19 +537,19 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                     value={pastedTitle}
                     onChange={(e) => setPastedTitle(e.target.value)}
                     placeholder={local.titlePlaceholder}
-                    className="w-full px-4 py-2.5 rounded-2xl border border-[#D0D2CF] dark:border-stone-800 bg-[#EFF1EE]/60 dark:bg-stone-800/50 text-xs text-[#222222] dark:text-stone-200 placeholder-stone-400 focus:outline-none focus:ring-1 focus:ring-[#222222] focus:border-[#222222]"
+                    className="w-full px-4 py-2.5 rounded-2xl border border-[#D1D1D6] dark:border-[#38383A] bg-[#F5F5F7]/60 dark:bg-[#2C2C2E] text-xs text-[#1D1D1F] dark:text-stone-200 placeholder-stone-400 focus:outline-none focus:ring-1 focus:ring-[#007AFF] focus:border-[#007AFF]"
                   />
                 </div>
 
                 {/* Language dropdown */}
                 <div className="space-y-1.5 text-start rtl:text-end">
-                  <label className="block text-xs font-bold text-stone-700 dark:text-stone-300">
+                  <label className="block text-xs font-bold text-[#6E6E73] dark:text-stone-300">
                     {local.langLabel}
                   </label>
                   <select
                     value={pastedLanguage}
                     onChange={(e) => setPastedLanguage(e.target.value)}
-                    className="w-full px-4 py-2.5 rounded-2xl border border-[#D0D2CF] dark:border-stone-800 bg-[#EFF1EE]/60 dark:bg-stone-800/50 text-xs text-[#222222] dark:text-stone-200 focus:outline-none focus:ring-1 focus:ring-[#222222] focus:border-[#222222] cursor-pointer"
+                    className="w-full px-4 py-2.5 rounded-2xl border border-[#D1D1D6] dark:border-[#38383A] bg-[#F5F5F7]/60 dark:bg-[#2C2C2E] text-xs text-[#1D1D1F] dark:text-stone-200 focus:outline-none focus:ring-1 focus:ring-[#007AFF] focus:border-[#007AFF] cursor-pointer"
                   >
                     <option value="Auto">Auto (Detect)</option>
                     <option value="English">English</option>
@@ -571,7 +571,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                     placeholder={local.textPlaceholder}
                     rows={6}
                     required
-                    className="w-full px-4 py-3 rounded-2xl border border-[#D0D2CF] dark:border-stone-800 bg-[#EFF1EE]/60 dark:bg-stone-800/50 text-xs text-[#222222] dark:text-stone-200 placeholder-stone-400 focus:outline-none focus:ring-1 focus:ring-[#222222] focus:border-[#222222] resize-y min-h-[150px]"
+                    className="w-full px-4 py-3 rounded-2xl border border-[#D1D1D6] dark:border-stone-800 bg-[#F5F5F7]/60 dark:bg-stone-800/50 text-xs text-[#222222] dark:text-stone-200 placeholder-stone-400 focus:outline-none focus:ring-1 focus:ring-[#222222] focus:border-[#222222] resize-y min-h-[150px]"
                   />
                   <p className="text-[10px] text-stone-500 dark:text-stone-400 leading-normal">
                     {local.tipText}
@@ -582,7 +582,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                 <button
                   type="submit"
                   disabled={!pastedText.trim()}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#222222] dark:bg-[#A4F5A6] hover:opacity-90 disabled:opacity-40 text-white dark:text-[#222222] text-xs font-bold shadow-xs cursor-pointer transition-all"
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-[#007AFF] hover:bg-[#0066D6] disabled:opacity-40 text-white text-xs font-bold shadow-xs cursor-pointer transition-all"
                 >
                   <BookOpen className="w-4 h-4" />
                   <span>{local.createBtn}</span>
@@ -601,8 +601,8 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                 onClick={() => fileInputRef.current?.click()}
                 className={`p-8 rounded-3xl border-2 border-dashed text-center space-y-3 cursor-pointer transition-all ${
                   dragActive
-                    ? 'border-[#222222] dark:border-[#A4F5A6] bg-[#EFF1EE] dark:bg-stone-800'
-                    : 'border-[#D0D2CF] dark:border-stone-700 bg-[#EFF1EE]/60 dark:bg-stone-800/50 hover:bg-[#EFF1EE]'
+                    ? 'border-[#007AFF] bg-[#F5F5F7] dark:bg-[#2C2C2E]'
+                    : 'border-[#D1D1D6] dark:border-[#38383A] bg-[#F5F5F7]/60 dark:bg-[#2C2C2E] hover:bg-[#F5F5F7]'
                 }`}
               >
                 <input
@@ -617,12 +617,12 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                   }}
                 />
 
-                <div className="w-14 h-14 mx-auto rounded-2xl bg-[#222222] dark:bg-[#A4F5A6] flex items-center justify-center text-white dark:text-[#222222] shadow-xs">
+                <div className="w-14 h-14 mx-auto rounded-2xl bg-[#007AFF] flex items-center justify-center text-white shadow-xs">
                   <Upload className="w-7 h-7" />
                 </div>
 
                 <div>
-                  <p className="text-sm font-bold text-[#222222] dark:text-stone-200">
+                  <p className="text-sm font-bold text-[#1D1D1F] dark:text-stone-200">
                     {isProcessing ? t.uploading : t.dragDropText}
                   </p>
                   <p className="text-xs text-stone-500 mt-0.5">
@@ -633,7 +633,7 @@ export const UploadModal: React.FC<UploadModalProps> = ({
             )}
 
             {/* Sample Books Library */}
-            <div className="space-y-3 pt-3 border-t border-[#D0D2CF] dark:border-stone-800">
+            <div className="space-y-3 pt-3 border-t border-[#D1D1D6] dark:border-stone-800">
               <span className="text-xs font-bold text-stone-500 uppercase tracking-wider block">
                 Or Choose a Sample Bilingual Reader Book:
               </span>
@@ -646,19 +646,19 @@ export const UploadModal: React.FC<UploadModalProps> = ({
                       onSelectDocument(doc);
                       onClose();
                     }}
-                    className="p-4 rounded-2xl bg-[#EFF1EE] dark:bg-stone-800/80 border border-[#D0D2CF] dark:border-stone-700 hover:border-[#222222] dark:hover:border-[#A4F5A6] hover:shadow-xs cursor-pointer transition-all space-y-2 group"
+                    className="p-4 rounded-2xl bg-[#F5F5F7] dark:bg-[#2C2C2E] border border-[#D1D1D6] dark:border-[#38383A] hover:border-[#007AFF] hover:shadow-xs cursor-pointer transition-all space-y-2 group"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#D0D2CF] dark:bg-stone-700 text-[#222222] dark:text-stone-300">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-[#D1D1D6] dark:bg-stone-700 text-[#1D1D1F] dark:text-stone-300">
                         {doc.language}
                       </span>
-                      <span className="text-[10px] font-mono text-stone-500">
+                      <span className="text-[10px] font-mono text-[#6E6E73]">
                         {doc.totalPages} Pages
                       </span>
                     </div>
 
                     <div>
-                      <h4 className="text-sm font-bold font-serif-classic text-[#222222] dark:text-white group-hover:text-[#222222] dark:group-hover:text-[#A4F5A6] transition-colors">
+                      <h4 className="text-sm font-bold font-serif-classic text-[#1D1D1F] dark:text-white group-hover:text-[#007AFF] transition-colors">
                         {doc.name}
                       </h4>
                       {doc.author && (

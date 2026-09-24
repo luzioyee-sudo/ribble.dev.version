@@ -68,6 +68,18 @@ export const TOPIC_VISUALS: Record<string, TopicVisualMeta> = {
     coverImage: 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&auto=format&fit=crop&q=80',
     gradient: 'from-emerald-600/20 via-stone-900/40 to-stone-900/90',
     accentColor: 'emerald'
+  },
+  'University Life & Studies': {
+    topic: 'University Life & Studies',
+    coverImage: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&auto=format&fit=crop&q=80',
+    gradient: 'from-blue-600/20 via-stone-900/40 to-stone-900/90',
+    accentColor: 'blue'
+  },
+  'Career Goals & Business': {
+    topic: 'Career Goals & Business',
+    coverImage: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80',
+    gradient: 'from-slate-700/20 via-stone-900/40 to-stone-900/90',
+    accentColor: 'slate'
   }
 };
 

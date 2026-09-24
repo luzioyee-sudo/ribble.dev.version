@@ -3,119 +3,90 @@ import React from 'react';
 interface RibbleLogoProps {
   className?: string;
   showWordmark?: boolean;
+  showBackground?: boolean;
   size?: 'sm' | 'md' | 'lg' | 'xl';
-  variant?: 'signature' | 'mint' | 'lavender' | 'minimal' | 'monochrome' | 'reverse';
+  variant?: 'signature' | 'mint' | 'lavender' | 'minimal' | 'monochrome' | 'reverse' | 'black' | 'white';
   animated?: boolean;
 }
 
 export const RibbleLogo: React.FC<RibbleLogoProps> = ({
   className = '',
   showWordmark = true,
+  showBackground = true,
   size = 'md',
   variant = 'signature',
   animated = false,
 }) => {
   const [isHovered, setIsHovered] = React.useState(false);
+
   const dimensions = {
-    sm: { width: 20, height: 36, textSize: 'text-sm' },
-    md: { width: 28, height: 51, textSize: 'text-base' },
-    lg: { width: 42, height: 77, textSize: 'text-2xl' },
-    xl: { width: 72, height: 132, textSize: 'text-4xl' },
+    sm: { iconSize: 26, textSize: 'text-base', gap: 'gap-2' },
+    md: { iconSize: 32, textSize: 'text-lg', gap: 'gap-2.5' },
+    lg: { iconSize: 48, textSize: 'text-2xl', gap: 'gap-3' },
+    xl: { iconSize: 72, textSize: 'text-4xl', gap: 'gap-4' },
   }[size];
 
-  let faceA = '#A4F5A6';
-  let faceB = '#B2A1FF';
-  let faceLeft = '#EFF1EE';
-  let faceRight = '#222222';
-  let edge = '#222222';
+  let bgFill: string | null = '#1677F2';
+  let glyphFill = '#FFFFFF';
 
-  if (variant === 'mint') {
-    faceA = '#A4F5A6';
-    faceB = '#A4F5A6';
-  } else if (variant === 'lavender') {
-    faceA = '#B2A1FF';
-    faceB = '#B2A1FF';
+  if (variant === 'monochrome') {
+    bgFill = '#1D1D1F';
+    glyphFill = '#FFFFFF';
   } else if (variant === 'minimal') {
-    faceA = '#EFF1EE';
-    faceB = '#EFF1EE';
-  } else if (variant === 'monochrome') {
-    faceA = '#222222';
-    faceB = '#222222';
+    bgFill = '#F5F5F7';
+    glyphFill = '#1D1D1F';
   } else if (variant === 'reverse') {
-    edge = '#EFF1EE';
+    bgFill = '#FFFFFF';
+    glyphFill = '#1677F2';
+  } else if (variant === 'black') {
+    bgFill = null;
+    glyphFill = '#1D1D1F';
+  } else if (variant === 'white') {
+    bgFill = null;
+    glyphFill = '#FFFFFF';
+  }
+
+  if (!showBackground) {
+    bgFill = null;
+    if (variant === 'signature') {
+      glyphFill = '#1677F2';
+    }
   }
 
   return (
-    <div 
+    <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`inline-flex items-center gap-2.5 ${className}`}
+      className={`inline-flex items-center ${dimensions.gap} ${className} cursor-pointer select-none group`}
     >
-      <svg
-        key={isHovered ? 'hover' : 'idle'}
-        viewBox="-48 -4 140 258"
-        width={dimensions.width}
-        height={dimensions.height}
-        role="img"
-        aria-label="Ribble mark"
-        className={(animated || isHovered) ? 'ribble-anim' : ''}
-        style={{
-          ['--face-a' as any]: faceA,
-          ['--face-b' as any]: faceB,
-          ['--face-left' as any]: faceLeft,
-          ['--face-right' as any]: faceRight,
-          ['--edge' as any]: edge,
-          ['--dur' as any]: '1.5s',
-        }}
-        strokeLinejoin="round"
+      <div 
+        className={`relative shrink-0 transition-transform duration-300 ease-out ${
+          isHovered || animated ? 'scale-105 rotate-[-1deg]' : 'scale-100'
+        }`}
+        style={{ width: dimensions.iconSize, height: dimensions.iconSize }}
       >
-        <g 
-          className={(animated || isHovered) ? 'ribble-block' : ''} 
-          style={{ 
-            ['--i' as any]: 0,
-            ['--dur' as any]: '1.5s',
-          }}
+        <svg
+          viewBox="0 0 112 112"
+          width={dimensions.iconSize}
+          height={dimensions.iconSize}
+          className={`w-full h-full ${bgFill ? 'drop-shadow-sm rounded-[22%]' : ''}`}
+          role="img"
+          aria-label="Ribble Logo"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
         >
-          <polygon points="-43.3,175 0,200 0,250 -43.3,225" fill="var(--face-left)" />
-          <polygon points="43.3,175 0,200 0,250 43.3,225" fill="var(--face-right)" />
-          <polygon points="0,150 43.3,175 0,200 -43.3,175" fill="var(--face-a)" />
-          <polygon points="-43.3,175 0,200 0,250 -43.3,225" fill="none" stroke="var(--edge)" strokeWidth="3" />
-          <polygon points="43.3,175 0,200 0,250 43.3,225" fill="none" stroke="var(--edge)" strokeWidth="3" />
-          <polygon points="0,150 43.3,175 0,200 -43.3,175" fill="none" stroke="var(--edge)" strokeWidth="3" />
-        </g>
-        <g 
-          className={(animated || isHovered) ? 'ribble-block' : ''} 
-          style={{ 
-            ['--i' as any]: 1,
-            ['--dur' as any]: '1.5s',
-          }}
-        >
-          <polygon points="0,100 43.3,125 43.3,175 0,150" fill="var(--face-left)" />
-          <polygon points="86.6,100 43.3,125 43.3,175 86.6,150" fill="var(--face-right)" />
-          <polygon points="43.3,75 86.6,100 43.3,125 0,100" fill="var(--face-b)" />
-          <polygon points="0,100 43.3,125 43.3,175 0,150" fill="none" stroke="var(--edge)" strokeWidth="3" />
-          <polygon points="86.6,100 43.3,125 43.3,175 86.6,150" fill="none" stroke="var(--edge)" strokeWidth="3" />
-          <polygon points="43.3,75 86.6,100 43.3,125 0,100" fill="none" stroke="var(--edge)" strokeWidth="3" />
-        </g>
-        <g 
-          className={(animated || isHovered) ? 'ribble-block' : ''} 
-          style={{ 
-            ['--i' as any]: 2,
-            ['--dur' as any]: '1.5s',
-          }}
-        >
-          <polygon points="-43.3,25 0,50 0,100 -43.3,75" fill="var(--face-left)" />
-          <polygon points="43.3,25 0,50 0,100 43.3,75" fill="var(--face-right)" />
-          <polygon points="0,0 43.3,25 0,50 -43.3,25" fill="var(--face-a)" />
-          <polygon points="-43.3,25 0,50 0,100 -43.3,75" fill="none" stroke="var(--edge)" strokeWidth="3" />
-          <polygon points="43.3,25 0,50 0,100 43.3,75" fill="none" stroke="var(--edge)" strokeWidth="3" />
-          <polygon points="0,0 43.3,25 0,50 -43.3,25" fill="none" stroke="var(--edge)" strokeWidth="3" />
-        </g>
-      </svg>
+          {bgFill && <rect width="112" height="112" rx="24" fill={bgFill} />}
+          <path
+            d="M42.15 25.4H56.2c14.65 0 26.52 11.86 26.52 26.5 0 9.43-5.01 18.15-13.16 22.9L35.08 94.94c-5.16 3.01-11.36-1.7-9.73-7.45l14.04-57.17a6.62 6.62 0 0 1 2.76-4.92Z"
+            fill={glyphFill}
+          />
+          <circle cx="75.2" cy="87.6" r="8.45" fill={glyphFill} />
+        </svg>
+      </div>
 
       {showWordmark && (
-        <span className={`ribble-wordmark text-[#222222] ${dimensions.textSize} tracking-tight font-black`}>
-          R<span className="relative">i<span className="ribble-dot" aria-hidden="true" /></span>bble
+        <span className={`ribble-wordmark text-[#1D1D1F] dark:text-[#F5F5F7] ${dimensions.textSize} tracking-tight font-black transition-colors duration-200`}>
+          Ribble
         </span>
       )}
     </div>

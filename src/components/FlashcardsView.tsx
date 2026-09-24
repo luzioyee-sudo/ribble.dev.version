@@ -88,7 +88,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
         particleCount: 100,
         spread: 80,
         origin: { y: 0.6 },
-        colors: ['#A4F5A6', '#B2A1FF', '#222222', '#D0D2CF'],
+        colors: ['#007AFF', '#34C759', '#1D1D1F', '#D1D1D6'],
       });
     }
   };
@@ -117,13 +117,13 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   if (vocabulary.length === 0) {
     return (
       <div id="no-flashcards-view" className="flex flex-col items-center justify-center min-h-[60vh] p-6 text-center space-y-4">
-        <div className="w-16 h-16 rounded-2xl bg-[#EFF1EE] dark:bg-white/10 text-[#222222] dark:text-[#EFF1EE] flex items-center justify-center">
+        <div className="w-16 h-16 rounded-2xl bg-[#F5F5F7] dark:bg-white/10 text-[#222222] dark:text-[#F5F5F7] flex items-center justify-center">
           <Layers className="w-8 h-8" />
         </div>
-        <h2 className="text-xl font-bold text-[#222222] dark:text-[#EFF1EE]">
+        <h2 className="text-xl font-bold text-[#222222] dark:text-[#F5F5F7]">
           {t.noFlashcardsDue}
         </h2>
-        <p className="text-xs text-[#666666] dark:text-[#D0D2CF] max-w-sm">
+        <p className="text-xs text-[#666666] dark:text-[#D1D1D6] max-w-sm">
           {t.noFlashcardsDueDesc}
         </p>
       </div>
@@ -139,8 +139,8 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
             onClick={() => handleFilterChange('all')}
             className={`px-3.5 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-wider transition-all duration-200 border cursor-pointer ${
               selectedFilter === 'all'
-                ? 'bg-[#222222] text-[#EFF1EE] border-[#222222] shadow-xs'
-                : 'bg-white dark:bg-[#1E1E1E] text-[#666666] dark:text-[#D0D2CF] border-[#D0D2CF] dark:border-white/10 hover:border-[#222222]'
+                ? 'bg-[#007AFF] text-white border-[#007AFF] shadow-xs'
+                : 'bg-white dark:bg-[#1C1C1E] text-[#6E6E73] dark:text-[#D1D1D6] border-[#D1D1D6] dark:border-white/10 hover:border-[#007AFF]'
             }`}
           >
             {t.filterAll} {vocabulary.length}
@@ -149,8 +149,8 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
             onClick={() => handleFilterChange('new')}
             className={`px-3.5 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-wider transition-all duration-200 border cursor-pointer ${
               selectedFilter === 'new'
-                ? 'bg-[#222222] text-[#EFF1EE] border-[#222222] shadow-xs'
-                : 'bg-white dark:bg-[#1E1E1E] text-[#666666] dark:text-[#D0D2CF] border-[#D0D2CF] dark:border-white/10 hover:border-[#222222]'
+                ? 'bg-[#007AFF] text-white border-[#007AFF] shadow-xs'
+                : 'bg-white dark:bg-[#1C1C1E] text-[#6E6E73] dark:text-[#D1D1D6] border-[#D1D1D6] dark:border-white/10 hover:border-[#007AFF]'
             }`}
           >
             {t.filterNew} {newCount}
@@ -159,8 +159,8 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
             onClick={() => handleFilterChange('learning')}
             className={`px-3.5 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-wider transition-all duration-200 border cursor-pointer ${
               selectedFilter === 'learning'
-                ? 'bg-[#222222] text-[#EFF1EE] border-[#222222] shadow-xs'
-                : 'bg-white dark:bg-[#1E1E1E] text-[#666666] dark:text-[#D0D2CF] border-[#D0D2CF] dark:border-white/10 hover:border-[#222222]'
+                ? 'bg-[#007AFF] text-white border-[#007AFF] shadow-xs'
+                : 'bg-white dark:bg-[#1C1C1E] text-[#6E6E73] dark:text-[#D1D1D6] border-[#D1D1D6] dark:border-white/10 hover:border-[#007AFF]'
             }`}
           >
             {t.filterLearning} {learningCount}
@@ -169,24 +169,24 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
             onClick={() => handleFilterChange('mastered')}
             className={`px-3.5 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-wider transition-all duration-200 border cursor-pointer ${
               selectedFilter === 'mastered'
-                ? 'bg-[#222222] text-[#EFF1EE] border-[#222222] shadow-xs'
-                : 'bg-white dark:bg-[#1E1E1E] text-[#666666] dark:text-[#D0D2CF] border-[#D0D2CF] dark:border-white/10 hover:border-[#222222]'
+                ? 'bg-[#007AFF] text-white border-[#007AFF] shadow-xs'
+                : 'bg-white dark:bg-[#1C1C1E] text-[#6E6E73] dark:text-[#D1D1D6] border-[#D1D1D6] dark:border-white/10 hover:border-[#007AFF]'
             }`}
           >
             {t.filterMastered} {masteredCount}
           </button>
         </div>
 
-        <div className="p-12 bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 rounded-3xl space-y-4">
-          <div className="w-12 h-12 rounded-full bg-[#EFF1EE] dark:bg-white/10 flex items-center justify-center mx-auto text-[#666666]">
+        <div className="p-12 bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-white/10 rounded-3xl space-y-4">
+          <div className="w-12 h-12 rounded-full bg-[#F5F5F7] dark:bg-white/10 flex items-center justify-center mx-auto text-[#007AFF]">
             <Sparkles className="w-6 h-6" />
           </div>
-          <p className="text-sm font-medium text-[#666666] dark:text-[#D0D2CF]">
-            {t.noCardsInBucket} <span className="font-bold text-[#222222] dark:text-[#EFF1EE] uppercase">{selectedFilter === 'new' ? t.filterNew : selectedFilter === 'learning' ? t.filterLearning : selectedFilter === 'mastered' ? t.filterMastered : t.filterAll}</span>.
+          <p className="text-sm font-medium text-[#6E6E73] dark:text-[#D1D1D6]">
+            {t.noCardsInBucket} <span className="font-bold text-[#1D1D1F] dark:text-[#F5F5F7] uppercase">{selectedFilter === 'new' ? t.filterNew : selectedFilter === 'learning' ? t.filterLearning : selectedFilter === 'mastered' ? t.filterMastered : t.filterAll}</span>.
           </p>
           <button
             onClick={() => handleFilterChange('all')}
-            className="px-4 py-2 bg-[#222222] text-[#EFF1EE] text-xs font-bold rounded-xl shadow-xs hover:bg-[#A4F5A6] hover:text-[#222222] transition-all cursor-pointer"
+            className="px-4 py-2 bg-[#007AFF] hover:bg-[#0066D6] text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer"
           >
             {t.viewAllCards}
           </button>
@@ -198,33 +198,33 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
   if (sessionCompleted || !currentItem) {
     return (
       <div id="flashcards-summary-view" className="max-w-lg mx-auto py-12 px-6 text-center space-y-6">
-        <div className="w-20 h-20 mx-auto rounded-3xl bg-[#A4F5A6] flex items-center justify-center text-[#222222] shadow-lg animate-bounce">
+        <div className="w-20 h-20 mx-auto rounded-3xl bg-[#007AFF] flex items-center justify-center text-white shadow-lg animate-bounce">
           <Trophy className="w-10 h-10" />
         </div>
 
         <div className="space-y-2">
-          <h2 className="text-3xl font-extrabold text-[#222222] dark:text-[#EFF1EE] tracking-tight">
+          <h2 className="text-3xl font-extrabold text-[#1D1D1F] dark:text-[#F5F5F7] tracking-tight">
             {t.reviewComplete}
           </h2>
-          <p className="text-xs text-[#666666] dark:text-[#D0D2CF]">
+          <p className="text-xs text-[#6E6E73] dark:text-[#D1D1D6]">
             {t.reviewCompleteDesc}
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10">
-            <span className="text-2xl font-black text-[#222222] dark:text-[#EFF1EE]">{reviewedCount}</span>
-            <span className="block text-[11px] font-bold text-[#666666] dark:text-[#D0D2CF] uppercase mt-1">{t.cardsReviewed}</span>
+          <div className="p-4 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-white/10">
+            <span className="text-2xl font-black text-[#1D1D1F] dark:text-[#F5F5F7]">{reviewedCount}</span>
+            <span className="block text-[11px] font-bold text-[#6E6E73] dark:text-[#D1D1D6] uppercase mt-1">{t.cardsReviewed}</span>
           </div>
-          <div className="p-4 rounded-2xl bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10">
-            <span className="text-2xl font-black text-[#222222] dark:text-[#EFF1EE]">{Math.round((vocabulary.filter(v => getCardBucket(v) === 'Mastered').length / vocabulary.length) * 100)}%</span>
-            <span className="block text-[11px] font-bold text-[#666666] dark:text-[#D0D2CF] uppercase mt-1">{t.masteryRate}</span>
+          <div className="p-4 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-white/10">
+            <span className="text-2xl font-black text-[#1D1D1F] dark:text-[#F5F5F7]">{Math.round((vocabulary.filter(v => getCardBucket(v) === 'Mastered').length / vocabulary.length) * 100)}%</span>
+            <span className="block text-[11px] font-bold text-[#6E6E73] dark:text-[#D1D1D6] uppercase mt-1">{t.masteryRate}</span>
           </div>
         </div>
 
         <button
           onClick={restartSession}
-          className="w-full py-3.5 rounded-2xl bg-[#222222] text-[#EFF1EE] font-bold text-sm shadow-xs hover:bg-[#A4F5A6] hover:text-[#222222] transition-all flex items-center justify-center gap-2 cursor-pointer"
+          className="w-full py-3.5 rounded-2xl bg-[#007AFF] hover:bg-[#0066D6] text-white font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
         >
           <RotateCcw className="w-4 h-4" />
           <span>{t.reviewAgain}</span>
@@ -242,8 +242,8 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
           onClick={() => handleFilterChange('all')}
           className={`px-3.5 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-wider transition-all duration-200 border cursor-pointer ${
             selectedFilter === 'all'
-              ? 'bg-[#222222] text-[#EFF1EE] border-[#222222] shadow-xs'
-              : 'bg-white dark:bg-[#1E1E1E] text-[#666666] dark:text-[#D0D2CF] border-[#D0D2CF] dark:border-white/10 hover:border-[#222222]'
+              ? 'bg-[#007AFF] text-white border-[#007AFF] shadow-xs'
+              : 'bg-white dark:bg-[#1C1C1E] text-[#6E6E73] dark:text-[#D1D1D6] border-[#D1D1D6] dark:border-white/10 hover:border-[#007AFF]'
           }`}
         >
           {t.filterAll} {vocabulary.length}
@@ -252,8 +252,8 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
           onClick={() => handleFilterChange('new')}
           className={`px-3.5 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-wider transition-all duration-200 border cursor-pointer ${
             selectedFilter === 'new'
-              ? 'bg-[#222222] text-[#EFF1EE] border-[#222222] shadow-xs'
-              : 'bg-white dark:bg-[#1E1E1E] text-[#666666] dark:text-[#D0D2CF] border-[#D0D2CF] dark:border-white/10 hover:border-[#222222]'
+              ? 'bg-[#007AFF] text-white border-[#007AFF] shadow-xs'
+              : 'bg-white dark:bg-[#1C1C1E] text-[#6E6E73] dark:text-[#D1D1D6] border-[#D1D1D6] dark:border-white/10 hover:border-[#007AFF]'
           }`}
         >
           {t.filterNew} {newCount}
@@ -262,8 +262,8 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
           onClick={() => handleFilterChange('learning')}
           className={`px-3.5 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-wider transition-all duration-200 border cursor-pointer ${
             selectedFilter === 'learning'
-              ? 'bg-[#222222] text-[#EFF1EE] border-[#222222] shadow-xs'
-              : 'bg-white dark:bg-[#1E1E1E] text-[#666666] dark:text-[#D0D2CF] border-[#D0D2CF] dark:border-white/10 hover:border-[#222222]'
+              ? 'bg-[#007AFF] text-white border-[#007AFF] shadow-xs'
+              : 'bg-white dark:bg-[#1C1C1E] text-[#6E6E73] dark:text-[#D1D1D6] border-[#D1D1D6] dark:border-white/10 hover:border-[#007AFF]'
           }`}
         >
           {t.filterLearning} {learningCount}
@@ -272,8 +272,8 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
           onClick={() => handleFilterChange('mastered')}
           className={`px-3.5 py-1.5 rounded-full text-[10px] uppercase font-bold tracking-wider transition-all duration-200 border cursor-pointer ${
             selectedFilter === 'mastered'
-              ? 'bg-[#222222] text-[#EFF1EE] border-[#222222] shadow-xs'
-              : 'bg-white dark:bg-[#1E1E1E] text-[#666666] dark:text-[#D0D2CF] border-[#D0D2CF] dark:border-white/10 hover:border-[#222222]'
+              ? 'bg-[#007AFF] text-white border-[#007AFF] shadow-xs'
+              : 'bg-white dark:bg-[#1C1C1E] text-[#6E6E73] dark:text-[#D1D1D6] border-[#D1D1D6] dark:border-white/10 hover:border-[#007AFF]'
           }`}
         >
           {t.filterMastered} {masteredCount}
@@ -281,22 +281,22 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
       </div>
 
       {/* Session Progress Header */}
-      <div className="flex items-center justify-between text-xs font-bold text-[#666666] dark:text-[#D0D2CF]">
+      <div className="flex items-center justify-between text-xs font-bold text-[#6E6E73] dark:text-[#D1D1D6]">
         <div className="flex items-center gap-1.5">
-          <Flame className="w-4 h-4 text-[#B2A1FF]" />
-          <span className="uppercase tracking-wider text-[10px] font-extrabold text-[#222222] dark:text-[#EFF1EE]">
+          <Flame className="w-4 h-4 text-[#007AFF]" />
+          <span className="uppercase tracking-wider text-[10px] font-extrabold text-[#1D1D1F] dark:text-[#F5F5F7]">
             {selectedFilter === 'all' ? t.scheduledDeck : `${selectedFilter === 'new' ? t.filterNew : selectedFilter === 'learning' ? t.filterLearning : t.filterMastered} ${t.session}`}
           </span>
         </div>
-        <span className="font-mono text-[#666666] dark:text-[#D0D2CF]">
+        <span className="font-mono text-[#6E6E73] dark:text-[#D1D1D6]">
           {t.card} {currentIndex + 1} {t.of} {itemsToReview.length}
         </span>
       </div>
 
       {/* Progress Bar */}
-      <div className="w-full h-1.5 rounded-full bg-[#D0D2CF] dark:bg-white/10 overflow-hidden">
+      <div className="w-full h-1.5 rounded-full bg-[#D1D1D6] dark:bg-white/10 overflow-hidden">
         <div
-          className="h-full bg-[#A4F5A6] transition-all duration-300"
+          className="h-full bg-[#007AFF] dark:bg-[#0A84FF] transition-all duration-300"
           style={{ width: `${((currentIndex + 1) / itemsToReview.length) * 100}%` }}
         />
       </div>
@@ -317,22 +317,22 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
           {/* FRONT OF CARD */}
           <div
             style={{ backfaceVisibility: "hidden" }}
-            className="absolute inset-0 w-full h-full p-8 bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 rounded-[32px] shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden"
+            className="absolute inset-0 w-full h-full p-8 bg-white dark:bg-[#1E1E1E] border border-[#D1D1D6] dark:border-white/10 rounded-[32px] shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden"
           >
-            {/* Top Mint Accent Bar */}
-            <div className="absolute top-0 start-0 end-0 h-1.5 bg-[#A4F5A6]" />
+            {/* Top Accent Bar */}
+            <div className="absolute top-0 start-0 end-0 h-1.5 bg-[#007AFF]" />
 
             <div className="my-auto text-center space-y-5 py-8">
-              <span className="px-3.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#EFF1EE] dark:bg-white/10 text-[#222222] dark:text-[#EFF1EE] border border-[#D0D2CF] dark:border-white/10 shadow-2xs">
+              <span className="px-3.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#F5F5F7] dark:bg-white/10 text-[#1D1D1F] dark:text-[#F5F5F7] border border-[#D1D1D6] dark:border-white/10 shadow-2xs">
                 {currentItem.language}
               </span>
 
-              <h2 className="text-4xl sm:text-5xl font-bold font-serif text-[#222222] dark:text-[#EFF1EE] tracking-tight">
+              <h2 className="text-4xl sm:text-5xl font-bold font-serif text-[#1D1D1F] dark:text-[#F5F5F7] tracking-tight">
                 {currentItem.word}
               </h2>
 
               {currentItem.phonetic && (
-                <p className="text-sm font-mono text-[#666666] dark:text-[#D0D2CF] font-semibold">
+                <p className="text-sm font-mono text-[#6E6E73] dark:text-[#D1D1D6] font-semibold">
                   {currentItem.phonetic}
                 </p>
               )}
@@ -344,19 +344,19 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
                 }}
                 className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer shadow-2xs ${
                   isPlayingAudio
-                    ? 'bg-[#A4F5A6] text-[#222222] border-[#A4F5A6] animate-pulse shadow-md'
-                    : 'bg-[#EFF1EE] dark:bg-white/10 hover:bg-[#D0D2CF] text-[#222222] dark:text-[#EFF1EE] border-[#D0D2CF] dark:border-white/10'
+                    ? 'bg-[#007AFF] text-white border-[#007AFF] animate-pulse shadow-md'
+                    : 'bg-[#F5F5F7] dark:bg-white/10 hover:bg-[#D1D1D6] text-[#1D1D1F] dark:text-[#F5F5F7] border-[#D1D1D6] dark:border-white/10'
                 }`}
               >
-                <Volume2 className="w-4 h-4 text-[#222222] dark:text-[#EFF1EE]" />
+                <Volume2 className="w-4 h-4 text-[#1D1D1F] dark:text-[#F5F5F7]" />
                 <span>{isPlayingAudio ? 'Speaking...' : t.pronounce}</span>
               </button>
             </div>
 
             {/* Card Bottom Hint */}
-            <div className="flex items-center justify-between text-[11px] font-semibold text-[#666666] dark:text-[#D0D2CF] border-t border-[#D0D2CF]/60 dark:border-white/10 pt-3">
+            <div className="flex items-center justify-between text-[11px] font-semibold text-[#6E6E73] dark:text-[#D1D1D6] border-t border-[#D1D1D6]/60 dark:border-white/10 pt-3">
               <span>{t.clickToReveal}</span>
-              <Sparkles className="w-4 h-4 text-[#B2A1FF]" />
+              <Sparkles className="w-4 h-4 text-[#007AFF]" />
             </div>
           </div>
 
@@ -366,15 +366,15 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
               backfaceVisibility: "hidden", 
               transform: "rotateY(180deg)" 
             }}
-            className="absolute inset-0 w-full h-full p-8 bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 rounded-[32px] shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden"
+            className="absolute inset-0 w-full h-full p-8 bg-white dark:bg-[#1E1E1E] border border-[#D1D1D6] dark:border-white/10 rounded-[32px] shadow-sm hover:shadow-md transition-all flex flex-col justify-between overflow-hidden"
           >
-            {/* Top Lavender Accent Bar */}
-            <div className="absolute top-0 start-0 end-0 h-1.5 bg-[#B2A1FF]" />
+            {/* Top Accent Bar */}
+            <div className="absolute top-0 start-0 end-0 h-1.5 bg-[#007AFF]" />
 
             <div className="my-auto space-y-4 py-4 w-full">
-              <div className="p-4 rounded-2xl bg-[#EFF1EE] dark:bg-white/5 border border-[#D0D2CF] dark:border-white/10 text-center space-y-1 relative group/trans">
+              <div className="p-4 rounded-2xl bg-[#F5F5F7] dark:bg-white/5 border border-[#D1D1D6] dark:border-white/10 text-center space-y-1 relative group/trans">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-[#666666] dark:text-[#D0D2CF] uppercase tracking-widest">
+                  <span className="text-[10px] font-bold text-[#6E6E73] dark:text-[#D1D1D6] uppercase tracking-widest">
                     {t.translationLabel}
                   </span>
                   <button
@@ -383,24 +383,24 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
                       handlePlayTTS(currentItem.translation);
                     }}
                     title="Pronounce translation"
-                    className="p-1.5 rounded-full bg-white dark:bg-[#1E1E1E] text-[#222222] dark:text-white hover:bg-[#A4F5A6] transition-colors cursor-pointer shadow-2xs"
+                    className="p-1.5 rounded-full bg-white dark:bg-[#1E1E1E] text-[#1D1D1F] dark:text-white hover:bg-[#007AFF] hover:text-white transition-colors cursor-pointer shadow-2xs"
                   >
                     <Volume2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
-                <p className="text-2xl font-bold font-serif text-[#222222] dark:text-[#EFF1EE]">
+                <p className="text-2xl font-bold font-serif text-[#1D1D1F] dark:text-[#F5F5F7]">
                   {getCardTranslation(currentItem, settings?.interfaceLanguage)}
                 </p>
               </div>
 
               {currentItem.definition && (
-                <p className="text-xs text-[#666666] dark:text-[#D0D2CF] text-center font-medium">
+                <p className="text-xs text-[#6E6E73] dark:text-[#D1D1D6] text-center font-medium">
                   {currentItem.definition}
                 </p>
               )}
 
               {currentItem.contextSentence && (
-                <div className="p-3.5 rounded-2xl bg-[#EFF1EE] dark:bg-white/5 text-xs italic text-[#222222] dark:text-[#EFF1EE] border border-[#D0D2CF] dark:border-white/10 flex items-center justify-between gap-2">
+                <div className="p-3.5 rounded-2xl bg-[#F5F5F7] dark:bg-white/5 text-xs italic text-[#1D1D1F] dark:text-[#F5F5F7] border border-[#D1D1D6] dark:border-white/10 flex items-center justify-between gap-2">
                   <span>"{currentItem.contextSentence}"</span>
                   <button
                     onClick={(e) => {
@@ -408,7 +408,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
                       handlePlayTTS(currentItem.contextSentence);
                     }}
                     title="Pronounce context sentence"
-                    className="p-1 rounded-full text-[#666666] dark:text-[#D0D2CF] hover:text-[#222222] dark:hover:text-white hover:bg-[#D0D2CF] transition-colors cursor-pointer shrink-0"
+                    className="p-1 rounded-full text-[#6E6E73] dark:text-[#D1D1D6] hover:text-[#1D1D1F] dark:hover:text-white hover:bg-[#D1D1D6] transition-colors cursor-pointer shrink-0"
                   >
                     <Volume2 className="w-3.5 h-3.5" />
                   </button>
@@ -417,9 +417,9 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
             </div>
 
             {/* Card Bottom Hint */}
-            <div className="flex items-center justify-between text-[11px] font-semibold text-[#666666] dark:text-[#D0D2CF] border-t border-[#D0D2CF]/60 dark:border-white/10 pt-3">
+            <div className="flex items-center justify-between text-[11px] font-semibold text-[#6E6E73] dark:text-[#D1D1D6] border-t border-[#D1D1D6]/60 dark:border-white/10 pt-3">
               <span>{t.clickToHide}</span>
-              <Sparkles className="w-4 h-4 text-[#B2A1FF]" />
+              <Sparkles className="w-4 h-4 text-[#007AFF]" />
             </div>
           </div>
         </motion.div>
@@ -439,7 +439,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
 
           <button
             onClick={() => handleGrade(2)}
-            className="p-3 rounded-2xl bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 text-[#666666] dark:text-[#D0D2CF] text-center hover:bg-[#EFF1EE] dark:hover:bg-white/5 transition-all shadow-2xs group cursor-pointer"
+            className="p-3 rounded-2xl bg-white dark:bg-[#1E1E1E] border border-[#D1D1D6] dark:border-white/10 text-[#6E6E73] dark:text-[#D1D1D6] text-center hover:bg-[#F5F5F7] dark:hover:bg-white/5 transition-all shadow-2xs group cursor-pointer"
           >
             <span className="block text-xs font-bold">{t.srsHard}</span>
             <span className="block text-[9px] opacity-70 font-mono mt-0.5">{getDueIntervalLabel(currentItem, 'hard')}</span>
@@ -447,7 +447,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
 
           <button
             onClick={() => handleGrade(3)}
-            className="p-3 rounded-2xl bg-white dark:bg-[#1E1E1E] border border-[#B2A1FF]/50 text-[#222222] dark:text-white text-center hover:bg-[#B2A1FF]/10 transition-all shadow-2xs group cursor-pointer"
+            className="p-3 rounded-2xl bg-white dark:bg-[#1E1E1E] border border-[#007AFF]/50 text-[#1D1D1F] dark:text-white text-center hover:bg-[#007AFF]/10 transition-all shadow-2xs group cursor-pointer"
           >
             <span className="block text-xs font-bold">{t.srsGood}</span>
             <span className="block text-[9px] opacity-70 font-mono mt-0.5">
@@ -457,10 +457,10 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
 
           <button
             onClick={() => handleGrade(4)}
-            className="p-3 rounded-2xl bg-[#A4F5A6] border border-[#A4F5A6] text-[#222222] text-center hover:bg-[#8ee590] transition-all shadow-xs group cursor-pointer"
+            className="p-3 rounded-2xl bg-[#34C759] border border-[#34C759] text-white text-center hover:opacity-90 transition-all shadow-xs group cursor-pointer"
           >
             <span className="block text-xs font-bold">{t.srsEasy}</span>
-            <span className="block text-[9px] opacity-70 font-mono mt-0.5">
+            <span className="block text-[9px] opacity-90 font-mono mt-0.5">
               {getDueIntervalLabel(currentItem, 'easy')}
             </span>
           </button>
@@ -469,7 +469,7 @@ export const FlashcardsView: React.FC<FlashcardsViewProps> = ({
       ) : (
         <button
           onClick={() => setIsFlipped(true)}
-          className="w-full py-3.5 rounded-2xl bg-[#222222] hover:bg-[#A4F5A6] text-[#EFF1EE] hover:text-[#222222] font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+          className="w-full py-3.5 rounded-2xl bg-[#007AFF] hover:bg-[#0066D6] text-white font-bold text-sm shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
         >
           <span>{t.showAnswer}</span>
           <ArrowRight className="w-4 h-4" />

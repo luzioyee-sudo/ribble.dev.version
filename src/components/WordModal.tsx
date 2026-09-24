@@ -129,11 +129,11 @@ export const WordModal: React.FC<WordModalProps> = ({
               maxHeight: '80vh',
               zIndex: 50
             }}
-            className="bg-white dark:bg-[#1E1E1E] rounded-t-[2.25rem] shadow-[0_-16px_48px_rgba(0,0,0,0.15)] dark:shadow-[0_-16px_48px_rgba(0,0,0,0.4)] border-t border-[#D0D2CF] dark:border-white/10 overflow-hidden flex flex-col pb-8"
+            className="bg-white dark:bg-[#1E1E1E] rounded-t-[2.25rem] shadow-[0_-16px_48px_rgba(0,0,0,0.15)] dark:shadow-[0_-16px_48px_rgba(0,0,0,0.4)] border-t border-[#D1D1D6] dark:border-white/10 overflow-hidden flex flex-col pb-8"
             onClick={(e) => e.stopPropagation()} // Prevent close on self click
           >
             {/* Top Decorative Branding Accent Strip */}
-            <div className="absolute top-0 start-0 end-0 h-1 bg-[#222222] z-10 shrink-0" />
+            <div className="absolute top-0 start-0 end-0 h-1 bg-[#007AFF] z-10 shrink-0" />
             
             {/* Generous Slide Gesture Indicator Handle */}
             <div 
@@ -141,7 +141,7 @@ export const WordModal: React.FC<WordModalProps> = ({
               className="w-full flex justify-center py-4 cursor-grab active:cursor-grabbing select-none shrink-0"
               style={{ touchAction: 'none' }}
             >
-              <div className="w-16 h-1.5 bg-[#D0D2CF] dark:bg-stone-700/80 rounded-full hover:bg-stone-400 dark:hover:bg-stone-600 transition-colors" />
+              <div className="w-16 h-1.5 bg-[#D1D1D6] dark:bg-[#38383A] rounded-full hover:bg-stone-400 dark:hover:bg-stone-600 transition-colors" />
             </div>
 
             {isLoading ? (
@@ -149,23 +149,23 @@ export const WordModal: React.FC<WordModalProps> = ({
                 {/* Header skeleton */}
                 <div className="flex justify-between items-start">
                   <div className="space-y-2.5 flex-1">
-                    <div className="h-6 bg-[#EFF1EE] dark:bg-stone-800 rounded-lg w-1/2" />
-                    <div className="h-5 bg-[#EFF1EE] dark:bg-stone-800 rounded-lg w-1/3" />
+                    <div className="h-6 bg-[#F5F5F7] dark:bg-[#2C2C2E] rounded-lg w-1/2" />
+                    <div className="h-5 bg-[#F5F5F7] dark:bg-[#2C2C2E] rounded-lg w-1/3" />
                   </div>
                   <div className="flex gap-2">
-                    <div className="w-11 h-11 bg-[#EFF1EE] dark:bg-stone-800 rounded-2xl" />
-                    <div className="w-11 h-11 bg-[#EFF1EE] dark:bg-stone-800 rounded-2xl" />
+                    <div className="w-11 h-11 bg-[#F5F5F7] dark:bg-[#2C2C2E] rounded-2xl" />
+                    <div className="w-11 h-11 bg-[#F5F5F7] dark:bg-[#2C2C2E] rounded-2xl" />
                   </div>
                 </div>
                 {/* Body skeleton */}
-                <div className="h-24 bg-[#EFF1EE]/60 dark:bg-stone-800/40 rounded-2xl border border-[#D0D2CF]/40 dark:border-white/10 flex flex-col justify-center items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-[#222222] dark:text-[#A4F5A6] animate-spin" />
-                  <span className="text-xs font-semibold text-[#666666] dark:text-[#D0D2CF]">{t.translating}</span>
+                <div className="h-24 bg-[#F5F5F7]/60 dark:bg-stone-800/40 rounded-2xl border border-[#D1D1D6]/40 dark:border-white/10 flex flex-col justify-center items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-[#007AFF] dark:text-[#0A84FF] animate-spin" />
+                  <span className="text-xs font-semibold text-[#6E6E73] dark:text-[#98989D]">{t.translating}</span>
                 </div>
                 {/* Footer skeleton */}
-                <div className="flex gap-3 pt-4 border-t border-[#D0D2CF]/60 dark:border-white/10">
-                  <div className="flex-1 h-12 bg-[#EFF1EE] dark:bg-stone-800 rounded-2xl" />
-                  <div className="flex-1 h-12 bg-[#A4F5A6]/30 rounded-2xl" />
+                <div className="flex gap-3 pt-4 border-t border-[#D1D1D6]/60 dark:border-white/10">
+                  <div className="flex-1 h-12 bg-[#F5F5F7] dark:bg-[#2C2C2E] rounded-2xl" />
+                  <div className="flex-1 h-12 bg-[#007AFF]/20 rounded-2xl" />
                 </div>
               </div>
             ) : wordData ? (() => {
@@ -178,18 +178,18 @@ export const WordModal: React.FC<WordModalProps> = ({
                     {/* Header: Words & Pronounce Controls */}
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0" dir={wordIsAr || translationIsAr ? 'rtl' : 'ltr'}>
-                        <h3 className={`text-2xl font-bold text-[#222222] dark:text-white break-words whitespace-pre-wrap leading-tight tracking-tight ${
+                        <h3 className={`text-2xl font-bold text-[#1D1D1F] dark:text-white break-words whitespace-pre-wrap leading-tight tracking-tight ${
                           wordIsAr ? 'font-arabic-serif text-3xl' : 'font-serif-classic'
                         }`}>
                           {wordData.word}
                         </h3>
-                        <p className={`text-lg font-bold text-[#222222] dark:text-[#D0D2CF] mt-1 break-words whitespace-pre-wrap leading-snug ${
+                        <p className={`text-lg font-bold text-[#1D1D1F] dark:text-[#F5F5F7] mt-1 break-words whitespace-pre-wrap leading-snug ${
                           translationIsAr ? 'font-arabic-sans text-xl' : ''
                         }`}>
                           {wordData.translation}
                         </p>
                         {wordData.phonetic && (
-                          <p className="text-xs font-mono text-[#666666] dark:text-[#D0D2CF] mt-1" dir="ltr">
+                          <p className="text-xs font-mono text-[#6E6E73] dark:text-[#98989D] mt-1" dir="ltr">
                             {wordData.phonetic}
                           </p>
                         )}
@@ -200,8 +200,8 @@ export const WordModal: React.FC<WordModalProps> = ({
                           onClick={() => handlePlayTTS(wordData.word, wordData.sourceLanguage)}
                           className={`p-3.5 rounded-2xl transition-all active:scale-95 ${
                             isPlayingAudio
-                              ? 'bg-[#222222] text-[#EFF1EE] animate-pulse shadow-lg'
-                              : 'bg-[#EFF1EE] dark:bg-stone-800 border border-[#D0D2CF] dark:border-white/10 text-[#222222] dark:text-white hover:bg-[#D0D2CF]/50'
+                              ? 'bg-[#007AFF] text-white animate-pulse shadow-lg'
+                              : 'bg-[#F5F5F7] dark:bg-stone-800 border border-[#D1D1D6] dark:border-white/10 text-[#1D1D1F] dark:text-white hover:bg-[#D1D1D6]/50'
                           }`}
                           aria-label="Listen"
                         >
@@ -209,7 +209,7 @@ export const WordModal: React.FC<WordModalProps> = ({
                         </button>
                         <button
                           onClick={onClose}
-                          className="p-3.5 rounded-2xl bg-[#EFF1EE] dark:bg-stone-800 border border-[#D0D2CF] dark:border-white/10 text-[#666666] hover:text-[#222222] dark:hover:text-white transition-all active:scale-95"
+                          className="p-3.5 rounded-2xl bg-[#F5F5F7] dark:bg-stone-800 border border-[#D1D1D6] dark:border-white/10 text-[#6E6E73] hover:text-[#1D1D1F] dark:hover:text-white transition-all active:scale-95"
                           aria-label="Close"
                         >
                           <X className="w-5 h-5" />
@@ -220,12 +220,12 @@ export const WordModal: React.FC<WordModalProps> = ({
                     {/* Definition */}
                     {wordData.definition && (
                       <div className="space-y-1.5">
-                        <span className="text-[10px] font-bold text-[#666666] dark:text-[#D0D2CF] uppercase tracking-widest flex items-center gap-1.5" dir={definitionIsAr ? 'rtl' : 'ltr'}>
-                          <Sparkles className="w-3 h-3 text-[#222222] dark:text-[#A4F5A6]" />
+                        <span className="text-[10px] font-bold text-[#6E6E73] dark:text-[#D1D1D6] uppercase tracking-widest flex items-center gap-1.5" dir={definitionIsAr ? 'rtl' : 'ltr'}>
+                          <Sparkles className="w-3 h-3 text-[#007AFF] dark:text-[#0A84FF]" />
                           {definitionIsAr ? 'التعريف والترجمة' : 'Meaning / Definition'}
                         </span>
-                        <div className="p-4 rounded-2xl bg-[#EFF1EE] dark:bg-stone-800/40 border border-[#D0D2CF] dark:border-white/10" dir={definitionIsAr ? 'rtl' : 'ltr'}>
-                          <p className={`text-sm text-[#222222] dark:text-stone-300 leading-relaxed ${
+                        <div className="p-4 rounded-2xl bg-[#F5F5F7] dark:bg-stone-800/40 border border-[#D1D1D6] dark:border-white/10" dir={definitionIsAr ? 'rtl' : 'ltr'}>
+                          <p className={`text-sm text-[#1D1D1F] dark:text-stone-300 leading-relaxed ${
                             definitionIsAr ? 'font-arabic-sans text-end rtl' : ''
                           }`}>
                             {wordData.definition}
@@ -238,23 +238,23 @@ export const WordModal: React.FC<WordModalProps> = ({
                     {wordData.contextSentence && (
                       <div className="space-y-1.5">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-[#666666] dark:text-[#D0D2CF] uppercase tracking-widest flex items-center gap-1.5" dir={/[\u0600-\u06FF]/.test(wordData.contextSentence) ? 'rtl' : 'ltr'}>
-                            <BookOpen className="w-3 h-3 text-[#222222] dark:text-[#A4F5A6]" />
+                          <span className="text-[10px] font-bold text-[#6E6E73] dark:text-[#D1D1D6] uppercase tracking-widest flex items-center gap-1.5" dir={/[\u0600-\u06FF]/.test(wordData.contextSentence) ? 'rtl' : 'ltr'}>
+                            <BookOpen className="w-3 h-3 text-[#007AFF] dark:text-[#0A84FF]" />
                             {/[\u0600-\u06FF]/.test(wordData.contextSentence) ? 'سياق الكلمة في النص' : 'Example Context'}
                           </span>
                           <button
                             onClick={() => handlePlayTTS(wordData.contextSentence, wordData.sourceLanguage)}
-                            className="p-1 rounded-lg bg-[#EFF1EE] dark:bg-stone-800 text-[#222222] dark:text-white hover:bg-[#D0D2CF] transition-colors cursor-pointer flex items-center gap-1 text-xs font-semibold"
+                            className="p-1 rounded-lg bg-[#F5F5F7] dark:bg-stone-800 text-[#1D1D1F] dark:text-white hover:bg-[#D1D1D6] transition-colors cursor-pointer flex items-center gap-1 text-xs font-semibold"
                             title="Listen to context sentence"
                           >
-                            <Volume2 className="w-3.5 h-3.5" />
+                            <Volume2 className="w-3.5 h-3.5 text-[#007AFF]" />
                             <span>Listen</span>
                           </button>
                         </div>
-                        <div className={`p-4 rounded-2xl bg-[#EFF1EE] dark:bg-stone-800/60 border border-[#D0D2CF] dark:border-white/10 shadow-xs ${
+                        <div className={`p-4 rounded-2xl bg-[#F5F5F7] dark:bg-stone-800/60 border border-[#D1D1D6] dark:border-white/10 shadow-xs ${
                           /[\u0600-\u06FF]/.test(wordData.contextSentence) ? 'font-arabic-serif text-end rtl' : ''
                         }`} dir={/[\u0600-\u06FF]/.test(wordData.contextSentence) ? 'rtl' : 'ltr'}>
-                          <p className="italic text-[#222222] dark:text-stone-200 text-sm leading-relaxed">
+                          <p className="italic text-[#1D1D1F] dark:text-stone-200 text-sm leading-relaxed">
                             "{wordData.contextSentence}"
                           </p>
                         </div>
@@ -262,12 +262,12 @@ export const WordModal: React.FC<WordModalProps> = ({
                     )}
         
                     {/* Action Buttons */}
-                    <div className="flex items-center gap-3 pt-4 border-t border-[#D0D2CF]/50 dark:border-white/10 mt-2 shrink-0">
+                    <div className="flex items-center gap-3 pt-4 border-t border-[#D1D1D6]/50 dark:border-white/10 mt-2 shrink-0">
                       <button
                         onClick={handleCopy}
-                        className="flex-1 py-3.5 rounded-2xl text-sm font-semibold text-[#222222] dark:text-[#EFF1EE] bg-[#EFF1EE] hover:bg-[#D0D2CF]/50 dark:bg-white/10 dark:hover:bg-white/15 border border-[#D0D2CF] dark:border-white/10 flex items-center justify-center gap-2 transition-all active:scale-95"
+                        className="flex-1 py-3.5 rounded-2xl text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] bg-[#F5F5F7] hover:bg-[#D1D1D6]/50 dark:bg-white/10 dark:hover:bg-white/15 border border-[#D1D1D6] dark:border-white/10 flex items-center justify-center gap-2 transition-all active:scale-95"
                       >
-                        {copied ? <Check className="w-4 h-4 text-[#A4F5A6]" /> : <Copy className="w-4 h-4 text-[#666666]" />}
+                        {copied ? <Check className="w-4 h-4 text-[#34C759]" /> : <Copy className="w-4 h-4 text-[#6E6E73]" />}
                         {copied ? t.copied : t.copy}
                       </button>
                       
@@ -275,8 +275,8 @@ export const WordModal: React.FC<WordModalProps> = ({
                         onClick={() => onSaveToVocabulary(wordData)}
                         className={`flex-1 py-3.5 rounded-2xl text-sm font-bold transition-all active:scale-95 flex items-center justify-center gap-2 ${
                           isSaved
-                            ? 'bg-[#A4F5A6]/20 text-[#222222] dark:text-[#EFF1EE] border border-[#A4F5A6]'
-                            : 'bg-[#222222] hover:bg-[#A4F5A6] text-[#EFF1EE] hover:text-[#222222] shadow-xs'
+                            ? 'bg-[#007AFF]/15 text-[#007AFF] dark:text-[#0A84FF] border border-[#007AFF]/40'
+                            : 'bg-[#007AFF] hover:bg-[#0066D6] text-white shadow-xs'
                         }`}
                       >
                         {isSaved ? <Check className="w-4 h-4" /> : <BookmarkPlus className="w-4 h-4" />}
@@ -341,15 +341,15 @@ export const WordModal: React.FC<WordModalProps> = ({
           maxHeight: maxHeight,
           zIndex: 50
         }}
-        className="bg-white dark:bg-[#1E1E1E] rounded-2xl shadow-2xl border border-[#D0D2CF] dark:border-white/10 overflow-hidden flex flex-col"
+        className="bg-white dark:bg-[#1E1E1E] rounded-2xl shadow-2xl border border-[#D1D1D6] dark:border-white/10 overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside
       >
-        <div className="absolute top-0 start-0 end-0 h-1 bg-[#222222] z-10 shrink-0" />
+        <div className="absolute top-0 start-0 end-0 h-1 bg-[#007AFF] z-10 shrink-0" />
         
         {isLoading ? (
           <div className="p-6 flex flex-col items-center justify-center gap-3">
-            <Sparkles className="w-5 h-5 text-[#222222] dark:text-[#A4F5A6] animate-spin" />
-            <span className="text-xs font-semibold text-[#666666] dark:text-[#D0D2CF]">{t.translating}</span>
+            <Sparkles className="w-5 h-5 text-[#007AFF] dark:text-[#0A84FF] animate-spin" />
+            <span className="text-xs font-semibold text-[#6E6E73] dark:text-[#D1D1D6]">{t.translating}</span>
           </div>
         ) : wordData ? (() => {
             const wordIsAr = /[\u0600-\u06FF]/.test(wordData.word);
@@ -360,18 +360,18 @@ export const WordModal: React.FC<WordModalProps> = ({
               <div className="p-4 flex flex-col gap-3 overflow-y-auto max-h-full">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0" dir={wordIsAr || translationIsAr ? 'rtl' : 'ltr'}>
-                    <h3 className={`text-base md:text-lg font-bold text-[#222222] dark:text-white break-words whitespace-pre-wrap ${
+                    <h3 className={`text-base md:text-lg font-bold text-[#1D1D1F] dark:text-white break-words whitespace-pre-wrap ${
                       wordIsAr ? 'font-arabic-serif' : 'font-serif'
                     }`}>
                       {wordData.word}
                     </h3>
-                    <p className={`text-sm font-semibold text-[#222222] dark:text-[#D0D2CF] mt-1 break-words whitespace-pre-wrap ${
+                    <p className={`text-sm font-semibold text-[#1D1D1F] dark:text-[#D1D1D6] mt-1 break-words whitespace-pre-wrap ${
                       translationIsAr ? 'font-arabic-sans' : ''
                     }`}>
                       {wordData.translation}
                     </p>
                     {wordData.phonetic && (
-                      <p className="text-[10px] font-mono text-[#666666] dark:text-[#D0D2CF] mt-0.5" dir="ltr">
+                      <p className="text-[10px] font-mono text-[#6E6E73] dark:text-[#D1D1D6] mt-0.5" dir="ltr">
                         {wordData.phonetic}
                       </p>
                     )}
@@ -380,8 +380,8 @@ export const WordModal: React.FC<WordModalProps> = ({
                     onClick={() => handlePlayTTS(wordData.word, wordData.sourceLanguage)}
                     className={`shrink-0 p-2 rounded-xl transition-colors ${
                       isPlayingAudio
-                        ? 'bg-[#222222] text-[#EFF1EE] animate-pulse'
-                        : 'bg-[#EFF1EE] dark:bg-white/10 text-[#222222] dark:text-[#EFF1EE] hover:bg-[#D0D2CF]'
+                        ? 'bg-[#007AFF] text-white animate-pulse'
+                        : 'bg-[#F5F5F7] dark:bg-white/10 text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#D1D1D6]'
                     }`}
                   >
                     <Volume2 className="w-4 h-4" />
@@ -389,19 +389,19 @@ export const WordModal: React.FC<WordModalProps> = ({
                 </div>
                 
                 {wordData.definition && (
-                  <p className={`text-xs text-[#666666] dark:text-[#D0D2CF] leading-relaxed ${
+                  <p className={`text-xs text-[#6E6E73] dark:text-[#D1D1D6] leading-relaxed ${
                     definitionIsAr ? 'font-arabic-sans text-end rtl' : ''
                   }`} dir={definitionIsAr ? 'rtl' : 'ltr'}>
                     {wordData.definition}
                   </p>
                 )}
     
-                <div className="flex items-center justify-between pt-3 border-t border-[#D0D2CF]/50 dark:border-white/10 mt-1 shrink-0">
+                <div className="flex items-center justify-between pt-3 border-t border-[#D1D1D6]/50 dark:border-white/10 mt-1 shrink-0">
                   <button
                     onClick={handleCopy}
-                    className="text-xs font-semibold text-[#666666] hover:text-[#222222] dark:hover:text-white flex items-center gap-1 transition-colors"
+                    className="text-xs font-semibold text-[#6E6E73] hover:text-[#1D1D1F] dark:hover:text-white flex items-center gap-1 transition-colors"
                   >
-                    {copied ? <Check className="w-3.5 h-3.5 text-[#222222]" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copied ? <Check className="w-3.5 h-3.5 text-[#34C759]" /> : <Copy className="w-3.5 h-3.5" />}
                     {copied ? t.copied : t.copy}
                   </button>
                   
@@ -409,8 +409,8 @@ export const WordModal: React.FC<WordModalProps> = ({
                     onClick={() => onSaveToVocabulary(wordData)}
                     className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
                       isSaved
-                        ? 'bg-[#A4F5A6]/20 text-[#222222] dark:text-[#EFF1EE] border border-[#A4F5A6]'
-                        : 'bg-[#222222] hover:bg-[#A4F5A6] text-[#EFF1EE] hover:text-[#222222] shadow-xs'
+                        ? 'bg-[#007AFF]/15 text-[#007AFF] dark:text-[#0A84FF] border border-[#007AFF]/40'
+                        : 'bg-[#007AFF] hover:bg-[#0066D6] text-white shadow-xs'
                     }`}
                   >
                     {isSaved ? <Check className="w-3.5 h-3.5" /> : <BookmarkPlus className="w-3.5 h-3.5" />}
@@ -438,24 +438,24 @@ export const WordModal: React.FC<WordModalProps> = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 10 }}
         transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-        className="relative w-full max-w-lg bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-2xl border border-[#D0D2CF] dark:border-white/10 p-6 overflow-hidden"
+        className="relative w-full max-w-lg bg-white dark:bg-[#1E1E1E] rounded-3xl shadow-2xl border border-[#D1D1D6] dark:border-white/10 p-6 overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="absolute top-0 start-0 end-0 h-2 bg-[#222222]" />
+        <div className="absolute top-0 start-0 end-0 h-2 bg-[#007AFF]" />
         
         <button
           onClick={onClose}
-          className="absolute top-4 end-4 p-2 rounded-full text-[#666666] hover:bg-[#EFF1EE] dark:hover:bg-white/10 transition-colors"
+          className="absolute top-4 end-4 p-2 rounded-full text-[#6E6E73] hover:bg-[#F5F5F7] dark:hover:bg-white/10 transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
 
         {isLoading ? (
           <div className="py-12 text-center space-y-4">
-            <div className="w-12 h-12 mx-auto rounded-full bg-[#222222] flex items-center justify-center text-[#EFF1EE] animate-spin">
+            <div className="w-12 h-12 mx-auto rounded-full bg-[#007AFF] flex items-center justify-center text-white animate-spin">
               <Sparkles className="w-6 h-6" />
             </div>
-            <p className="text-sm font-semibold text-[#222222] dark:text-[#EFF1EE]">
+            <p className="text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7]">
               {t.translating}
             </p>
           </div>
@@ -471,18 +471,18 @@ export const WordModal: React.FC<WordModalProps> = ({
                   wordIsAr || translationIsAr ? 'flex-row-reverse' : ''
                 }`}>
                   <div className="flex-1 min-w-0" dir={wordIsAr || translationIsAr ? 'rtl' : 'ltr'}>
-                    <h2 className={`text-3xl font-bold text-[#222222] dark:text-white leading-snug ${
+                    <h2 className={`text-3xl font-bold text-[#1D1D1F] dark:text-white leading-snug ${
                       wordIsAr ? 'font-arabic-serif' : 'font-serif'
                     }`}>
                       {wordData.word}
                     </h2>
-                    <p className={`text-xl font-bold mt-1 text-[#222222] dark:text-[#D0D2CF] ${
+                    <p className={`text-xl font-bold mt-1 text-[#1D1D1F] dark:text-[#D1D1D6] ${
                       translationIsAr ? 'font-arabic-sans' : ''
                     }`}>
                       {wordData.translation}
                     </p>
                     {wordData.phonetic && (
-                      <p className="text-sm font-mono text-[#666666] dark:text-[#D0D2CF] mt-2" dir="ltr">
+                      <p className="text-sm font-mono text-[#6E6E73] dark:text-[#D1D1D6] mt-2" dir="ltr">
                         {wordData.phonetic}
                       </p>
                     )}
@@ -490,7 +490,7 @@ export const WordModal: React.FC<WordModalProps> = ({
                   <button
                     onClick={() => handlePlayTTS(wordData.word, wordData.sourceLanguage)}
                     className={`p-3 rounded-2xl transition-colors shrink-0 ${
-                      isPlayingAudio ? 'bg-[#222222] text-[#EFF1EE] animate-pulse' : 'bg-[#EFF1EE] dark:bg-white/10 text-[#222222] dark:text-[#EFF1EE]'
+                      isPlayingAudio ? 'bg-[#007AFF] text-white animate-pulse' : 'bg-[#F5F5F7] dark:bg-white/10 text-[#1D1D1F] dark:text-[#F5F5F7]'
                     }`}
                   >
                     <Volume2 className="w-6 h-6" />
@@ -498,8 +498,8 @@ export const WordModal: React.FC<WordModalProps> = ({
                 </div>
                 
                 {wordData.definition && (
-                  <div className="p-4 rounded-2xl bg-[#EFF1EE] dark:bg-white/5 border border-[#D0D2CF] dark:border-white/10" dir={definitionIsAr ? 'rtl' : 'ltr'}>
-                    <p className={`text-sm text-[#222222] dark:text-[#D0D2CF] leading-relaxed ${
+                  <div className="p-4 rounded-2xl bg-[#F5F5F7] dark:bg-white/5 border border-[#D1D1D6] dark:border-white/10" dir={definitionIsAr ? 'rtl' : 'ltr'}>
+                    <p className={`text-sm text-[#1D1D1F] dark:text-[#D1D1D6] leading-relaxed ${
                       definitionIsAr ? 'font-arabic-sans text-end rtl' : ''
                     }`}>
                       {wordData.definition}
@@ -510,35 +510,35 @@ export const WordModal: React.FC<WordModalProps> = ({
                 {wordData.contextSentence && (
                   <div className="text-sm space-y-2" dir={contextIsAr ? 'rtl' : 'ltr'}>
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-[#666666] block text-start rtl:text-end">{t.contextSentence}:</span>
+                      <span className="font-bold text-[#6E6E73] block text-start rtl:text-end">{t.contextSentence}:</span>
                       <button
                         onClick={() => handlePlayTTS(wordData.contextSentence, wordData.sourceLanguage)}
-                        className="px-2 py-1 rounded-lg bg-[#EFF1EE] dark:bg-white/10 text-[#222222] dark:text-[#EFF1EE] hover:bg-[#D0D2CF] transition-colors cursor-pointer flex items-center gap-1 text-xs font-semibold"
+                        className="px-2 py-1 rounded-lg bg-[#F5F5F7] dark:bg-white/10 text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#D1D1D6] transition-colors cursor-pointer flex items-center gap-1 text-xs font-semibold"
                         title="Listen to context sentence"
                       >
-                        <Volume2 className="w-3.5 h-3.5" />
+                        <Volume2 className="w-3.5 h-3.5 text-[#007AFF]" />
                         <span>Listen</span>
                       </button>
                     </div>
-                    <p className={`italic text-[#222222] dark:text-[#D0D2CF] bg-[#EFF1EE] dark:bg-white/5 p-3 rounded-xl ${
+                    <p className={`italic text-[#1D1D1F] dark:text-[#D1D1D6] bg-[#F5F5F7] dark:bg-white/5 p-3 rounded-xl ${
                       contextIsAr ? 'font-arabic-serif text-end rtl' : ''
                     }`}>
                       "{wordData.contextSentence}"
                     </p>
                   </div>
                 )}
-                <div className="pt-4 flex items-center justify-between border-t border-[#D0D2CF] dark:border-white/10">
+                <div className="pt-4 flex items-center justify-between border-t border-[#D1D1D6] dark:border-white/10">
                   <button
                     onClick={handleCopy}
-                    className="px-4 py-2 rounded-xl text-sm font-semibold text-[#666666] hover:bg-[#EFF1EE] dark:hover:bg-white/10 transition-colors flex items-center gap-2"
+                    className="px-4 py-2 rounded-xl text-sm font-semibold text-[#6E6E73] hover:bg-[#F5F5F7] dark:hover:bg-white/10 transition-colors flex items-center gap-2"
                   >
-                    {copied ? <Check className="w-4 h-4 text-[#222222]" /> : <Copy className="w-4 h-4" />}
+                    {copied ? <Check className="w-4 h-4 text-[#34C759]" /> : <Copy className="w-4 h-4 text-[#6E6E73]" />}
                     {copied ? t.copied : t.copy}
                   </button>
                   <button
                     onClick={() => onSaveToVocabulary(wordData)}
                     className={`px-5 py-2.5 rounded-2xl text-sm font-bold transition-all flex items-center gap-2 ${
-                      isSaved ? 'bg-[#A4F5A6]/20 text-[#222222] dark:text-[#EFF1EE] border border-[#A4F5A6]' : 'bg-[#222222] text-[#EFF1EE] shadow-xs hover:bg-[#A4F5A6] hover:text-[#222222]'
+                      isSaved ? 'bg-[#007AFF]/15 text-[#007AFF] dark:text-[#0A84FF] border border-[#007AFF]/40' : 'bg-[#007AFF] text-white shadow-xs hover:bg-[#0066D6]'
                     }`}
                   >
                     {isSaved ? <Check className="w-4 h-4" /> : <BookmarkPlus className="w-4 h-4" />}

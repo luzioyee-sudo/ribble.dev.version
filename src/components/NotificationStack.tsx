@@ -252,7 +252,7 @@ export const NotificationStack: React.FC<NotificationStackProps> = ({
           <button
             id="btn-add-sample-notification"
             onClick={handleAddSample}
-            className="text-[11px] text-[#222222] dark:text-[#A4F5A6] font-semibold hover:underline flex items-center gap-1 cursor-pointer"
+            className="text-[11px] text-[#222222] dark:text-[#34C759] font-semibold hover:underline flex items-center gap-1 cursor-pointer"
             title="Trigger new incoming notification animation"
           >
             <Plus className="w-3 h-3 stroke-[2.5]" />

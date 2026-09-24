@@ -98,7 +98,7 @@ export interface LexicalEntry {
   normalizedWord: string; // Lowercase, NFC canonical search key (e.g. 'remarkable')
   type: LexicalType;
   lemma: string; // Canonical root (e.g. 'remarkable' or 'run')
-  language: 'English' | 'Spanish' | 'German' | 'Arabic' | 'French' | string;
+  language: 'English' | 'Spanish' | 'German' | 'Arabic' | 'French' | 'Italian' | string;
   partOfSpeech: PartOfSpeech | PartOfSpeech[];
   phonetic?: string;
   syllables?: string[] | number;

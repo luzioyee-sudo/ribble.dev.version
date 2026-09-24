@@ -387,6 +387,8 @@ export interface Translations {
   manageDecksFolders: string;
   allSavedWords: string;
   topicHomeWhereYouLive: string;
+  topicUniversityLifeAndStudies: string;
+  topicCareerGoalsAndBusiness: string;
   lookup: string;
   typeWordPlaceholder: string;
   listening: string;
@@ -1080,6 +1082,8 @@ export const translations: Record<SupportedLanguage, Translations> = {
     topicWeatherSeasons: 'Weather & Seasons',
     topicHealthBody: 'Health & Body',
     topicHomeWhereYouLive: 'Home & Living',
+    topicUniversityLifeAndStudies: 'University Life & Studies',
+    topicCareerGoalsAndBusiness: 'Career Goals & Business',
     topicEmotionsPersonality: 'Emotions & Personality',
     topicNatureEnvironment: 'Nature & Environment',
     topicTechnologyMedia: 'Technology & Media',
@@ -1732,6 +1736,8 @@ export const translations: Record<SupportedLanguage, Translations> = {
     topicWeatherSeasons: 'Météo et saisons',
     topicHealthBody: 'Santé et corps',
     topicHomeWhereYouLive: 'Maison & Cadre de vie',
+    topicUniversityLifeAndStudies: 'Vie universitaire et études',
+    topicCareerGoalsAndBusiness: 'Objectifs de carrière et affaires',
     topicEmotionsPersonality: 'Émotions et personnalité',
     topicNatureEnvironment: 'Nature et environnement',
     topicTechnologyMedia: 'Technologie et médias',
@@ -2384,6 +2390,8 @@ export const translations: Record<SupportedLanguage, Translations> = {
     topicWeatherSeasons: 'الطقس وفصول السنة',
     topicHealthBody: 'الصحة والجسم',
     topicHomeWhereYouLive: 'المنزل والسكن',
+    topicUniversityLifeAndStudies: 'الحياة الجامعية والدراسة',
+    topicCareerGoalsAndBusiness: 'الأهداف المهنية وريادة الأعمال',
     topicEmotionsPersonality: 'المشاعر والشخصية',
     topicNatureEnvironment: 'الطبيعة والبيئة',
     topicTechnologyMedia: 'التكنولوجيا والإعلام',
@@ -3036,6 +3044,8 @@ export const translations: Record<SupportedLanguage, Translations> = {
     topicWeatherSeasons: 'Clima y estaciones',
     topicHealthBody: 'Salud y cuerpo',
     topicHomeWhereYouLive: 'Hogar y Vivienda',
+    topicUniversityLifeAndStudies: 'Vida universitaria y estudios',
+    topicCareerGoalsAndBusiness: 'Objetivos profesionales y negocios',
     topicEmotionsPersonality: 'Emociones y personalidad',
     topicNatureEnvironment: 'Naturaleza y medio ambiente',
     topicTechnologyMedia: 'Tecnología y medios',
@@ -3688,6 +3698,8 @@ export const translations: Record<SupportedLanguage, Translations> = {
     topicWeatherSeasons: 'Wetter & Jahreszeiten',
     topicHealthBody: 'Gesundheit & Körper',
     topicHomeWhereYouLive: 'Zuhause & Wohnen',
+    topicUniversityLifeAndStudies: 'Unileben & Studium',
+    topicCareerGoalsAndBusiness: 'Karriereziele & Business',
     topicEmotionsPersonality: 'Gefühle & Persönlichkeit',
     topicNatureEnvironment: 'Natur & Umwelt',
     topicTechnologyMedia: 'Technologie & Medien',

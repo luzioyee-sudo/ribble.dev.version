@@ -3,10 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { VocabularyItem, Deck, ReaderSettings } from '../types';
 import { 
-  Search, Mic, Volume2, Bookmark, Copy, Sparkles, X, PenLine, Mail, 
-  RotateCcw, SlidersHorizontal, Wand2, CheckCircle2, ArrowLeftRight, 
-  Check, Loader2, Languages, BookOpen, MessageSquare, Globe, ChevronDown, Zap, Quote,
-  ChevronLeft, ChevronRight, SpellCheck
+  Search, Mic, Volume2, Bookmark, Copy, X, 
+  Check, Loader2, Globe, ChevronDown, Quote
 } from 'lucide-react';
 import { playTTS } from '../utils/tts';
 import { getLocalLexicalEntry } from '../utils/localLexicon';
@@ -243,8 +241,8 @@ export const DictionaryView: React.FC<DictionaryViewProps> = ({
   const [isTargetOpen, setIsTargetOpen] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>('serendipity');
 
-  const [selectedVoice, setSelectedVoice] = useState<'Zephyr' | 'Puck' | 'Charon' | 'Kore' | 'Fenrir'>('Zephyr');
-  const [speechSpeed, setSpeechSpeed] = useState<'normal' | 'slow'>('normal');
+  const [selectedVoice] = useState<'Zephyr' | 'Puck' | 'Charon' | 'Kore' | 'Fenrir'>('Zephyr');
+  const [speechSpeed] = useState<'normal' | 'slow'>('normal');
   const [isPlayingAudio, setIsPlayingAudio] = useState<boolean>(false);
 
   // Keep target language synchronized with global settings
@@ -459,7 +457,6 @@ export const DictionaryView: React.FC<DictionaryViewProps> = ({
               example: data.examples?.[0]?.target || `${word} in context.`,
               flag: LANGUAGES.find(l => l.name === tLang)?.code || 'GB'
             },
-            // Fallback generated translations for other popular languages
             Arabic: {
               text: tLang === 'Arabic' ? mainTrans : `ترجمة ${word}`,
               definition: tLang === 'Arabic' ? mainDef : `معنى كلمة ${word} باللغة العربية.`,
@@ -574,13 +571,14 @@ export const DictionaryView: React.FC<DictionaryViewProps> = ({
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto text-zinc-900 pb-12 pt-2">
-      {/* Main Interactive Dictionary */}
-      <div className="w-full flex flex-col gap-4">
-        {/* Interactive Search Box */}
-        <div className="relative flex items-center pearl-card rounded-2xl px-4 py-2.5 focus-within:border-slate-300 transition-colors max-w-full mx-auto w-full md:max-w-2xl gap-2">
-          <Search className="md:hidden w-4 h-4 text-slate-400 shrink-0" />
+    <div id="dictionary-view-container" className="w-full max-w-5xl mx-auto text-[#1D1D1F] dark:text-[#F5F5F7] pb-16 pt-2 font-sans space-y-6">
+      {/* 1. SEARCH & CONTROL BAR */}
+      <div id="dictionary-search-wrapper" className="w-full max-w-3xl mx-auto">
+        <div className="bg-[#FFFFFF] dark:bg-[#1C1C1E] rounded-2xl p-2 sm:p-2.5 border border-[#D1D1D6] dark:border-[#38383A] shadow-xs flex items-center gap-2 focus-within:border-[#007AFF] dark:focus-within:border-[#0A84FF] focus-within:ring-2 focus-within:ring-[#007AFF]/15 transition-all">
+          <Search className="w-4 h-4 text-[#8E8E93] dark:text-[#636366] ms-2 shrink-0 pointer-events-none" />
+          
           <input 
+            id="dictionary-search-input"
             type="text" 
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -590,265 +588,295 @@ export const DictionaryView: React.FC<DictionaryViewProps> = ({
               }
             }}
             placeholder={t.typeWordPlaceholder ? t.typeWordPlaceholder.replace('{lang}', sourceLang) : `Type word in ${sourceLang}...`}
-            className="flex-1 bg-transparent px-2 py-0.5 text-sm font-medium outline-none text-zinc-900 placeholder:text-slate-400 min-w-0"
+            className="flex-1 bg-transparent px-2 py-1 text-sm font-medium outline-none text-[#1D1D1F] dark:text-[#F5F5F7] placeholder:text-[#8E8E93] dark:placeholder:text-[#636366] min-w-0"
           />
+
           {searchTerm && (
             <button 
+              id="dictionary-clear-search-btn"
               onClick={() => setSearchTerm('')}
-              className="p-1 text-slate-400 hover:text-slate-600 me-0.5 cursor-pointer shrink-0"
+              className="p-1 text-[#8E8E93] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] cursor-pointer shrink-0 rounded-full hover:bg-[#F5F5F7] dark:hover:bg-[#2C2C2E]"
             >
               <X className="w-3.5 h-3.5" />
             </button>
           )}
 
-          {/* Right-aligned Action Cluster */}
-          <div className="flex items-center gap-1.5 shrink-0">
-            {/* Voice Search Mic Button */}
-            <button 
-              onClick={handleStartVoice}
-              title={isRecording ? (t.listening || 'Listening...') : (t.searchWithVoice || 'Search with voice')}
-              className={`p-1.5 rounded-lg transition-all cursor-pointer ${
-                isRecording 
-                  ? 'bg-rose-500 text-white animate-pulse' 
-                  : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-              }`}
+          {/* Voice Search Mic Button */}
+          <button 
+            id="dictionary-voice-search-btn"
+            onClick={handleStartVoice}
+            title={isRecording ? (t.listening || 'Listening...') : (t.searchWithVoice || 'Search with voice')}
+            className={`p-2 rounded-xl transition-all cursor-pointer shrink-0 ${
+              isRecording 
+                ? 'bg-[#FF3B30] text-white animate-pulse shadow-sm' 
+                : 'bg-[#F5F5F7] dark:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#EDEDF0] dark:hover:bg-[#38383A]'
+            }`}
+          >
+            <Mic className="w-3.5 h-3.5" />
+          </button>
+
+          {/* Lookup Action Button */}
+          <button 
+            id="dictionary-lookup-btn"
+            onClick={() => handleSearch()}
+            disabled={isLoading}
+            className="bg-[#007AFF] hover:bg-[#007AFF]/90 text-white px-3.5 sm:px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-95 shrink-0"
+          >
+            {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin text-white" /> : (t.lookup || 'Lookup')}
+          </button>
+
+          {/* Target Language Dropdown Selector */}
+          <div className="relative hidden md:block shrink-0">
+            <button
+              id="dictionary-target-lang-trigger"
+              onClick={() => setIsTargetOpen(!isTargetOpen)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#F5F5F7] dark:bg-[#2C2C2E] hover:bg-[#EDEDF0] dark:hover:bg-[#38383A] border border-[#D1D1D6] dark:border-[#38383A] text-[#1D1D1F] dark:text-[#F5F5F7] font-semibold text-xs transition-all cursor-pointer shadow-2xs"
+              title={t.chooseTargetLanguage || 'Choose Target Language'}
             >
-              <Mic className="w-3.5 h-3.5" />
+              <Globe className="w-3.5 h-3.5 text-[#6E6E73] dark:text-[#98989D] shrink-0" />
+              <span className="truncate max-w-[90px]">{getLocalizedLangName(targetLang, t)}</span>
+              <ChevronDown className={`w-3 h-3 text-[#8E8E93] dark:text-[#636366] shrink-0 transition-transform duration-200 ${isTargetOpen ? 'rotate-180' : ''}`} />
             </button>
 
-            {/* Lookup Action Button */}
-            <button 
-              onClick={() => handleSearch()}
-              disabled={isLoading}
-              className="bg-[#A4F5A6] hover:bg-[#8ee590] text-[#222222] px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-[11px] sm:text-xs font-black transition-all flex items-center justify-center gap-1.5 shadow-xs cursor-pointer active:scale-95 shrink-0"
-            >
-              {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin text-[#222222]" /> : (t.lookup || 'Lookup')}
-            </button>
-
-            {/* Target Language Dropdown Selector (Laptop / Desktop) - Absolute Right */}
-            <div className="relative hidden md:block shrink-0">
-              <button
-                onClick={() => setIsTargetOpen(!isTargetOpen)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200/80 border border-slate-200 text-slate-800 font-bold text-xs transition-all cursor-pointer shadow-2xs"
-                title={t.chooseTargetLanguage || 'Choose Target Language'}
-              >
-                <Globe className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                <span className="truncate max-w-[90px]">{getLocalizedLangName(targetLang, t)}</span>
-                <ChevronDown className={`w-3 h-3 text-slate-500 shrink-0 transition-transform duration-200 ${isTargetOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {/* Target Language Dropdown Menu */}
-              <AnimatePresence>
-                {isTargetOpen && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setIsTargetOpen(false)} />
-                    <motion.div
-                      initial={{ opacity: 0, y: 6, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 6, scale: 0.95 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute end-0 mt-2 w-56 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-1.5 overflow-hidden"
-                    >
-                      <div className="text-[9px] font-bold tracking-widest uppercase text-slate-500 px-2.5 py-1 border-b border-slate-100 mb-1">
-                        {t.translateTo || 'Translate To'}
-                      </div>
-                      <div className="max-h-60 overflow-y-auto flex flex-col gap-0.5 scrollbar-thin">
-                        {LANGUAGES.map((lang) => {
-                          const isSelected = targetLang === lang.name;
-                          return (
-                            <button
-                              key={`tgt-opt-${lang.code}`}
-                              onClick={() => {
-                                setIsTargetOpen(false);
-                                handleSelectLanguage(lang.name);
-                              }}
-                              className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
-                                isSelected
-                                  ? 'bg-[#091F5C] text-white font-bold shadow-xs'
-                                  : 'text-slate-700 hover:bg-slate-100'
-                              }`}
-                            >
-                              <div className="flex items-center gap-2">
-                                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-700'}`}>
-                                  {lang.code}
-                                </span>
-                                <span>{getLocalizedLangName(lang.name, t)}</span>
-                              </div>
-                              {isSelected && <Check className="w-3.5 h-3.5 text-white" />}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
-            </div>
+            {/* Target Language Dropdown Menu */}
+            <AnimatePresence>
+              {isTargetOpen && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setIsTargetOpen(false)} />
+                  <motion.div
+                    initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute end-0 mt-2 w-56 bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] rounded-2xl shadow-xl z-50 p-1.5 overflow-hidden"
+                  >
+                    <div className="text-[10px] font-semibold tracking-wider uppercase text-[#6E6E73] dark:text-[#98989D] px-2.5 py-1.5 border-b border-[#D1D1D6] dark:border-[#38383A] mb-1">
+                      {t.translateTo || 'Translate To'}
+                    </div>
+                    <div className="max-h-60 overflow-y-auto flex flex-col gap-0.5 scrollbar-thin">
+                      {LANGUAGES.map((lang) => {
+                        const isSelected = targetLang === lang.name;
+                        return (
+                          <button
+                            key={`tgt-opt-${lang.code}`}
+                            onClick={() => {
+                              setIsTargetOpen(false);
+                              handleSelectLanguage(lang.name);
+                            }}
+                            className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                              isSelected
+                                ? 'bg-[#007AFF] text-white font-semibold shadow-xs'
+                                : 'text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#F5F5F7] dark:hover:bg-[#2C2C2E]'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded ${isSelected ? 'bg-white/20 text-white' : 'bg-[#F5F5F7] dark:bg-[#2C2C2E] text-[#6E6E73] dark:text-[#98989D]'}`}>
+                                {lang.code}
+                              </span>
+                              <span>{getLocalizedLangName(lang.name, t)}</span>
+                            </div>
+                            {isSelected && <Check className="w-3.5 h-3.5 text-white stroke-[2.5]" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
           </div>
         </div>
+      </div>
 
-        {/* Word Display Area */}
-        <div className="pearl-card bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 shadow-xs rounded-3xl p-5 sm:p-6 relative order-1 md:order-2 space-y-4">
-          {isLoading && (
-            <div className="absolute inset-0 bg-[#222222]/80 backdrop-blur-xs rounded-3xl z-10 flex items-center justify-center gap-2 text-white font-semibold text-xs">
-              <Loader2 className="w-4 h-4 animate-spin text-[#A4F5A6]" />
-              <span>{t.translating || 'Translating...'}</span>
-            </div>
-          )}
-
-          <div className="flex flex-wrap items-center gap-3">
-              <h1 className="text-2xl sm:text-4xl font-black text-[#222222] dark:text-white tracking-tight leading-none">
-                {currentResult.word}
-              </h1>
-              <button 
-                onClick={() => handleSpeakText(currentResult.word, currentResult.sourceLanguage)}
-                title={t.listenToPronunciation || 'Listen to pronunciation'}
-                className={`p-2.5 border rounded-full transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 font-bold text-xs ${
-                  isPlayingAudio 
-                    ? 'bg-[#A4F5A6] text-[#222222] border-[#A4F5A6] animate-pulse shadow-md' 
-                    : 'border-[#D0D2CF] bg-[#EFF1EE] hover:bg-[#A4F5A6] text-[#222222] dark:text-white dark:bg-stone-800'
-                }`}
-              >
-                <Volume2 className="w-4 h-4" />
-                <span className="hidden sm:inline">{t.pronounce || 'Pronounce'}</span>
-              </button>
-
-              {/* Deck selector dropdown if decks available */}
-              {decks.length > 0 && (
-                <div className="relative">
-                  <select
-                    value={selectedDeckId}
-                    onChange={(e) => setSelectedDeckId(e.target.value)}
-                    className="px-2.5 py-1.5 text-[11px] font-semibold border border-[#D0D2CF] dark:border-white/10 rounded-lg bg-[#EFF1EE] dark:bg-stone-800 text-[#222222] dark:text-white outline-none cursor-pointer"
-                  >
-                    {decks.map((d) => (
-                      <option key={d.id} value={d.id}>
-                        {d.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              <button 
-                onClick={() => handleSaveWord(targetLang)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all shadow-xs cursor-pointer ${
-                  isWordSaved
-                    ? 'bg-[#A4F5A6] text-[#222222]'
-                    : 'border border-[#D0D2CF] dark:border-white/10 text-[#222222] dark:text-white hover:bg-[#EFF1EE] dark:hover:bg-stone-800'
-                }`}
-              >
-                {isWordSaved ? (
-                  <Check className="w-3.5 h-3.5" />
-                ) : (
-                  <Bookmark className="w-3.5 h-3.5 text-[#222222] dark:text-white" />
-                )}
-              </button>
-
-              <button 
-                onClick={() => handleCopy(`${currentResult.word} - ${currentResult.definition}`)}
-                title={t.copyToClipboard || 'Copy to Clipboard'}
-                className="p-1.5 border border-[#D0D2CF] dark:border-white/10 rounded-full hover:bg-[#EFF1EE] dark:hover:bg-stone-800 text-[#666666] dark:text-slate-300 cursor-pointer"
-              >
-                {copiedText === `${currentResult.word} - ${currentResult.definition}` ? (
-                  <Check className="w-3.5 h-3.5 text-emerald-600" />
-                ) : (
-                  <Copy className="w-3.5 h-3.5" />
-                )}
-              </button>
+      {/* 2. MAIN WORD & DEFINITION CARD */}
+      <div id="dictionary-word-card" className="bg-[#FFFFFF] dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] shadow-xs rounded-2xl sm:rounded-3xl p-5 sm:p-7 relative space-y-5">
+        {isLoading && (
+          <div className="absolute inset-0 bg-white/85 dark:bg-[#1C1C1E]/85 backdrop-blur-xs rounded-2xl sm:rounded-3xl z-10 flex items-center justify-center gap-2 text-[#1D1D1F] dark:text-[#F5F5F7] font-semibold text-xs">
+            <Loader2 className="w-4 h-4 animate-spin text-[#007AFF]" />
+            <span>{t.translating || 'Translating...'}</span>
           </div>
-          
-          <div className="flex items-center gap-2 mt-2.5 text-xs flex-wrap">
-            <span className="px-2 py-0.5 border border-[#D0D2CF] dark:border-white/10 rounded-md text-[10px] text-[#666666] dark:text-stone-300 uppercase tracking-wider font-semibold bg-[#EFF1EE] dark:bg-stone-800">
+        )}
+
+        {/* Word Title & Action Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            <h1 id="dictionary-word-title" className="text-2xl sm:text-4xl font-bold text-[#1D1D1F] dark:text-[#F5F5F7] tracking-tight leading-none">
+              {currentResult.word}
+            </h1>
+
+            {/* Part of Speech Pill */}
+            <span className="px-2.5 py-0.5 border border-[#007AFF]/30 dark:border-[#0A84FF]/40 rounded-full text-[10px] text-[#007AFF] dark:text-[#0A84FF] uppercase tracking-wider font-bold bg-[#007AFF]/10 dark:bg-[#0A84FF]/20">
               {currentResult.partOfSpeech}
             </span>
-            <span className="text-[#222222] dark:text-white font-bold text-[11px]">
+
+            {/* Phonetics & Language */}
+            <span className="text-[#1D1D1F] dark:text-[#F5F5F7] font-medium text-xs sm:text-sm">
               {currentResult.phonetic}
             </span>
-            <span className="text-[#666666] dark:text-stone-400 italic text-[11px]">
+            <span className="text-[#6E6E73] dark:text-[#98989D] text-xs">
               ({getLocalizedLangName(currentResult.sourceLanguage, t)})
             </span>
           </div>
 
-          <p className="mt-2.5 text-[#222222] dark:text-stone-200 text-xs sm:text-sm leading-relaxed font-medium">
-            {currentResult.definition}
-          </p>
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2">
+            {/* Pronounce Audio Button */}
+            <button 
+              id="dictionary-pronounce-btn"
+              onClick={() => handleSpeakText(currentResult.word, currentResult.sourceLanguage)}
+              title={t.listenToPronunciation || 'Listen to pronunciation'}
+              className={`p-2 sm:px-3 sm:py-1.5 border rounded-xl transition-all active:scale-95 cursor-pointer flex items-center gap-1.5 font-medium text-xs ${
+                isPlayingAudio 
+                  ? 'bg-[#007AFF] text-white border-[#007AFF] animate-pulse shadow-sm' 
+                  : 'border-[#D1D1D6] dark:border-[#38383A] bg-[#F5F5F7] dark:bg-[#2C2C2E] hover:bg-[#007AFF]/10 hover:border-[#007AFF]/50 text-[#1D1D1F] dark:text-[#F5F5F7]'
+              }`}
+            >
+              <Volume2 className="w-4 h-4" />
+              <span className="hidden sm:inline">{t.pronounce || 'Pronounce'}</span>
+            </button>
 
-          {currentResult.grammarNote && (
-            <div className="mt-2 text-[11px] bg-[#EFF1EE] dark:bg-stone-800 border border-[#D0D2CF] dark:border-white/10 text-[#222222] dark:text-stone-200 p-2.5 rounded-lg">
-              <span className="font-bold uppercase tracking-wider text-[9px] me-1.5 text-[#222222] dark:text-white">{t.grammarNote || 'Grammar Note'}:</span>
-              {currentResult.grammarNote}
-            </div>
-          )}
+            {/* Deck Selector Dropdown */}
+            {decks.length > 0 && (
+              <div className="relative">
+                <select
+                  id="dictionary-deck-select"
+                  value={selectedDeckId}
+                  onChange={(e) => setSelectedDeckId(e.target.value)}
+                  className="px-2.5 py-1.5 text-xs font-medium border border-[#D1D1D6] dark:border-[#38383A] rounded-xl bg-[#F5F5F7] dark:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] outline-none cursor-pointer hover:border-[#007AFF]/50 transition-colors"
+                >
+                  {decks.map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
-          <hr className="my-4 border-[#D0D2CF]/60 dark:border-white/10" />
+            {/* Save to Vocabulary / Bookmark */}
+            <button 
+              id="dictionary-save-vocab-btn"
+              onClick={() => handleSaveWord(targetLang)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all shadow-xs cursor-pointer ${
+                isWordSaved
+                  ? 'bg-[#34C759] text-white'
+                  : 'border border-[#D1D1D6] dark:border-[#38383A] bg-[#F5F5F7] dark:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] hover:border-[#007AFF]/50 hover:bg-[#007AFF]/10 hover:text-[#007AFF]'
+              }`}
+            >
+              {isWordSaved ? (
+                <>
+                  <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span className="hidden sm:inline">{t.saved || 'Saved'}</span>
+                </>
+              ) : (
+                <>
+                  <Bookmark className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{t.save || 'Save'}</span>
+                </>
+              )}
+            </button>
 
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-[10px] font-bold tracking-[0.15em] text-[#222222] dark:text-white uppercase flex items-center gap-1.5">
+            {/* Copy Button */}
+            <button 
+              id="dictionary-copy-btn"
+              onClick={() => handleCopy(`${currentResult.word} - ${currentResult.definition}`)}
+              title={t.copyToClipboard || 'Copy to Clipboard'}
+              className="p-2 border border-[#D1D1D6] dark:border-[#38383A] rounded-xl bg-[#F5F5F7] dark:bg-[#2C2C2E] hover:bg-[#EDEDF0] dark:hover:bg-[#38383A] text-[#6E6E73] dark:text-[#98989D] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] cursor-pointer transition-colors"
+            >
+              {copiedText === `${currentResult.word} - ${currentResult.definition}` ? (
+                <Check className="w-3.5 h-3.5 text-[#34C759] stroke-[2.5]" />
+              ) : (
+                <Copy className="w-3.5 h-3.5" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Primary English Definition */}
+        <p className="text-[#1D1D1F] dark:text-[#F5F5F7] text-sm sm:text-base leading-relaxed font-normal">
+          {currentResult.definition}
+        </p>
+
+        {/* Grammar Note */}
+        {currentResult.grammarNote && (
+          <div className="text-xs bg-[#F5F5F7] dark:bg-[#2C2C2E] border border-[#D1D1D6] dark:border-[#38383A] text-[#1D1D1F] dark:text-[#F5F5F7] p-3 rounded-xl">
+            <span className="font-semibold uppercase tracking-wider text-[10px] me-1.5 text-[#007AFF] dark:text-[#0A84FF]">
+              {t.grammarNote || 'Grammar Note'}:
+            </span>
+            {currentResult.grammarNote}
+          </div>
+        )}
+
+        <hr className="my-3 border-[#D1D1D6] dark:border-[#38383A]" />
+
+        {/* 3. TARGET TRANSLATION SECTION */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-semibold tracking-wider text-[#6E6E73] dark:text-[#98989D] uppercase flex items-center gap-1.5">
               <span>{t.translation || 'Translation'} ({getLocalizedLangName(targetLang, t)})</span>
             </h3>
-            <span className="text-[10px] text-[#666666] dark:text-stone-400">{t.selectedTargetLanguage || 'Selected Target Language'}</span>
+            <span className="text-[11px] text-[#8E8E93] dark:text-[#636366]">
+              {t.selectedTargetLanguage || 'Selected Target Language'}
+            </span>
           </div>
 
           <div className="grid grid-cols-1 gap-3">
-            {/* Translation Card - Only display the user-chosen target language */}
             {(Object.entries(currentResult.translations).filter(([langName]) => langName === targetLang).length > 0
               ? Object.entries(currentResult.translations).filter(([langName]) => langName === targetLang)
               : Object.entries(currentResult.translations).slice(0, 1)
             ).map(([langName, rawData]) => {
-                const transData = rawData as { text: string; definition: string; example?: string; flag: string };
-                const isActive = true;
-                return (
-                  <div 
-                    key={langName}
-                    className="border rounded-2xl p-4 relative shadow-xs transition-all border-[#D0D2CF] dark:border-white/10 bg-[#EFF1EE]/60 dark:bg-stone-900/60"
-                  >
-                  <div className="flex justify-between items-center mb-2.5 text-[#666666]">
-                    <div className="flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase">
-                      <FlagIcon code={transData.flag || (langName === 'Arabic' ? 'EG' : langName === 'French' ? 'FR' : 'GB')} className="w-5 h-3.5" />
-                      <span className={isActive ? 'text-[#222222] dark:text-white font-bold' : ''}>{getLocalizedLangName(langName, t)}</span>
+              const transData = rawData as { text: string; definition: string; example?: string; flag: string };
+              return (
+                <div 
+                  key={langName}
+                  className="border rounded-2xl p-4 sm:p-5 relative shadow-xs transition-all border-[#D1D1D6] dark:border-[#38383A] bg-[#F5F5F7] dark:bg-[#2C2C2E]"
+                >
+                  <div className="flex justify-between items-center mb-3">
+                    <div className="flex items-center gap-2 text-xs font-semibold tracking-wider uppercase text-[#1D1D1F] dark:text-[#F5F5F7]">
+                      <FlagIcon code={transData.flag || (langName === 'Arabic' ? 'EG' : langName === 'French' ? 'FR' : 'GB')} className="w-5 h-3.5 rounded-xs shadow-2xs" />
+                      <span>{getLocalizedLangName(langName, t)}</span>
                     </div>
 
                     <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                       <button 
                         onClick={() => handleSpeakText(transData.text, langName)}
                         title={t.pronounce || 'Pronounce'}
-                        className="p-1 hover:bg-white rounded-full text-[#222222] dark:text-stone-300 cursor-pointer"
+                        className="p-1.5 rounded-lg text-[#6E6E73] dark:text-[#98989D] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] hover:bg-[#FFFFFF] dark:hover:bg-[#1C1C1E] transition-colors cursor-pointer"
                       >
                         <Volume2 className="w-3.5 h-3.5" />
                       </button>
                       <button 
                         onClick={() => handleSaveWord(langName, transData.text, transData.definition)}
                         title={t.saveToVocab || 'Save Translation'}
-                        className="p-1 hover:bg-white rounded-full text-[#222222] dark:text-stone-300 cursor-pointer"
+                        className="p-1.5 rounded-lg text-[#6E6E73] dark:text-[#98989D] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] hover:bg-[#FFFFFF] dark:hover:bg-[#1C1C1E] transition-colors cursor-pointer"
                       >
-                        <Bookmark className="w-3.5 h-3.5 text-[#222222] dark:text-white" />
+                        <Bookmark className="w-3.5 h-3.5" />
                       </button>
                       <button 
                         onClick={() => handleCopy(transData.text)}
                         title={t.copy || 'Copy'}
-                        className="p-1 hover:bg-white rounded-full text-[#222222] dark:text-stone-300 cursor-pointer"
+                        className="p-1.5 rounded-lg text-[#6E6E73] dark:text-[#98989D] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] hover:bg-[#FFFFFF] dark:hover:bg-[#1C1C1E] transition-colors cursor-pointer"
                       >
                         <Copy className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
 
-                  <div className={`flex flex-col gap-1 ${langName === 'Arabic' ? 'text-end' : ''}`}>
+                  <div className={`flex flex-col gap-1.5 ${langName === 'Arabic' ? 'text-end' : ''}`}>
                     <div 
-                      className={`text-lg font-serif font-bold text-[#222222] dark:text-white ${isActive ? 'text-[#222222] dark:text-white' : ''}`}
+                      className="text-xl sm:text-2xl font-bold text-[#1D1D1F] dark:text-[#F5F5F7]"
                       dir={langName === 'Arabic' ? 'rtl' : 'ltr'}
                     >
                       {transData.text}
                     </div>
                     <div 
-                      className="text-[11px] text-[#666666] dark:text-stone-300 leading-normal font-sans"
+                      className="text-xs sm:text-sm text-[#6E6E73] dark:text-[#98989D] leading-relaxed"
                       dir={langName === 'Arabic' ? 'rtl' : 'ltr'}
                     >
                       {transData.definition}
                     </div>
                     {transData.example && (
-                      <div className="text-[10px] text-[#666666] dark:text-stone-400 italic mt-0.5 pt-1.5 border-t border-[#D0D2CF]/60 dark:border-white/10">
+                      <div className="text-xs text-[#8E8E93] dark:text-[#636366] italic mt-1 pt-2 border-t border-[#D1D1D6] dark:border-[#38383A]">
                         "{transData.example}"
                       </div>
                     )}
@@ -857,97 +885,90 @@ export const DictionaryView: React.FC<DictionaryViewProps> = ({
               );
             })}
           </div>
+        </div>
 
-          {/* CONTEXT & EXAMPLES, SYNONYMS, ANTONYMS SECTION */}
-          <div className="mt-6 pt-5 border-t border-[#D0D2CF]/60 dark:border-white/10 flex flex-col gap-5">
-            {/* Context & Examples Header Pill */}
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EFF1EE] dark:bg-stone-800 border border-[#D0D2CF] dark:border-white/10 text-[#222222] dark:text-white font-bold text-[11px] tracking-wider uppercase shadow-2xs">
-                <Quote className="w-3.5 h-3.5 text-[#222222] dark:text-[#A4F5A6]" />
-                <span>{t.contextSentence || 'Context & Examples'}</span>
+        {/* 4. CONTEXT & SENTENCE EXAMPLES */}
+        <div className="pt-3 border-t border-[#D1D1D6] dark:border-[#38383A] space-y-4">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F5F5F7] dark:bg-[#2C2C2E] border border-[#D1D1D6] dark:border-[#38383A] text-[#1D1D1F] dark:text-[#F5F5F7] font-semibold text-xs tracking-wider uppercase shadow-2xs">
+              <Quote className="w-3.5 h-3.5 text-[#007AFF] dark:text-[#0A84FF]" />
+              <span>{t.contextSentence || 'Context & Examples'}</span>
+            </div>
+          </div>
+
+          <div className="space-y-2.5">
+            {(currentResult.contextExamples || [
+              `Meeting her in Paris was pure ${currentResult.word}.`,
+              `Scientific discoveries often involve ${currentResult.word}.`
+            ]).map((sentence, idx) => {
+              const cleanSentence = sentence.replace(/^["'“]|["'”]$/g, '').trim();
+              return (
+                <div 
+                  key={idx}
+                  className="bg-[#F5F5F7] dark:bg-[#2C2C2E] border border-[#D1D1D6] dark:border-[#38383A] rounded-xl p-3.5 sm:p-4 flex items-center justify-between gap-3 shadow-2xs hover:border-[#007AFF]/50 dark:hover:border-[#0A84FF]/50 transition-colors"
+                >
+                  <p className="text-[#1D1D1F] dark:text-[#F5F5F7] italic text-xs sm:text-sm leading-relaxed">
+                    "{cleanSentence}"
+                  </p>
+                  <button
+                    onClick={() => handleSpeakText(cleanSentence, currentResult.sourceLanguage)}
+                    title={t.listenToPronunciation || 'Listen to sentence'}
+                    className="p-1.5 text-[#6E6E73] hover:text-[#007AFF] dark:text-[#98989D] dark:hover:text-[#0A84FF] hover:bg-[#FFFFFF] dark:hover:bg-[#1C1C1E] rounded-lg transition-colors cursor-pointer shrink-0"
+                  >
+                    <Volume2 className="w-4 h-4" />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 5. SYNONYMS & ANTONYMS */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+            {/* Synonyms */}
+            <div className="space-y-2">
+              <div className="text-xs font-semibold tracking-wider text-[#6E6E73] dark:text-[#98989D] uppercase">
+                {t.synonymsClickToLookup || 'Synonyms (Click to lookup)'}
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                {(currentResult.synonyms && currentResult.synonyms.length > 0
+                  ? currentResult.synonyms
+                  : ['chance', 'fluke', 'good fortune', 'providence']
+                ).map((syn) => (
+                  <button
+                    key={syn}
+                    onClick={() => {
+                      setSearchTerm(syn);
+                      handleSearch(syn);
+                    }}
+                    className="px-3 py-1 rounded-full border border-[#D1D1D6] dark:border-[#38383A] bg-[#FFFFFF] dark:bg-[#1C1C1E] text-[#1D1D1F] dark:text-[#F5F5F7] text-xs font-medium hover:border-[#007AFF] hover:bg-[#007AFF]/10 hover:text-[#007AFF] dark:hover:border-[#0A84FF] dark:hover:text-[#0A84FF] transition-colors cursor-pointer shadow-2xs"
+                  >
+                    {syn}
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Contextual Sentence Examples */}
-            <div>
-              <div className="text-[10px] font-bold tracking-[0.15em] text-[#666666] dark:text-stone-400 uppercase mb-3">
-                {t.contextualExamples || 'Contextual Sentence Examples'}
+            {/* Antonyms */}
+            <div className="space-y-2">
+              <div className="text-xs font-semibold tracking-wider text-[#6E6E73] dark:text-[#98989D] uppercase">
+                {t.antonyms || 'Antonyms'}
               </div>
-              <div className="flex flex-col gap-2.5">
-                {(currentResult.contextExamples || [
-                  `Meeting her in Paris was pure ${currentResult.word}.`,
-                  `Scientific discoveries often involve ${currentResult.word}.`
-                ]).map((sentence, idx) => {
-                  const cleanSentence = sentence.replace(/^["'“]|["'”]$/g, '').trim();
-                  return (
-                    <div 
-                      key={idx}
-                      className="bg-[#EFF1EE]/50 dark:bg-stone-800/40 border border-[#D0D2CF] dark:border-white/10 rounded-xl p-3.5 sm:p-4 flex items-center justify-between gap-3 shadow-2xs hover:border-[#222222] dark:hover:border-white/20 transition-colors"
-                    >
-                      <p className="text-[#222222] dark:text-stone-200 italic font-serif text-xs sm:text-sm leading-relaxed">
-                        "{cleanSentence}"
-                      </p>
-                      <button
-                        onClick={() => handleSpeakText(cleanSentence, currentResult.sourceLanguage)}
-                        title={t.listenToPronunciation || 'Listen to sentence'}
-                        className="p-1.5 text-[#666666] hover:text-[#222222] dark:hover:text-[#A4F5A6] hover:bg-white rounded-full transition-colors cursor-pointer shrink-0"
-                      >
-                        <Volume2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Synonyms & Antonyms */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-              {/* Synonyms */}
-              <div>
-                <div className="text-[10px] font-bold tracking-[0.15em] text-[#666666] dark:text-stone-400 uppercase mb-2.5">
-                  {t.synonymsClickToLookup || 'Synonyms (Click to lookup)'}
-                </div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {(currentResult.synonyms && currentResult.synonyms.length > 0
-                    ? currentResult.synonyms
-                    : ['chance', 'fluke', 'good fortune', 'providence']
-                  ).map((syn) => (
-                    <button
-                      key={syn}
-                      onClick={() => {
-                        setSearchTerm(syn);
-                        handleSearch(syn);
-                      }}
-                      className="px-3.5 py-1 rounded-full border border-[#D0D2CF] dark:border-white/10 bg-white dark:bg-stone-800 text-[#222222] dark:text-stone-200 text-xs font-medium hover:border-[#222222] hover:bg-[#A4F5A6] hover:text-[#222222] transition-colors cursor-pointer shadow-2xs"
-                    >
-                      {syn}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Antonyms */}
-              <div>
-                <div className="text-[10px] font-bold tracking-[0.15em] text-[#666666] dark:text-stone-400 uppercase mb-2.5">
-                  {t.antonyms || 'Antonyms'}
-                </div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {(currentResult.antonyms && currentResult.antonyms.length > 0
-                    ? currentResult.antonyms
-                    : ['misfortune', 'design', 'plan']
-                  ).map((ant) => (
-                    <button
-                      key={ant}
-                      onClick={() => {
-                        setSearchTerm(ant);
-                        handleSearch(ant);
-                      }}
-                      className="px-3.5 py-1 rounded-full border border-[#D0D2CF] dark:border-white/10 bg-white dark:bg-stone-800 text-[#222222] dark:text-stone-200 text-xs font-medium hover:border-[#222222] hover:bg-[#A4F5A6] hover:text-[#222222] transition-colors cursor-pointer shadow-2xs"
-                    >
-                      {ant}
-                    </button>
-                  ))}
-                </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                {(currentResult.antonyms && currentResult.antonyms.length > 0
+                  ? currentResult.antonyms
+                  : ['misfortune', 'design', 'plan']
+                ).map((ant) => (
+                  <button
+                    key={ant}
+                    onClick={() => {
+                      setSearchTerm(ant);
+                      handleSearch(ant);
+                    }}
+                    className="px-3 py-1 rounded-full border border-[#D1D1D6] dark:border-[#38383A] bg-[#FFFFFF] dark:bg-[#1C1C1E] text-[#1D1D1F] dark:text-[#F5F5F7] text-xs font-medium hover:border-[#007AFF] hover:bg-[#007AFF]/10 hover:text-[#007AFF] dark:hover:border-[#0A84FF] dark:hover:text-[#0A84FF] transition-colors cursor-pointer shadow-2xs"
+                  >
+                    {ant}
+                  </button>
+                ))}
               </div>
             </div>
           </div>

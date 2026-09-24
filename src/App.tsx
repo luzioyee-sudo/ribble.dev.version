@@ -963,7 +963,7 @@ export default function App() {
     const name = prompt('Enter a new folder name:');
     if (!name || !name.trim()) return;
 
-    const colors = ['#D67D6D', '#E2B25B', '#5BAEB6', '#222222', '#A4F5A6'];
+    const colors = ['#007AFF', '#34C759', '#FF9500', '#5856D6', '#AF52DE'];
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
     const newF: Folder = {
@@ -1491,7 +1491,7 @@ export default function App() {
 
   return (
     <div 
-      className={`min-h-screen md:h-screen md:overflow-hidden bg-[#EFF1EE] dark:bg-[#121312] text-[#222222] dark:text-[#EFF1EE] transition-colors duration-300 flex flex-col md:flex-row overflow-x-hidden ${
+      className={`min-h-screen md:h-screen md:overflow-hidden bg-[#F5F5F7] dark:bg-[#000000] text-[#1D1D1F] dark:text-[#F5F5F7] transition-colors duration-300 flex flex-col md:flex-row overflow-x-hidden ${
         isArabic ? 'font-arabic-sans' : 'font-sans'
       }`}
       dir={isArabic ? 'rtl' : 'ltr'}
@@ -1549,9 +1549,9 @@ export default function App() {
 
         {/* Upper Header (Aligned with Ribble Brand System) - Shown on Home Page for Mobile & Laptop */}
         {activeView === 'home' && (
-          <div className="grid grid-cols-3 items-center px-4 sm:px-6 pt-4 pb-3 bg-[#EFF1EE] border-b border-[#D0D2CF] shrink-0">
+          <div className="grid grid-cols-3 items-center px-4 sm:px-6 pt-4 pb-3 bg-[#F5F5F7] dark:bg-[#1C1C1E] border-b border-[#D1D1D6] dark:border-[#38383A] shrink-0">
             <div className="justify-self-start flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-[#222222] text-[#EFF1EE] flex items-center justify-center font-bold text-sm shadow-xs overflow-hidden shrink-0 ring-2 ring-white">
+              <div className="w-10 h-10 rounded-full bg-[#EDEDF0] dark:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] flex items-center justify-center font-bold text-sm shadow-xs overflow-hidden shrink-0 ring-1 ring-[#D1D1D6] dark:ring-[#38383A]">
                 <img 
                   src={getEffectiveAvatar(settings.userAvatar, activeAccount?.id || settings.userEmail || settings.userName)} 
                   alt="Avatar" 
@@ -1566,29 +1566,29 @@ export default function App() {
               />
             </div>
             <div className="justify-self-center text-center">
-              <h2 className="text-sm font-['Cabinet_Grotesk','Plus_Jakarta_Sans',sans-serif] font-bold text-[#222222] leading-tight truncate max-w-[160px]">
+              <h2 className="text-sm font-['SF_Pro_Display',-apple-system,sans-serif] font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] leading-tight truncate max-w-[160px]">
                 Hello {activeAccount?.name || settings.userName || 'User'}
               </h2>
-              <p className="text-[11px] text-[#666666] font-medium">
+              <p className="text-[11px] text-[#6E6E73] dark:text-[#98989D] font-medium">
                 Today {new Date().getDate()} {new Date().toLocaleDateString('en-US', { month: 'short' })}.
               </p>
             </div>
             <div className="justify-self-end flex items-center gap-2">
               <button
                 onClick={() => setIsQuickSearchOpen(true)}
-                className="w-10 h-10 rounded-full bg-white border border-[#D0D2CF] text-[#222222] flex items-center justify-center hover:bg-[#D0D2CF] transition-all cursor-pointer shadow-xs active:scale-95 shrink-0"
+                className="w-10 h-10 rounded-full bg-white dark:bg-[#2C2C2E] border border-[#D1D1D6] dark:border-[#38383A] text-[#1D1D1F] dark:text-[#F5F5F7] flex items-center justify-center hover:bg-[#EDEDF0] dark:hover:bg-[#38383A] transition-all cursor-pointer shadow-xs active:scale-95 shrink-0"
                 title="Search"
               >
                 <Search className="w-4.5 h-4.5 stroke-[2.2]" />
               </button>
               <button
                 onClick={() => setIsNotificationCenterOpen(true)}
-                className="w-10 h-10 rounded-full bg-white border border-[#D0D2CF] text-[#222222] flex items-center justify-center hover:bg-[#D0D2CF] transition-all cursor-pointer shadow-xs active:scale-95 shrink-0 relative"
+                className="w-10 h-10 rounded-full bg-white dark:bg-[#2C2C2E] border border-[#D1D1D6] dark:border-[#38383A] text-[#1D1D1F] dark:text-[#F5F5F7] flex items-center justify-center hover:bg-[#EDEDF0] dark:hover:bg-[#38383A] transition-all cursor-pointer shadow-xs active:scale-95 shrink-0 relative"
                 title="Notifications & Messages"
               >
                 <Bell className="w-4.5 h-4.5 stroke-[2.2]" />
                 {unreadNotificationsCount > 0 && (
-                  <span className="absolute -top-1 -end-1 w-4 h-4 bg-[#A4F5A6] text-[#222222] font-bold text-[9px] rounded-full ring-2 ring-white flex items-center justify-center">
+                  <span className="absolute -top-1 -end-1 w-4 h-4 bg-[#007AFF] text-white font-bold text-[9px] rounded-full ring-2 ring-white dark:ring-[#1C1C1E] flex items-center justify-center">
                     {unreadNotificationsCount > 9 ? '9+' : unreadNotificationsCount}
                   </span>
                 )}
@@ -1607,21 +1607,21 @@ export default function App() {
         }`}>
           {/* Top Page Navigation Bar with Back Icon Button - Only shown on Library, Flashcards, and Dictionary pages */}
           {['reader', 'flashcards', 'flashcards-view', 'dictionary', 'practice', 'quizzes', 'writing'].includes(activeView) && !(activeView === 'reader' && activeDocument) && (
-            <div className="md:hidden flex items-center justify-between mb-5 pb-3 border-b border-[#D0D2CF] shrink-0">
+            <div className="md:hidden flex items-center justify-between mb-5 pb-3 border-b border-[#D1D1D6] dark:border-[#38383A] shrink-0">
               <button
                 id="top-nav-back-button"
                 onClick={handleNavigateBack}
-                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white text-[#222222] border border-[#D0D2CF] hover:bg-[#EFF1EE] transition-all shadow-xs text-xs font-bold cursor-pointer group"
+                className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white dark:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] border border-[#D1D1D6] dark:border-[#38383A] hover:bg-[#EDEDF0] dark:hover:bg-[#38383A] transition-all shadow-xs text-xs font-semibold cursor-pointer group"
                 title="Go back to previous page"
               >
-                <ArrowLeft className="w-4 h-4 text-[#222222] group-hover:-translate-x-1 transition-transform stroke-[2.2]" />
+                <ArrowLeft className="w-4 h-4 text-[#1D1D1F] dark:text-[#F5F5F7] group-hover:-translate-x-1 transition-transform stroke-[2.2]" />
                 <span>Back</span>
               </button>
 
               {activeView === 'dictionary' ? (
                 <>
                   {/* On Desktop: Standard View Title 'Dictionary' */}
-                  <span className="hidden sm:inline text-xs font-bold text-[#222222]">
+                  <span className="hidden sm:inline text-xs font-semibold text-[#1D1D1F] dark:text-[#F5F5F7]">
                     Dictionary
                   </span>
 
@@ -1629,11 +1629,11 @@ export default function App() {
                   <div className="sm:hidden relative">
                     <button
                       onClick={() => setIsTopLangDropdownOpen(!isTopLangDropdownOpen)}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#D0D2CF] text-[#222222] font-bold text-xs shadow-xs cursor-pointer"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-[#2C2C2E] border border-[#D1D1D6] dark:border-[#38383A] text-[#1D1D1F] dark:text-[#F5F5F7] font-semibold text-xs shadow-xs cursor-pointer"
                     >
-                      <Globe className="w-3.5 h-3.5 text-[#222222]" />
+                      <Globe className="w-3.5 h-3.5 text-[#1D1D1F] dark:text-[#F5F5F7]" />
                       <span>{settings.targetLanguage || 'Arabic'}</span>
-                      <ChevronDown className={`w-3 h-3 text-[#666666] transition-transform duration-200 ${isTopLangDropdownOpen ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-3 h-3 text-[#6E6E73] dark:text-[#98989D] transition-transform duration-200 ${isTopLangDropdownOpen ? 'rotate-180' : ''}`} />
                     </button>
 
                     <AnimatePresence>
@@ -1648,9 +1648,9 @@ export default function App() {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 4, scale: 0.95 }}
                             transition={{ duration: 0.15 }}
-                            className="absolute end-0 top-full mt-2 w-48 bg-white border border-[#D0D2CF] rounded-2xl shadow-lg z-50 p-1.5 overflow-hidden"
+                            className="absolute end-0 top-full mt-2 w-48 bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] rounded-2xl shadow-lg z-50 p-1.5 overflow-hidden"
                           >
-                            <div className="text-[9px] font-bold tracking-widest uppercase text-[#666666] px-2.5 py-1 border-b border-[#D0D2CF] mb-1">
+                            <div className="text-[9px] font-semibold tracking-widest uppercase text-[#6E6E73] dark:text-[#98989D] px-2.5 py-1 border-b border-[#D1D1D6] dark:border-[#38383A] mb-1">
                               Translate To
                             </div>
                             <div className="max-h-56 overflow-y-auto flex flex-col gap-0.5 custom-scrollbar">
@@ -1666,15 +1666,15 @@ export default function App() {
                                     }}
                                     className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                                       isSelected
-                                        ? 'bg-[#A4F5A6] text-[#222222] font-bold shadow-xs'
-                                        : 'text-[#222222] hover:bg-[#EFF1EE]'
+                                        ? 'bg-[#007AFF]/10 text-[#007AFF] dark:bg-[#0A84FF]/15 dark:text-[#0A84FF] font-semibold'
+                                        : 'text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#F5F5F7] dark:hover:bg-[#2C2C2E]'
                                     }`}
                                   >
                                     <div className="flex items-center gap-2">
                                       <FlagIcon code={lang.code} className="w-5 h-3.5" />
                                       <span>{lang.name}</span>
                                     </div>
-                                    {isSelected && <Check className="w-3.5 h-3.5 text-[#222222]" />}
+                                    {isSelected && <Check className="w-3.5 h-3.5 text-[#007AFF] dark:text-[#0A84FF]" />}
                                   </button>
                                 );
                               })}
@@ -1690,13 +1690,13 @@ export default function App() {
                   {activeView === 'flashcards' && (
                     <button
                       onClick={() => setIsFlashcardsSidebarOpen(true)}
-                      className="w-11 h-11 bg-white text-[#222222] border border-[#D0D2CF] rounded-full flex items-center justify-center hover:bg-[#EFF1EE] hover:scale-105 active:scale-95 shadow-xs transition-all cursor-pointer shrink-0"
+                      className="w-11 h-11 bg-white dark:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] border border-[#D1D1D6] dark:border-[#38383A] rounded-full flex items-center justify-center hover:bg-[#EDEDF0] dark:hover:bg-[#38383A] hover:scale-105 active:scale-95 shadow-xs transition-all cursor-pointer shrink-0"
                       title="Open Card Options"
                     >
                       <div className="flex flex-col gap-[3px] w-4.5">
-                        <div className="h-[1.5px] w-full bg-[#222222] rounded-full" />
-                        <div className="h-[1.5px] w-full bg-[#222222] rounded-full" />
-                        <div className="h-[1.5px] w-full bg-[#222222] rounded-full" />
+                        <div className="h-[1.5px] w-full bg-[#1D1D1F] dark:bg-[#F5F5F7] rounded-full" />
+                        <div className="h-[1.5px] w-full bg-[#1D1D1F] dark:bg-[#F5F5F7] rounded-full" />
+                        <div className="h-[1.5px] w-full bg-[#1D1D1F] dark:bg-[#F5F5F7] rounded-full" />
                       </div>
                     </button>
                   )}
@@ -1833,14 +1833,14 @@ export default function App() {
                 className="space-y-6"
               >
                 {/* Secondary Navigation Controller */}
-                <div id="flashcards-nav-controller" className="hidden md:flex gap-2 border-b border-[#D0D2CF] pb-3 select-none flex-wrap items-center">
+                <div id="flashcards-nav-controller" className="hidden md:flex gap-2 border-b border-[#D1D1D6] dark:border-[#38383A] pb-3 select-none flex-wrap items-center">
                   <button
                     id="flashcards-tab-study"
                     onClick={() => setFlashcardsSubView('study')}
-                    className={`px-5 py-2 text-xs font-bold rounded-full transition-all cursor-pointer flex items-center gap-2 ${
+                    className={`px-5 py-2 text-xs font-semibold rounded-full transition-all cursor-pointer flex items-center gap-2 ${
                       flashcardsSubView === 'study' && !activeDeckForTab
-                        ? 'bg-[#A4F5A6] text-[#222222] shadow-xs scale-102'
-                        : 'text-[#222222] bg-white border border-[#D0D2CF] hover:bg-[#EFF1EE]'
+                        ? 'bg-[#007AFF] text-white shadow-xs'
+                        : 'text-[#1D1D1F] dark:text-[#F5F5F7] bg-white dark:bg-[#2C2C2E] border border-[#D1D1D6] dark:border-[#38383A] hover:bg-[#F5F5F7] dark:hover:bg-[#38383A]'
                     }`}
                   >
                     <GraduationCap className="w-4 h-4 shrink-0" />
@@ -1855,10 +1855,10 @@ export default function App() {
                       setOpenDecks([]);
                       setActiveDeckTabId(null);
                     }}
-                    className={`px-5 py-2 text-xs font-bold rounded-full transition-all cursor-pointer flex items-center gap-2 ${
+                    className={`px-5 py-2 text-xs font-semibold rounded-full transition-all cursor-pointer flex items-center gap-2 ${
                       flashcardsSubView === 'decks' && !activeDeckForTab
-                        ? 'bg-[#A4F5A6] text-[#222222] shadow-xs scale-102'
-                        : 'text-[#222222] bg-white border border-[#D0D2CF] hover:bg-[#EFF1EE]'
+                        ? 'bg-[#007AFF] text-white shadow-xs'
+                        : 'text-[#1D1D1F] dark:text-[#F5F5F7] bg-white dark:bg-[#2C2C2E] border border-[#D1D1D6] dark:border-[#38383A] hover:bg-[#F5F5F7] dark:hover:bg-[#38383A]'
                     }`}
                   >
                     <Layers className="w-4 h-4 shrink-0" />
@@ -1872,10 +1872,10 @@ export default function App() {
                       setOpenDecks([]);
                       setActiveDeckTabId(null);
                     }}
-                    className={`px-5 py-2 text-xs font-bold rounded-full transition-all cursor-pointer flex items-center gap-2 ${
+                    className={`px-5 py-2 text-xs font-semibold rounded-full transition-all cursor-pointer flex items-center gap-2 ${
                       flashcardsSubView === 'saved-words' && !activeDeckForTab
-                        ? 'bg-[#A4F5A6] text-[#222222] shadow-xs scale-102'
-                        : 'text-[#222222] bg-white border border-[#D0D2CF] hover:bg-[#EFF1EE]'
+                        ? 'bg-[#007AFF] text-white shadow-xs'
+                        : 'text-[#1D1D1F] dark:text-[#F5F5F7] bg-white dark:bg-[#2C2C2E] border border-[#D1D1D6] dark:border-[#38383A] hover:bg-[#F5F5F7] dark:hover:bg-[#38383A]'
                     }`}
                   >
                     <BookMarked className="w-4 h-4 shrink-0" />
@@ -1889,10 +1889,10 @@ export default function App() {
                       setOpenDecks([]);
                       setActiveDeckTabId(null);
                     }}
-                    className={`px-5 py-2 text-xs font-bold rounded-full transition-all cursor-pointer flex items-center gap-2 ${
+                    className={`px-5 py-2 text-xs font-semibold rounded-full transition-all cursor-pointer flex items-center gap-2 ${
                       flashcardsSubView === 'browse' && !activeDeckForTab
-                        ? 'bg-[#A4F5A6] text-[#222222] shadow-xs scale-102'
-                        : 'text-[#222222] bg-white border border-[#D0D2CF] hover:bg-[#EFF1EE]'
+                        ? 'bg-[#007AFF] text-white shadow-xs'
+                        : 'text-[#1D1D1F] dark:text-[#F5F5F7] bg-white dark:bg-[#2C2C2E] border border-[#D1D1D6] dark:border-[#38383A] hover:bg-[#F5F5F7] dark:hover:bg-[#38383A]'
                     }`}
                   >
                     <LayoutGrid className="w-4 h-4 shrink-0" />
@@ -1911,10 +1911,10 @@ export default function App() {
                           setActiveDeckTabId(openId);
                           setFlashcardsSubView('decks');
                         }}
-                        className={`px-4 py-1.5 text-xs font-bold rounded-s-full border transition-all cursor-pointer flex items-center gap-1.5 ${
+                        className={`px-4 py-1.5 text-xs font-semibold rounded-s-full border transition-all cursor-pointer flex items-center gap-1.5 ${
                           isActive
-                            ? 'bg-[#A4F5A6] text-[#222222] border-[#A4F5A6] shadow-xs'
-                            : 'text-[#222222] bg-white border-[#D0D2CF] hover:bg-[#EFF1EE]'
+                            ? 'bg-[#007AFF] text-white border-[#007AFF] shadow-xs'
+                            : 'text-[#1D1D1F] dark:text-[#F5F5F7] bg-white dark:bg-[#2C2C2E] border-[#D1D1D6] dark:border-[#38383A] hover:bg-[#F5F5F7] dark:hover:bg-[#38383A]'
                         }`}
                       >
                         <Layers className="w-3.5 h-3.5 shrink-0" />
@@ -1922,8 +1922,8 @@ export default function App() {
                       </button>
                       <button
                         onClick={() => handleCloseDeckTab(openId)}
-                        className={`px-2.5 py-1.5 rounded-e-full border transition-all hover:bg-red-50 hover:text-red-600 cursor-pointer ${
-                          isActive ? 'bg-[#A4F5A6] text-[#222222] border-[#A4F5A6]' : 'text-[#666666] bg-white border-[#D0D2CF]'
+                        className={`px-2.5 py-1.5 rounded-e-full border transition-all hover:bg-[#FF3B30]/10 hover:text-[#FF3B30] dark:hover:text-[#FF453A] cursor-pointer ${
+                          isActive ? 'bg-[#007AFF] text-white border-[#007AFF]' : 'text-[#8E8E93] dark:text-[#636366] bg-white dark:bg-[#2C2C2E] border-[#D1D1D6] dark:border-[#38383A]'
                         }`}
                         title="Close deck sheet tab"
                       >
@@ -2096,12 +2096,12 @@ export default function App() {
                             }}
                             className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-start border transition-all cursor-pointer ${
                               isCurrent
-                                ? 'bg-[#A4F5A6] border-[#A4F5A6] text-[#222222] shadow-xs'
-                                : 'bg-white dark:bg-stone-900 border-[#D0D2CF] dark:border-white/10 hover:bg-[#EFF1EE] dark:hover:bg-stone-800 text-[#222222] dark:text-stone-300'
+                                ? 'bg-[#007AFF] border-[#007AFF] text-white shadow-xs'
+                                : 'bg-white dark:bg-[#1C1C1E] border-[#D1D1D6] dark:border-[#38383A] hover:bg-[#F5F5F7] dark:hover:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7]'
                             }`}
                           >
-                            <IconComponent className={`w-4 h-4 shrink-0 stroke-[2] ${isCurrent ? 'text-[#222222]' : 'text-[#222222] dark:text-[#A4F5A6]'}`} />
-                            <span className="text-xs font-black truncate">{p.label}</span>
+                            <IconComponent className={`w-4 h-4 shrink-0 stroke-[2] ${isCurrent ? 'text-white' : 'text-[#1D1D1F] dark:text-[#F5F5F7]'}`} />
+                            <span className="text-xs font-semibold truncate">{p.label}</span>
                           </button>
                         );
                       })}
@@ -2285,15 +2285,15 @@ export default function App() {
       {(['home', 'dictionary', 'all-tools', 'settings', 'practice', 'quizzes', 'writing'].includes(activeView) || (activeView === 'reader' && !activeDocument)) && (
         <nav 
           aria-label="Mobile Navigation" 
-          className="fixed bottom-4 start-1/2 -translate-x-1/2 z-50 w-[310px] max-w-[92vw] mx-auto bg-white/95 text-[#222222] flex items-center justify-between py-2 px-3.5 shadow-lg rounded-full border border-[#D0D2CF] md:hidden transition-all duration-200"
+          className="fixed bottom-4 start-1/2 -translate-x-1/2 z-50 w-[310px] max-w-[92vw] mx-auto bg-white/95 dark:bg-[#1C1C1E]/95 text-[#1D1D1F] dark:text-[#F5F5F7] flex items-center justify-between py-2 px-3.5 shadow-lg rounded-full border border-[#D1D1D6] dark:border-[#38383A] md:hidden transition-all duration-200"
         >
           {/* 1. Home */}
           <button
             onClick={() => handleNavigateWithHistory('home')}
             className={`transition-all cursor-pointer flex items-center justify-center ${
               activeView === 'home' 
-                ? 'bg-[#A4F5A6] text-[#222222] px-5 py-2.5 rounded-full font-bold shadow-xs' 
-                : 'text-[#222222]/70 hover:text-[#222222] p-3 rounded-full'
+                ? 'bg-[#007AFF] text-white px-5 py-2.5 rounded-full font-semibold shadow-xs' 
+                : 'text-[#8E8E93] dark:text-[#636366] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] p-3 rounded-full'
             }`}
             title="Home"
           >
@@ -2305,8 +2305,8 @@ export default function App() {
             onClick={() => handleNavigateWithHistory('dictionary')}
             className={`transition-all cursor-pointer flex items-center justify-center ${
               activeView === 'dictionary' 
-                ? 'bg-[#A4F5A6] text-[#222222] px-5 py-2.5 rounded-full font-bold shadow-xs' 
-                : 'text-[#222222]/70 hover:text-[#222222] p-3 rounded-full'
+                ? 'bg-[#007AFF] text-white px-5 py-2.5 rounded-full font-semibold shadow-xs' 
+                : 'text-[#8E8E93] dark:text-[#636366] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] p-3 rounded-full'
             }`}
             title="Dictionary"
           >
@@ -2318,8 +2318,8 @@ export default function App() {
             onClick={() => handleNavigateWithHistory('all-tools')}
             className={`transition-all cursor-pointer flex items-center justify-center ${
               activeView === 'all-tools' 
-                ? 'bg-[#A4F5A6] text-[#222222] px-5 py-2.5 rounded-full font-bold shadow-xs' 
-                : 'text-[#222222]/70 hover:text-[#222222] p-3 rounded-full'
+                ? 'bg-[#007AFF] text-white px-5 py-2.5 rounded-full font-semibold shadow-xs' 
+                : 'text-[#8E8E93] dark:text-[#636366] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] p-3 rounded-full'
             }`}
             title="All Tools"
           >
@@ -2331,8 +2331,8 @@ export default function App() {
             onClick={() => handleNavigateWithHistory('settings')}
             className={`transition-all cursor-pointer flex items-center justify-center ${
               activeView === 'settings' 
-                ? 'bg-[#A4F5A6] text-[#222222] px-5 py-2.5 rounded-full font-bold shadow-xs' 
-                : 'text-[#222222]/70 hover:text-[#222222] p-3 rounded-full'
+                ? 'bg-[#007AFF] text-white px-5 py-2.5 rounded-full font-semibold shadow-xs' 
+                : 'text-[#8E8E93] dark:text-[#636366] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7] p-3 rounded-full'
             }`}
             title="Profile & Settings"
           >

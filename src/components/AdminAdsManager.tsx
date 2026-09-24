@@ -578,7 +578,7 @@ export const AdminAdsManager: React.FC<AdminAdsManagerProps> = ({
 
       {/* KPI Cards Strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#1D201A] border border-[#D0E4FE]/80 dark:border-stone-800 shadow-2xs">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-[#D0E4FE]/80 dark:border-stone-800 shadow-2xs">
           <div className="flex items-center justify-between text-stone-400 mb-1">
             <span className="text-[11px] font-bold uppercase tracking-wider">Active Live</span>
             <Zap className="w-4 h-4 text-emerald-500" />
@@ -588,7 +588,7 @@ export const AdminAdsManager: React.FC<AdminAdsManagerProps> = ({
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#1D201A] border border-[#D0E4FE]/80 dark:border-stone-800 shadow-2xs">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-[#D0E4FE]/80 dark:border-stone-800 shadow-2xs">
           <div className="flex items-center justify-between text-stone-400 mb-1">
             <span className="text-[11px] font-bold uppercase tracking-wider">Paused / Scheduled</span>
             <Clock className="w-4 h-4 text-amber-500" />
@@ -598,7 +598,7 @@ export const AdminAdsManager: React.FC<AdminAdsManagerProps> = ({
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#1D201A] border border-[#D0E4FE]/80 dark:border-stone-800 shadow-2xs">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-[#D0E4FE]/80 dark:border-stone-800 shadow-2xs">
           <div className="flex items-center justify-between text-stone-400 mb-1">
             <span className="text-[11px] font-bold uppercase tracking-wider">Impressions & CTR</span>
             <MousePointerClick className="w-4 h-4 text-blue-500" />
@@ -608,7 +608,7 @@ export const AdminAdsManager: React.FC<AdminAdsManagerProps> = ({
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white dark:bg-[#1D201A] border border-[#D0E4FE]/80 dark:border-stone-800 shadow-2xs">
+        <div className="p-4 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-[#D0E4FE]/80 dark:border-stone-800 shadow-2xs">
           <div className="flex items-center justify-between text-stone-400 mb-1">
             <span className="text-[11px] font-bold uppercase tracking-wider">Total Clicks</span>
             <TrendingUp className="w-4 h-4 text-[#334DAF]" />
@@ -625,7 +625,7 @@ export const AdminAdsManager: React.FC<AdminAdsManagerProps> = ({
       {subTab === 'ads' && (
         <div className="space-y-6">
           {/* Main Action Bar */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-[#1D201A] border border-[#D0E4FE]/80 dark:border-stone-800 rounded-2xl p-3.5 shadow-xs">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-[#1C1C1E] border border-[#D0E4FE]/80 dark:border-stone-800 rounded-2xl p-3.5 shadow-xs">
             {/* Filter Tabs */}
             <div className="flex items-center gap-1 overflow-x-auto pb-1 sm:pb-0">
               {(
@@ -683,7 +683,7 @@ export const AdminAdsManager: React.FC<AdminAdsManagerProps> = ({
           )}
 
           {/* ADS TABLE & HISTORY LIST */}
-          <div className="bg-white dark:bg-[#1D201A] border border-[#D0E4FE]/80 dark:border-stone-800 rounded-3xl p-6 shadow-sm space-y-4">
+          <div className="bg-white dark:bg-[#1C1C1E] border border-[#D0E4FE]/80 dark:border-stone-800 rounded-3xl p-6 shadow-sm space-y-4">
             <div className="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-3">
               <div>
                 <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm">
@@ -914,7 +914,7 @@ export const AdminAdsManager: React.FC<AdminAdsManagerProps> = ({
         <div className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Compose Notification Form */}
-            <div className="lg:col-span-7 bg-white dark:bg-[#1D201A] border border-[#D0E4FE]/80 dark:border-stone-800 rounded-3xl p-6 shadow-sm space-y-5">
+            <div className="lg:col-span-7 bg-white dark:bg-[#1C1C1E] border border-[#D0E4FE]/80 dark:border-stone-800 rounded-3xl p-6 shadow-sm space-y-5">
               <div className="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-3">
                 <h3 className="font-bold text-stone-900 dark:text-stone-100 text-sm flex items-center gap-2">
                   <Send className="w-4 h-4 text-[#334DAF]" />
@@ -1044,7 +1044,7 @@ export const AdminAdsManager: React.FC<AdminAdsManagerProps> = ({
             </div>
 
             {/* Notification History Log */}
-            <div className="lg:col-span-5 bg-white dark:bg-[#1D201A] border border-[#D0E4FE]/80 dark:border-stone-800 rounded-3xl p-5 shadow-sm space-y-4">
+            <div className="lg:col-span-5 bg-white dark:bg-[#1C1C1E] border border-[#D0E4FE]/80 dark:border-stone-800 rounded-3xl p-5 shadow-sm space-y-4">
               <div className="flex items-center justify-between border-b border-stone-100 dark:border-stone-800 pb-2.5">
                 <h4 className="font-bold text-[#091F5C] dark:text-stone-200 text-xs flex items-center gap-2">
                   <Bell className="w-3.5 h-3.5 text-[#334DAF]" />
@@ -1297,7 +1297,7 @@ export const AdminAdsManager: React.FC<AdminAdsManagerProps> = ({
                   {/* ======================================================== */}
                   {/* CARD STYLING, COLORS, FONTS & LAYOUT CONTROLS */}
                   {/* ======================================================== */}
-                  <div className="p-4 rounded-2xl bg-gradient-to-br from-stone-50 via-white to-stone-50 dark:from-stone-900 dark:via-[#1D201A] dark:to-stone-900 border border-[#334DAF]/30 space-y-4 shadow-xs">
+                  <div className="p-4 rounded-2xl bg-gradient-to-br from-stone-50 via-white to-stone-50 dark:from-stone-900 dark:via-[#1C1C1E] dark:to-stone-900 border border-[#334DAF]/30 space-y-4 shadow-xs">
                     <div className="flex items-center justify-between border-b border-[#D0E4FE]/80 dark:border-stone-800 pb-2.5">
                       <div className="flex items-center gap-2">
                         <Palette className="w-4 h-4 text-[#334DAF]" />
@@ -1820,8 +1820,8 @@ export const AdminAdsManager: React.FC<AdminAdsManagerProps> = ({
                         }}
                         className={`p-2 rounded-xl text-xs font-bold border transition-all cursor-pointer text-center ${
                           pauseDurationHours === preset.hours && !customResumeDate
-                            ? 'border-[#222222] bg-[#A4F5A6] text-[#222222] font-bold'
-                            : 'border-[#D0D2CF] dark:border-stone-800 hover:bg-[#EFF1EE] dark:hover:bg-stone-900 text-stone-700 dark:text-stone-300'
+                            ? 'border-[#222222] bg-[#34C759] text-[#222222] font-bold'
+                            : 'border-[#D1D1D6] dark:border-stone-800 hover:bg-[#F5F5F7] dark:hover:bg-stone-900 text-stone-700 dark:text-stone-300'
                         }`}
                       >
                         {preset.label}
@@ -1933,7 +1933,7 @@ export const AdminAdsManager: React.FC<AdminAdsManagerProps> = ({
                     setInspectAd(null);
                     handleOpenEditAd(adToEdit);
                   }}
-                  className="px-4 py-2 rounded-xl bg-[#222222] hover:bg-[#A4F5A6] text-[#EFF1EE] hover:text-[#222222] font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-colors"
+                  className="px-4 py-2 rounded-xl bg-[#222222] hover:bg-[#34C759] text-[#F5F5F7] hover:text-[#222222] font-bold text-xs flex items-center gap-1.5 cursor-pointer transition-colors"
                 >
                   <Edit3 className="w-3.5 h-3.5" />
                   <span>Edit Styling & Content</span>

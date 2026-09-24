@@ -153,6 +153,12 @@ export const storage = {
       return filteredSamples;
     }
 
+    // Ensure newly curated sample documents (like The Blue Notebook) are automatically visible
+    const missingSamples = filteredSamples.filter(s => !userDocs.some(u => u.id === s.id || u.title === s.title));
+    if (missingSamples.length > 0) {
+      return [...missingSamples, ...userDocs];
+    }
+
     return userDocs;
   },
 

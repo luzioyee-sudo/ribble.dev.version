@@ -268,13 +268,13 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
   // If a quiz is currently running, embed the QuizRunner cleanly with a header
   if (activeQuiz) {
     return (
-      <div id="active-quiz-container" className="w-full max-w-5xl mx-auto px-4 py-8 md:px-6 md:py-10 min-h-screen bg-[#EFF1EE]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 border-b border-[#D0D2CF]/60 pb-5">
+      <div id="active-quiz-container" className="w-full max-w-5xl mx-auto px-4 py-8 md:px-6 md:py-10 min-h-screen bg-[#F5F5F7]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 border-b border-[#D1D1D6]/60 pb-5">
           <div className="flex items-center gap-3">
             <button 
               id="quiz-back-btn"
               onClick={() => setActiveQuiz(null)}
-              className="flex items-center justify-center w-10 h-10 bg-white border border-[#D0D2CF] rounded-xl hover:bg-stone-50 transition-all cursor-pointer shadow-xs active:scale-95"
+              className="flex items-center justify-center w-10 h-10 bg-white border border-[#D1D1D6] rounded-xl hover:bg-stone-50 transition-all cursor-pointer shadow-xs active:scale-95"
               title={t.backToList || 'Return to list'}
             >
               <ArrowLeft className="w-5 h-5 text-[#222222]" />
@@ -285,10 +285,10 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-black bg-[#A4F5A6] text-[#222222] px-3 py-1 rounded-full uppercase tracking-wider">
+            <span className="text-xs font-black bg-[#34C759] text-[#222222] px-3 py-1 rounded-full uppercase tracking-wider">
               {activeQuiz.category}
             </span>
-            <span className="text-xs font-black bg-[#222222] text-[#EFF1EE] px-3 py-1 rounded-full">
+            <span className="text-xs font-black bg-[#222222] text-[#F5F5F7] px-3 py-1 rounded-full">
               {activeQuiz.level} {t.levelLabel || 'Level'}
             </span>
           </div>
@@ -317,7 +317,7 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
   }
 
   return (
-    <div id="quizzes-view-container" className="w-full max-w-7xl mx-auto px-4 py-6 md:px-8 md:py-10 min-h-screen bg-[#EFF1EE]">
+    <div id="quizzes-view-container" className="w-full max-w-7xl mx-auto px-4 py-6 md:px-8 md:py-10 min-h-screen bg-[#F5F5F7]">
       
       {/* 1. Header with Title & Live Search bar */}
       <header id="quizzes-view-header" className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-10">
@@ -338,20 +338,20 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
               placeholder={t.searchQuizzesPlaceholder || "Search quizzes..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full ps-11 pe-4 py-3 rounded-2xl border border-[#D0D2CF] bg-white text-[#222222] text-sm font-semibold placeholder:text-[#222222]/30 focus:outline-none focus:border-[#222222] focus:ring-1 focus:ring-[#222222] transition-all"
+              className="w-full ps-11 pe-4 py-3 rounded-2xl border border-[#D1D1D6] bg-white text-[#222222] text-sm font-semibold placeholder:text-[#222222]/30 focus:outline-none focus:border-[#222222] focus:ring-1 focus:ring-[#222222] transition-all"
             />
           </div>
           <button 
             id="header-notification-btn"
-            className="w-11 h-11 bg-white border border-[#D0D2CF] text-[#222222] flex items-center justify-center rounded-full hover:bg-[#D0D2CF]/20 transition-all cursor-pointer shadow-xs relative"
+            className="w-11 h-11 bg-white border border-[#D1D1D6] text-[#222222] flex items-center justify-center rounded-full hover:bg-[#D1D1D6]/20 transition-all cursor-pointer shadow-xs relative"
             title="Notifications"
           >
             <Bell className="w-4.5 h-4.5" />
-            <span className="absolute top-1 end-1 w-2.5 h-2.5 bg-[#A4F5A6] rounded-full ring-2 ring-white" />
+            <span className="absolute top-1 end-1 w-2.5 h-2.5 bg-[#34C759] rounded-full ring-2 ring-white" />
           </button>
           <div 
             id="header-avatar-circle"
-            className="w-11 h-11 bg-[#222222] text-[#EFF1EE] border border-[#222222] flex items-center justify-center rounded-full font-black text-sm select-none shadow-xs"
+            className="w-11 h-11 bg-[#222222] text-[#F5F5F7] border border-[#222222] flex items-center justify-center rounded-full font-black text-sm select-none shadow-xs"
             title={t.userProfile || "User Profile"}
           >
             ME
@@ -379,8 +379,8 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
               onClick={() => setSelectedCategory(category)}
               className={`px-5 py-2.5 rounded-2xl text-xs font-black tracking-wide whitespace-nowrap transition-all cursor-pointer ${
                 isSelected 
-                  ? 'bg-[#A4F5A6] text-[#222222] shadow-xs scale-[1.02]' 
-                  : 'bg-white border border-[#D0D2CF]/60 text-[#222222]/70 hover:bg-[#D0D2CF]/15'
+                  ? 'bg-[#34C759] text-[#222222] shadow-xs scale-[1.02]' 
+                  : 'bg-white border border-[#D1D1D6]/60 text-[#222222]/70 hover:bg-[#D1D1D6]/15'
               }`}
             >
               {label}
@@ -391,7 +391,7 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
 
       {/* 3. Recommended For You Section with Isometric 3D Blocks SVG */}
       <section id="recommended-quiz-section" className="mb-12">
-        <div className="bg-[#A4F5A6]/10 border border-[#A4F5A6]/30 p-6 md:p-8 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden shadow-xs hover:border-[#A4F5A6]/60 transition-all">
+        <div className="bg-[#34C759]/10 border border-[#34C759]/30 p-6 md:p-8 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden shadow-xs hover:border-[#34C759]/60 transition-all">
           <div className="space-y-4 max-w-xl z-10">
             <span className="text-[10px] font-black tracking-widest text-[#3b9d4e] uppercase">
               {t.recommendedForYou || 'RECOMMENDED FOR YOU'}
@@ -400,19 +400,19 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
               {t.everydayEnglishVocab || 'Everyday English Vocabulary'}
             </h2>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-bold text-[#222222]/70">
-              <span className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-[#D0D2CF]/40">
+              <span className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-[#D1D1D6]/40">
                 <BookText className="w-4 h-4 text-[#222222]/50" /> 
                 20 {t.questionsCountText || 'questions'}
               </span>
-              <span className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-[#D0D2CF]/40">
+              <span className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-[#D1D1D6]/40">
                 <Brain className="w-4 h-4 text-[#222222]/50" /> 
                 B1 {t.levelLabel || 'Level'}
               </span>
-              <span className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-[#D0D2CF]/40">
+              <span className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-[#D1D1D6]/40">
                 <Clock className="w-4 h-4 text-[#222222]/50" /> 
                 ~8 min
               </span>
-              <span className="bg-[#A4F5A6] text-[#222222] px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase">
+              <span className="bg-[#34C759] text-[#222222] px-3.5 py-1.5 rounded-full text-[10px] font-black uppercase">
                 {t.vocabularyCat || 'Vocabulary'}
               </span>
             </div>
@@ -438,12 +438,12 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
               </g>
               <g transform="translate(80, 55)">
                 <polygon points="0,-15 25,-30 50,-15 25,0" fill="#C1F9C2" />
-                <polygon points="0,-15 25,0 25,30 0,15" fill="#A4F5A6" />
+                <polygon points="0,-15 25,0 25,30 0,15" fill="#34C759" />
                 <polygon points="25,0 50,-15 50,15 25,30" fill="#7EE781" />
               </g>
               <g transform="translate(145, 45) scale(0.5)">
                 <polygon points="0,-15 25,-30 50,-15 25,0" fill="#C1F9C2" />
-                <polygon points="0,-15 25,0 25,30 0,15" fill="#A4F5A6" />
+                <polygon points="0,-15 25,0 25,30 0,15" fill="#34C759" />
                 <polygon points="25,0 50,-15 50,15 25,30" fill="#7EE781" />
               </g>
               <g transform="translate(15, 50) scale(0.4)">
@@ -457,7 +457,7 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
           <button 
             id="start-rec-quiz-btn"
             onClick={() => handleStartQuiz('everyday_english_vocab')}
-            className="px-6 py-4 bg-[#A4F5A6] text-[#222222] border border-[#222222]/15 hover:border-[#222222] font-black text-sm rounded-2xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 shrink-0 hover:shadow-xs self-start md:self-auto z-10"
+            className="px-6 py-4 bg-[#34C759] text-[#222222] border border-[#222222]/15 hover:border-[#222222] font-black text-sm rounded-2xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 shrink-0 hover:shadow-xs self-start md:self-auto z-10"
           >
             <span>{t.startQuiz || 'Start Quiz'}</span>
             <ChevronRight className="w-4 h-4 stroke-[2.5]" />
@@ -481,12 +481,12 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
         {/* Category Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {[
-            { id: 'Vocabulary', label: t.vocabularyCat || 'Vocabulary', count: `24 ${t.quizzesTitle?.toLowerCase() || 'quizzes'}`, level: 'A1 - C2', gradient: 'from-[#A4F5A6]/10', border: 'border-[#A4F5A6]/30', hover: 'hover:border-[#A4F5A6]/80', icon: BookOpen, iconCol: 'text-emerald-700 bg-[#A4F5A6]/40' },
-            { id: 'Grammar', label: t.grammarCat || 'Grammar', count: `18 ${t.quizzesTitle?.toLowerCase() || 'quizzes'}`, level: 'A1 - C2', gradient: 'from-[#B2A1FF]/10', border: 'border-[#B2A1FF]/30', hover: 'hover:border-[#B2A1FF]/80', icon: Pencil, iconCol: 'text-purple-700 bg-[#B2A1FF]/40' },
-            { id: 'Listening', label: t.listeningCat || 'Listening', count: `16 ${t.quizzesTitle?.toLowerCase() || 'quizzes'}`, level: 'A2 - C1', gradient: 'from-[#A4F5A6]/10', border: 'border-[#A4F5A6]/30', hover: 'hover:border-[#A4F5A6]/80', icon: Headphones, iconCol: 'text-emerald-700 bg-[#A4F5A6]/40' },
-            { id: 'Reading', label: t.readingCat || 'Reading', count: `12 ${t.quizzesTitle?.toLowerCase() || 'quizzes'}`, level: 'A2 - C1', gradient: 'from-[#B2A1FF]/10', border: 'border-[#B2A1FF]/30', hover: 'hover:border-[#B2A1FF]/80', icon: BookText, iconCol: 'text-purple-700 bg-[#B2A1FF]/40' },
-            { id: 'Translation', label: t.translationCat || 'Translation', count: `14 ${t.quizzesTitle?.toLowerCase() || 'quizzes'}`, level: 'A1 - C2', gradient: 'from-[#A4F5A6]/10', border: 'border-[#A4F5A6]/30', hover: 'hover:border-[#A4F5A6]/80', icon: Languages, iconCol: 'text-emerald-700 bg-[#A4F5A6]/40' },
-            { id: 'Mixed', label: t.mixedCat || 'Mixed', count: `20 ${t.quizzesTitle?.toLowerCase() || 'quizzes'}`, level: 'A1 - C2', gradient: 'from-[#B2A1FF]/10', border: 'border-[#B2A1FF]/30', hover: 'hover:border-[#B2A1FF]/80', icon: Sparkles, iconCol: 'text-purple-700 bg-[#B2A1FF]/40' },
+            { id: 'Vocabulary', label: t.vocabularyCat || 'Vocabulary', count: `24 ${t.quizzesTitle?.toLowerCase() || 'quizzes'}`, level: 'A1 - C2', gradient: 'from-[#34C759]/10', border: 'border-[#34C759]/30', hover: 'hover:border-[#34C759]/80', icon: BookOpen, iconCol: 'text-emerald-700 bg-[#34C759]/40' },
+            { id: 'Grammar', label: t.grammarCat || 'Grammar', count: `18 ${t.quizzesTitle?.toLowerCase() || 'quizzes'}`, level: 'A1 - C2', gradient: 'from-[#007AFF]/10', border: 'border-[#007AFF]/30', hover: 'hover:border-[#007AFF]/80', icon: Pencil, iconCol: 'text-purple-700 bg-[#007AFF]/40' },
+            { id: 'Listening', label: t.listeningCat || 'Listening', count: `16 ${t.quizzesTitle?.toLowerCase() || 'quizzes'}`, level: 'A2 - C1', gradient: 'from-[#34C759]/10', border: 'border-[#34C759]/30', hover: 'hover:border-[#34C759]/80', icon: Headphones, iconCol: 'text-emerald-700 bg-[#34C759]/40' },
+            { id: 'Reading', label: t.readingCat || 'Reading', count: `12 ${t.quizzesTitle?.toLowerCase() || 'quizzes'}`, level: 'A2 - C1', gradient: 'from-[#007AFF]/10', border: 'border-[#007AFF]/30', hover: 'hover:border-[#007AFF]/80', icon: BookText, iconCol: 'text-purple-700 bg-[#007AFF]/40' },
+            { id: 'Translation', label: t.translationCat || 'Translation', count: `14 ${t.quizzesTitle?.toLowerCase() || 'quizzes'}`, level: 'A1 - C2', gradient: 'from-[#34C759]/10', border: 'border-[#34C759]/30', hover: 'hover:border-[#34C759]/80', icon: Languages, iconCol: 'text-emerald-700 bg-[#34C759]/40' },
+            { id: 'Mixed', label: t.mixedCat || 'Mixed', count: `20 ${t.quizzesTitle?.toLowerCase() || 'quizzes'}`, level: 'A1 - C2', gradient: 'from-[#007AFF]/10', border: 'border-[#007AFF]/30', hover: 'hover:border-[#007AFF]/80', icon: Sparkles, iconCol: 'text-purple-700 bg-[#007AFF]/40' },
           ].map((cat) => {
             const IconComp = cat.icon;
             const isFilterActive = selectedCategory === cat.id;
@@ -514,7 +514,7 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
                 </div>
 
                 {/* Tiny bottom-right circular button */}
-                <div className="absolute bottom-4 end-4 w-7 h-7 bg-stone-100 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity border border-[#D0D2CF]/40">
+                <div className="absolute bottom-4 end-4 w-7 h-7 bg-stone-100 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity border border-[#D1D1D6]/40">
                   <ChevronRight className="w-3.5 h-3.5 text-[#222222]" />
                 </div>
               </button>
@@ -530,7 +530,7 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
         <div id="continue-section-col" className="lg:col-span-7 space-y-4">
           <h2 className="text-xl font-black text-[#222222]">Continue where you left off</h2>
           
-          <div className="bg-white border border-[#D0D2CF]/60 p-5 rounded-3xl flex flex-col sm:flex-row gap-5 items-stretch relative group hover:border-[#222222]/40 hover:shadow-xs transition-all">
+          <div className="bg-white border border-[#D1D1D6]/60 p-5 rounded-3xl flex flex-col sm:flex-row gap-5 items-stretch relative group hover:border-[#222222]/40 hover:shadow-xs transition-all">
             
             {/* Image panel */}
             <div className="relative w-full sm:w-36 h-36 shrink-0 rounded-2xl overflow-hidden shadow-xs border border-stone-200">
@@ -558,20 +558,20 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
                     <span>Progress</span>
                     <span className="font-extrabold text-[#3b9d4e]">12 / 20 questions</span>
                   </div>
-                  <div className="w-full h-1.5 bg-[#EFF1EE] rounded-full overflow-hidden">
-                    <div className="h-full bg-[#A4F5A6] rounded-full w-[60%]" />
+                  <div className="w-full h-1.5 bg-[#F5F5F7] rounded-full overflow-hidden">
+                    <div className="h-full bg-[#34C759] rounded-full w-[60%]" />
                   </div>
                 </div>
 
                 {/* Badge tags Row */}
                 <div className="flex flex-wrap gap-2">
-                  <span className="text-[10px] font-bold bg-[#EFF1EE] text-[#222222]/70 px-2.5 py-1 rounded-full border border-[#D0D2CF]/30">
+                  <span className="text-[10px] font-bold bg-[#F5F5F7] text-[#222222]/70 px-2.5 py-1 rounded-full border border-[#D1D1D6]/30">
                     Vocabulary
                   </span>
-                  <span className="text-[10px] font-bold bg-[#EFF1EE] text-[#222222]/70 px-2.5 py-1 rounded-full border border-[#D0D2CF]/30">
+                  <span className="text-[10px] font-bold bg-[#F5F5F7] text-[#222222]/70 px-2.5 py-1 rounded-full border border-[#D1D1D6]/30">
                     B1
                   </span>
-                  <span className="text-[10px] font-bold bg-[#EFF1EE] text-[#222222]/70 px-2.5 py-1 rounded-full border border-[#D0D2CF]/30">
+                  <span className="text-[10px] font-bold bg-[#F5F5F7] text-[#222222]/70 px-2.5 py-1 rounded-full border border-[#D1D1D6]/30">
                     ~10 min
                   </span>
                 </div>
@@ -581,7 +581,7 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
               <button 
                 id="continue-travel-quiz-btn"
                 onClick={() => handleStartQuiz('travel_vocab_quiz')}
-                className="px-5 py-2.5 bg-[#A4F5A6] text-[#222222] border border-[#222222]/10 hover:border-[#222222] font-black text-xs rounded-xl flex items-center justify-center gap-1 cursor-pointer transition-all active:scale-95 self-end mt-4 sm:mt-0"
+                className="px-5 py-2.5 bg-[#34C759] text-[#222222] border border-[#222222]/10 hover:border-[#222222] font-black text-xs rounded-xl flex items-center justify-center gap-1 cursor-pointer transition-all active:scale-95 self-end mt-4 sm:mt-0"
               >
                 <span>Continue</span>
                 <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
@@ -603,7 +603,7 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
             </button>
           </div>
 
-          <div className="bg-white border border-[#D0D2CF]/60 rounded-3xl p-5 divide-y divide-[#D0D2CF]/30 shadow-xs space-y-3">
+          <div className="bg-white border border-[#D1D1D6]/60 rounded-3xl p-5 divide-y divide-[#D1D1D6]/30 shadow-xs space-y-3">
             
             {/* Row 1: Airport & Travel */}
             <div 
@@ -613,7 +613,7 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
             >
               <div className="flex items-center gap-3.5">
                 {/* Circle Plane Icon */}
-                <div className="w-10 h-10 rounded-full bg-[#A4F5A6]/25 border border-[#A4F5A6]/45 text-emerald-800 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-full bg-[#34C759]/25 border border-[#34C759]/45 text-emerald-800 flex items-center justify-center shrink-0">
                   <Plane className="w-4.5 h-4.5" />
                 </div>
                 <div>
@@ -641,7 +641,7 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
             >
               <div className="flex items-center gap-3.5">
                 {/* Circle Message Icon */}
-                <div className="w-10 h-10 rounded-full bg-[#B2A1FF]/25 border border-[#B2A1FF]/45 text-purple-800 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-full bg-[#007AFF]/25 border border-[#007AFF]/45 text-purple-800 flex items-center justify-center shrink-0">
                   <MessageSquare className="w-4.5 h-4.5" />
                 </div>
                 <div>
@@ -668,7 +668,7 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
 
       {/* 6. Dynamic filtered list of individual Quizzes under active category */}
       {selectedCategory !== 'All Quizzes' && (
-        <section id="filtered-available-quizzes" className="mt-12 pt-8 border-t border-[#D0D2CF]/45">
+        <section id="filtered-available-quizzes" className="mt-12 pt-8 border-t border-[#D1D1D6]/45">
           <div className="mb-6">
             <h3 className="text-xl font-black text-[#222222]">
               Quizzes in {selectedCategory}
@@ -683,33 +683,33 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
               <div 
                 id={`quiz-card-${quiz.id}`}
                 key={quiz.id} 
-                className="bg-white border border-[#D0D2CF]/60 p-6 rounded-3xl flex flex-col justify-between hover:border-[#222222]/50 transition-all group shadow-2xs"
+                className="bg-white border border-[#D1D1D6]/60 p-6 rounded-3xl flex flex-col justify-between hover:border-[#007AFF]/50 transition-all group shadow-2xs"
               >
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between items-start gap-4">
-                    <h4 className="text-lg font-black text-[#222222] group-hover:text-[#3b9d4e] transition-colors leading-tight">
+                    <h4 className="text-lg font-black text-[#1D1D1F] group-hover:text-[#007AFF] transition-colors leading-tight">
                       {quiz.title}
                     </h4>
-                    <span className="text-[10px] font-black bg-[#EFF1EE] text-[#222222] px-2.5 py-1 rounded-full border border-[#D0D2CF]/30 uppercase tracking-wider shrink-0">
+                    <span className="text-[10px] font-black bg-[#F5F5F7] text-[#1D1D1F] px-2.5 py-1 rounded-full border border-[#D1D1D6]/30 uppercase tracking-wider shrink-0">
                       {quiz.level}
                     </span>
                   </div>
-                  <p className="text-xs md:text-sm font-semibold text-[#666666] leading-relaxed line-clamp-2">
+                  <p className="text-xs md:text-sm font-semibold text-[#6E6E73] leading-relaxed line-clamp-2">
                     {quiz.description}
                   </p>
-                  <div className="inline-block text-[9px] font-black uppercase bg-[#EFF1EE] text-[#222222] px-2.5 py-1 rounded-full border border-[#D0D2CF]/30">
+                  <div className="inline-block text-[9px] font-black uppercase bg-[#F5F5F7] text-[#1D1D1F] px-2.5 py-1 rounded-full border border-[#D1D1D6]/30">
                     {quiz.category}
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between pt-4 border-t border-[#D0D2CF]/25">
-                  <span className="text-xs font-bold text-[#666666]">
+                <div className="flex items-center justify-between pt-4 border-t border-[#D1D1D6]/25">
+                  <span className="text-xs font-bold text-[#6E6E73]">
                     {quiz.questionCount} questions • {quiz.estimatedTimeMinutes} min
                   </span>
                   <button 
                     id={`start-quiz-btn-${quiz.id}`}
                     onClick={() => handleStartQuiz(quiz.id)}
-                    className="px-4.5 py-2.5 bg-[#222222] text-[#EFF1EE] border border-[#222222] hover:bg-stone-800 rounded-xl font-black text-xs transition-all cursor-pointer active:scale-95"
+                    className="px-4.5 py-2.5 bg-[#007AFF] text-white hover:bg-[#0066D6] rounded-xl font-black text-xs transition-all cursor-pointer active:scale-95 shadow-xs"
                   >
                     Start
                   </button>

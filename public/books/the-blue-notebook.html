@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Blue Notebook — An Illustrated A2 Adventure</title>
+<style>
+@page { size: A4; margin: 16mm 15mm 17mm; }
+:root { --ink:#24313a; --paper:#fffaf2; --blue:#0f4c5c; --gold:#f3b34c; }
+* { box-sizing:border-box; }
+body { margin:0; color:var(--ink); background:#e9eef2; font-family: Georgia, 'Times New Roman', serif; line-height:1.58; font-size:11.1pt; }
+.book { max-width: 900px; margin: 0 auto; background:var(--paper); }
+.cover { min-height: 250mm; padding: 22mm 18mm 15mm; display:flex; flex-direction:column; align-items:center; justify-content:space-between; background:#fbf7ef; color:#163f50; border:1.5px solid #c7d7d8; position:relative; overflow:hidden; page-break-after:always; }
+.cover:after { content:''; position:absolute; inset:9mm; border:1px solid #d9c9a9; pointer-events:none; }
+.cover .eyebrow { text-transform:uppercase; letter-spacing:3px; font:700 9pt Arial,sans-serif; color:#53737b; text-align:center; }
+.cover h1 { font: 700 44pt Georgia,serif; line-height:1.02; text-align:center; margin:18mm 0 6mm; max-width:170mm; color:#163f50; }
+.cover .subtitle { font: 14pt Georgia,serif; text-align:center; max-width:120mm; color:#63757b; }
+.cover .cover-image { width:74mm; height:92mm; object-fit:cover; border:6px solid #fff; outline:1px solid #c7d7d8; border-radius:4px; box-shadow:0 5px 15px rgba(22,63,80,.12); margin-top:5mm; }
+.cover .footer { width:100%; display:flex; justify-content:center; font:9pt Arial,sans-serif; letter-spacing:1px; color:#53737b; }
+.intro { padding: 18mm 8mm 8mm; page-break-after:always; }
+.intro h2, .study-section h2 { color:var(--blue); font-size:20pt; margin:0 0 8px; }
+.intro .note { background:#e7f4f1; border-left:6px solid #0f766e; padding:10px 14px; border-radius:6px; }
+.chapter { padding: 12mm 5mm 10mm; page-break-before:always; border-top: 7px solid var(--accent); position:relative; }
+.chapter-kicker { color:var(--accent); font:700 9pt Arial,sans-serif; letter-spacing:2.5px; margin-bottom:4px; }
+.chapter h2 { color:var(--accent); font-size:25pt; line-height:1.1; margin:0 0 10px; }
+.chapter-body p { margin:0 0 9px; text-align:justify; }
+.chapter-body p:first-child:first-letter { float:left; font-size:38pt; line-height:.8; padding:5px 8px 0 0; color:var(--accent); }
+.scene { margin: 5px 0 16px; break-inside:avoid; }
+.scene img { display:block; width:100%; max-height:112mm; object-fit:cover; border-radius:12px; border:1px solid #d6c4a7; box-shadow:0 5px 0 rgba(36,49,58,.10); }
+.scene figcaption { text-align:center; color:#6c5a48; font:italic 9.5pt Arial,sans-serif; padding-top:4px; }
+blockquote { margin:12px 5px; padding:9px 14px; background:#fff3d9; border-left:5px solid #e7a83c; color:#5b4427; font-style:italic; break-inside:avoid; }
+.new-words { margin:14px 0 4px; padding:9px 11px; background:#eef3ff; border-radius:8px; break-inside:avoid; font:10pt Arial,sans-serif; }
+.new-words strong { color:#3156a3; display:block; margin-bottom:5px; }
+.chips { display:flex; flex-wrap:wrap; gap:5px; }
+.chip { background:white; border:1px solid #b8c7ed; border-radius:20px; padding:3px 8px; color:#334d8e; }
+.study-section { page-break-before:always; padding:12mm 5mm; }
+.study-section p { margin:0 0 10px; }
+.study-section h2 { border-bottom:3px solid #f3b34c; padding-bottom:5px; }
+.footer-note { text-align:center; color:#6c5a48; font:9pt Arial,sans-serif; padding:10mm 0; }
+@media print { body { background:var(--paper); } .book { max-width:none; } .chapter { page-break-before:always; } }
+</style>
+</head>
+<body><main class="book">
+<section class="cover">
+  <div><div class="eyebrow">Ribble Library</div><h1>The Blue<br>Notebook</h1><div class="subtitle">One small notebook. A fifty-year-old mystery. An extraordinary journey.</div></div>
+  <img class="cover-image" src="/blue-notebook-assets/01_bookshop.png" alt="Mia discovers the blue notebook in a bookshop">
+  <div class="footer"><span>London · Paris · Saint-Rémy · Scotland</span></div>
+</section>
+<section class="intro"><h2>Welcome to the adventure</h2><p class="note">Mia loves old books. One rainy Saturday, she finds a blue notebook hidden in a London bookshop. Inside is a map, a mystery, and the unfinished journey of a girl named Elise.</p><p>This illustrated edition keeps the complete story and its chapter-by-chapter vocabulary support. The color palette follows Mia's journey: rainy London blues, warm Paris golds, green Saint-Rémy, and the silver coast of Scotland.</p><div class="scene"><img src="/blue-notebook-assets/02_map_notebook.png" alt="Mia studies the map in the blue notebook"><figcaption>A map can be the beginning of a very big story.</figcaption></div></section>
+<section class="chapter" style="--accent:#0f4c5c">
+      <div class="chapter-kicker">CHAPTER 01</div>
+      <h2>The Old Bookshop</h2>
+      <figure class="scene"><img src="/blue-notebook-assets/01_bookshop.png" alt="Mia discovers the blue notebook in the old bookshop."><figcaption>Mia discovers the blue notebook in the old bookshop.</figcaption></figure>
+      <div class="chapter-body"><p>Mia was nineteen years old. She lived in London and she loved old books. Every Saturday, she visited small bookshops in the city. She liked the smell of old paper and the quiet sound of turning pages. She liked the feeling of not knowing what she would find.</p>
+<p>One rainy Saturday, Mia walked into a small bookshop near the river. The shop was dark and quiet, with narrow paths between tall shelves. An old man sat behind the desk, reading something under a small yellow lamp. He smiled at Mia but he did not speak. Water dripped from Mia's umbrella onto the wooden floor, making a small sound in the silence.</p>
+<p>Mia walked slowly between the shelves. She liked shops like this, shops where nothing was organised, where old cookbooks sat next to old poetry and forgotten maps. Some books were very old, with cracked covers and soft pages. Some books had no names on them at all. Mia liked that. She wanted to find something special, something nobody else had found before.</p>
+<p>Behind a big red book about English gardens, Mia saw something blue. It was small and thin, almost hidden between two much bigger books. She took it out carefully, using both hands. It was a notebook. The cover was blue and soft, like old leather, worn smooth at the corners from years of being carried in someone's pocket or bag. There was no name on it, no title, nothing to say who it belonged to.</p>
+<p>Mia opened the notebook slowly. Inside, there was small, careful handwriting, filling almost every page. The words were not in English. They were in French, a language Mia only half-remembered from school. There were also small drawings between the sentences — a map, a bridge, a tower, and a house with a red door. The pages were yellow with age, soft at the edges.</p>
+<blockquote>&quot;Excuse me,&quot; Mia said to the old man, walking to the desk. &quot;How much is this notebook?&quot;</blockquote>
+<p>The old man took it from her carefully, almost gently, and looked at it for a long moment. His face changed. He looked surprised, almost worried, the way people look when they see something from a long time ago.</p>
+<blockquote>&quot;That notebook is not for sale,&quot; he said quietly, still holding it. &quot;But you can have it. It found you. Not the other way around.&quot;</blockquote>
+<blockquote>&quot;What do you mean?&quot; Mia asked, confused.</blockquote>
+<p>The old man only shook his head and smiled a strange, small smile, the kind of smile that keeps a secret. &quot;Some books choose their reader,&quot; he said. &quot;This one chose you. I have had it on that shelf for fifteen years. Nobody ever noticed it before today.&quot;</p>
+<p>Mia did not fully understand, but she said thank you and took the notebook back. She put it carefully in her bag and walked out into the rain. Outside, the city looked the same as always — red buses, black umbrellas, grey sky — but Mia felt different. She felt like something new was about to begin, and she did not yet know what.</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">notebook</span><span class="chip">shelf/shelves</span><span class="chip">leather</span><span class="chip">handwriting</span><span class="chip">drawing</span><span class="chip">bridge</span><span class="chip">drip</span><span class="chip">cracked</span></div></div></div>
+    </section><section class="chapter" style="--accent:#d97706">
+      <div class="chapter-kicker">CHAPTER 02</div>
+      <h2>The Blue Notebook</h2>
+      <figure class="scene"><img src="/blue-notebook-assets/02_map_notebook.png" alt="The notebook opens a path into the past."><figcaption>The notebook opens a path into the past.</figcaption></figure>
+      <div class="chapter-body"><p>That night, Mia sat on her bed with a cup of tea and opened the notebook again. Rain tapped softly against her window, and the city outside hummed quietly with distant traffic. She could read a little French from school, but not everything, so she kept her phone next to her to check the words she did not know.</p>
+<p>Some pages had dates written carefully in the corner. The first date was fifty years ago, in a small, neat hand.</p>
+<p>On the very first page, under the date, there was a name: Elise.</p>
+<p>Mia read slowly, moving her finger under each line, whispering some words out loud to help herself understand:</p>
+<blockquote>&quot;Today I leave London. I am afraid, but I am also happy. My grandmother's ring is somewhere in France. I must find it before my mother sells the old house.&quot;</blockquote>
+<p>Under the words, there was a small hand-drawn map. It showed London, then a line curving to Paris, then another, thinner line to a small village further south. Little symbols were drawn carefully next to each place: a bridge near London, a small cup of coffee near Paris, and a tree near the village.</p>
+<p>Mia's heart beat faster as she turned the pages. This was not just an old notebook full of pretty drawings. It was a real story, written by a real girl. A real girl, named Elise, went on a journey fifty years ago, looking for something that mattered to her. And maybe — Mia turned the pages faster now, searching — maybe she never finished it.</p>
+<p>She reached the last page. It was empty. No ending, no final word, nothing.</p>
+<blockquote>&quot;What happened to you, Elise?&quot; Mia whispered into the quiet room, surprising herself by speaking out loud.</blockquote>
+<p>She sat back against her pillow and thought about her own life. She was a student. She studied hard, worked part-time in a coffee shop, and watched the same three television shows every single evening. Nothing exciting ever happened to her. Nothing had ever felt as important, or as strange, or as alive, as this small blue notebook felt right now, in her hands.</p>
+<p>She decided something important that night, lying there in the dark with the rain still falling outside: she wanted to follow the map. She wanted to find out what happened to Elise, and if she could, she wanted to finish the journey that Elise had started and never completed.</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">village</span><span class="chip">journey</span><span class="chip">grandmother</span><span class="chip">ring</span><span class="chip">whisper</span><span class="chip">symbol</span><span class="chip">curve</span><span class="chip">pillow</span></div></div></div>
+    </section><section class="chapter" style="--accent:#7c3aed">
+      <div class="chapter-kicker">CHAPTER 03</div>
+      <h2>A Question for Mia</h2>
+      <div class="chapter-body"><p>The next morning, over breakfast, Mia told her roommate, Sarah, about the notebook.</p>
+<blockquote>&quot;You want to do what?&quot; Sarah asked, laughing a little, her spoon stopping halfway to her mouth. &quot;Follow a fifty-year-old map to find a stranger's ring, in another country? Mia, that sounds completely crazy.&quot;</blockquote>
+<blockquote>&quot;I know it sounds crazy,&quot; Mia said, pushing the notebook across the table. &quot;But look at this.&quot;</blockquote>
+<p>Sarah wiped her hands and picked it up carefully. She looked at the drawings, the careful dates, the small, neat handwriting that covered every page. Her smile slowly disappeared, replaced by something softer, more thoughtful.</p>
+<blockquote>&quot;It's kind of beautiful, actually,&quot; she said quietly. &quot;And sad, too. She never finished it. Whoever she was.&quot;</blockquote>
+<blockquote>&quot;That's exactly why I want to go,&quot; Mia said. &quot;Somebody should finish it for her. It feels wrong to just... leave it unfinished, forever, in a drawer somewhere.&quot;</blockquote>
+<p>Sarah shook her head, but she was smiling again, a real smile this time. &quot;You always do this, you know. You find one small, strange thing that nobody else even notices, and suddenly it becomes the most important thing in the entire world.&quot;</p>
+<blockquote>&quot;Is that a bad thing?&quot; Mia asked, half-worried, half-hopeful.</blockquote>
+<blockquote>&quot;No,&quot; Sarah said simply, handing the notebook back. &quot;It's actually my favourite thing about you. I mean it. Just... text me every day, okay? And be careful.&quot;</blockquote>
+<p>That evening, Mia called her mother, sitting on the floor of her bedroom with the notebook open on her lap. Her mother was quiet on the phone for a long moment after Mia finished explaining everything.</p>
+<blockquote>&quot;Be careful,&quot; her mother finally said, her voice warm but serious. &quot;Take care of your money, and always tell someone where you are. But also... I think you should go. You always wanted an adventure, ever since you were small. You used to draw your own maps, remember? Maybe this is finally it.&quot;</blockquote>
+<p>Mia smiled, remembering. She had almost forgotten that. &quot;Thank you, Mum,&quot; she said quietly.</p>
+<p>She put down the phone and looked at the blue notebook on her table, sitting quietly in the lamp light. Tomorrow, she decided, she would call Tom. If anyone could help her understand old French handwriting and unfamiliar European cities, it was him.</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">roommate</span><span class="chip">stranger</span><span class="chip">disappear</span><span class="chip">adventure</span><span class="chip">unfamiliar</span></div></div></div>
+    </section><section class="chapter" style="--accent:#be123c">
+      <div class="chapter-kicker">CHAPTER 04</div>
+      <h2>A New Friend</h2>
+      <div class="chapter-body"><p>The next day, Mia called her friend Tom. Tom studied history at university, and he loved old stories, old buildings, and old maps more than almost anything else. He always knew strange, small facts about places that nobody else seemed to remember.</p>
+<blockquote>&quot;Tom, I found something amazing. Can you come to my flat? Right now, if you can,&quot; Mia said, unable to keep the excitement out of her voice.</blockquote>
+<p>Tom arrived less than an hour later, slightly out of breath from running up the stairs two at a time. Mia showed him the notebook immediately, before he had even taken off his coat. Tom sat down at the kitchen table and read the French words carefully, moving his finger slowly under each line, sometimes stopping to mutter a translation under his breath.</p>
+<blockquote>&quot;This is incredible,&quot; Tom said finally, looking up with wide eyes. &quot;Elise wrote about a bridge in London, a café in Paris, and a house with a red door in a small village. I think these are clues, Mia. Like a real treasure hunt, except it's fifty years old.&quot;</blockquote>
+<blockquote>&quot;Do you want to help me find the answers?&quot; Mia asked, though she already knew what he would say.</blockquote>
+<p>Tom smiled, and his eyes lit up the way they always did when he found something genuinely interesting. &quot;Of course I do. When do we start? Today? Now?&quot;</p>
+<p>They spread the small hand-drawn map out on the kitchen table, both leaning over it, tracing the thin lines with their fingers. The first clue, they agreed, was clearly somewhere in London — a bridge near the river, with two tall towers.</p>
+<blockquote>&quot;There's only one famous bridge like that,&quot; Tom said confidently. &quot;Tower Bridge. It has to be.&quot;</blockquote>
+<p>Mia closed the notebook carefully and stood up, suddenly full of energy. &quot;Let's go now,&quot; she said. &quot;Before I have time to change my mind.&quot;</p>
+<p>Outside, the rain had finally stopped, and pale sunlight was breaking through the grey clouds, making the wet London streets shine like polished glass. They took the bus across the city, sitting together near the front window, watching the familiar streets pass by, both of them quietly excited about what they might find.</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">treasure hunt</span><span class="chip">clue</span><span class="chip">famous</span><span class="chip">tower</span><span class="chip">incredible</span><span class="chip">mutter</span><span class="chip">polish</span></div></div></div>
+    </section><section class="chapter" style="--accent:#0f766e">
+      <div class="chapter-kicker">CHAPTER 05</div>
+      <h2>Under Tower Bridge</h2>
+      <div class="chapter-body"><p>Mia and Tom stood beneath Tower Bridge, looking up at its tall blue towers against the grey London sky. Tourists walked all around them, taking photographs of the bridge, the river, and the boats moving slowly below.</p>
+<blockquote>&quot;Look at the drawing again,&quot; Tom said, and Mia opened the notebook to the small sketch of the bridge.</blockquote>
+<p>Next to the drawing, in Elise's careful handwriting, were the words: &quot;Under the north tower, there is a small door. Behind the door, there is a box for people who cannot go home.&quot;</p>
+<blockquote>&quot;A box for people who cannot go home?&quot; Mia repeated, frowning. &quot;What on earth does that mean?&quot;</blockquote>
+<p>Tom thought for a moment, tapping his chin the way he always did when he was thinking hard. &quot;Maybe... a post box? For letters that people couldn't deliver themselves, because they were far away, or because they had already left?&quot;</p>
+<p>They walked slowly around the base of the north tower, examining every stone, every shadow. Near the bottom, half-hidden by ivy, they found an old, small door, painted a dark, peeling green. It was firmly locked, but right next to it, fixed to the stone wall, was a small metal box with rusty edges and an old-fashioned keyhole.</p>
+<blockquote>&quot;How do we even open it?&quot; Mia asked, half-expecting nothing to happen.</blockquote>
+<p>Tom pulled gently at the small door on the box, and to their surprise, it was not fully closed — the old lock had rusted just enough to leave a small gap. Mia reached inside carefully. Her fingers found something cold and metal, then something softer, paper.</p>
+<p>Inside was an old iron key and a small piece of paper, folded many times into a tight little square.</p>
+<p>Unfolding it carefully, Mia read the faded words: &quot;Take the train to Paris. Go to Café Belle Vue. Ask for Madame Dubois.&quot;</p>
+<p>Tom's eyes were wide with disbelief. &quot;Mia... I think we're really doing this. We're actually following her.&quot;</p>
+<p>Mia held the old key tightly in her palm, feeling its cold, unexpected weight. &quot;Paris,&quot; she said, looking up at Tom with a small, nervous smile. &quot;Let's go.&quot;</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">tourist</span><span class="chip">locked</span><span class="chip">rusty</span><span class="chip">key</span><span class="chip">keyhole</span><span class="chip">weight</span><span class="chip">ivy</span><span class="chip">unfold</span></div></div></div>
+    </section><section class="chapter" style="--accent:#2563eb">
+      <div class="chapter-kicker">CHAPTER 06</div>
+      <h2>Packing for Paris</h2>
+      <div class="chapter-body"><p>That evening, Mia packed a small suitcase on her bedroom floor. She folded two shirts, a warm jumper, a pair of jeans, and her favourite paperback book, the one she always brought on trips but rarely finished. She also packed the blue notebook, wrapped carefully in a soft scarf so that it would not get damaged during the journey.</p>
+<p>Sarah watched from the doorway, arms crossed, trying to look serious and failing completely. &quot;Text me every single day,&quot; she said. &quot;And send photos. I want to see everything — the bridge, the café, all of it.&quot;</p>
+<blockquote>&quot;I will, I promise,&quot; Mia said, zipping her bag closed.</blockquote>
+<p>Tom booked two train tickets online, sitting cross-legged on Mia's bed with his laptop balanced on his knees. &quot;The train leaves tomorrow morning at nine o'clock,&quot; he said. &quot;Can you be at the station by half past eight?&quot;</p>
+<blockquote>&quot;I'll be there,&quot; Mia said. &quot;I won't be late. Not for this.&quot;</blockquote>
+<p>That night, Mia could not sleep. She lay in bed for a long time, listening to the ordinary sounds of the city outside her window — cars passing, distant music from a neighbour's flat, a dog barking somewhere far away. She thought about Elise, about the old man in the bookshop, about a woman named Madame Dubois, someone she did not know yet but would soon meet, if everything went well.</p>
+<p>She thought: What if we find nothing at all? What if the ring is gone forever, lost, or sold, or simply forgotten?</p>
+<p>But another thought was stronger, and it kept her awake even longer: What if we do find it? What if this journey really matters, not just to Mia, but to somebody else too?</p>
+<p>In the morning, Mia woke up early, before her alarm even had the chance to ring. She dressed quickly, checked her bag three times to make sure she had not forgotten anything important, and looked at herself in the small mirror by her door.</p>
+<blockquote>&quot;Okay,&quot; she said quietly to her own reflection, taking a slow breath. &quot;Let's go.&quot;</blockquote>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">suitcase</span><span class="chip">jumper</span><span class="chip">scarf</span><span class="chip">damaged</span><span class="chip">alarm</span><span class="chip">reflection</span><span class="chip">neighbour</span></div></div></div>
+    </section><section class="chapter" style="--accent:#0f4c5c">
+      <div class="chapter-kicker">CHAPTER 07</div>
+      <h2>The Train to Paris</h2>
+      <div class="chapter-body"><p>Mia and Tom sat side by side on the Eurostar, the fast train that travels under the sea, from London to Paris, in only about two hours. Mia had never travelled under the sea before, and she found the whole idea both strange and quietly thrilling.</p>
+<blockquote>&quot;I've never actually been to Paris before,&quot; Mia admitted, looking out of the window as the green English countryside rushed past in a blur.</p>
+<blockquote>&quot;Me neither,&quot; Tom said. &quot;But I know a little French, from school and from books. I can help us get around, at least.&quot;</blockquote>
+<p>They talked quietly about Elise for most of the journey. Why did she leave home so suddenly? Who exactly was Madame Dubois, and why did Elise trust her with such an important secret? And why, most of all, was there a ring hidden somewhere in the French countryside at all?</p>
+<blockquote>&quot;Maybe the ring was very special,&quot; Mia said, watching the fields go by. &quot;Maybe it belonged to someone very important in Elise's family, someone whose memory really mattered.&quot;</blockquote>
+<blockquote>&quot;Or maybe,&quot; Tom said thoughtfully, &quot;there's a bigger story underneath it all. A story about love, or about a family secret nobody ever talked about.&quot;</blockquote>
+<p>The train went briefly dark as it entered the long tunnel beneath the sea. Mia felt a small shiver of excitement run through her. Somewhere far above them, fish swam quietly through the dark water, and somewhere ahead of them, a fifty-year-old mystery was waiting patiently to be solved, one clue at a time.</p>
+<p>Twenty minutes later, the train emerged into bright daylight again. The fields outside looked subtly different now — the houses had different, redder roofs, the road signs were written in a different language. They were, unmistakably, in France.</p>
+<p>The train pulled into Paris in the early afternoon. The station was enormous, crowded, and loud, full of hurrying people and announcements echoing through the high glass ceiling in rapid French.</p>
+<blockquote>&quot;Excuse me — where's Café Belle Vue?&quot; Tom asked a woman standing near a ticket machine.</blockquote>
+<p>She smiled kindly and gave them careful directions in slow, accented English. &quot;It is near the river. Not so far. You can walk there easily, if you like.&quot;</p>
+<p>Mia and Tom thanked her, then walked out of the station and into the busy streets of Paris, pulling their suitcases behind them over the uneven pavement.</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">journey</span><span class="chip">direction</span><span class="chip">station</span><span class="chip">secret</span><span class="chip">tunnel</span><span class="chip">shiver</span><span class="chip">announcement</span><span class="chip">emerge</span></div></div></div>
+    </section><section class="chapter" style="--accent:#d97706">
+      <div class="chapter-kicker">CHAPTER 08</div>
+      <h2>Paris at Night</h2>
+      <figure class="scene"><img src="/blue-notebook-assets/03_paris_clue.png" alt="In Paris, an old friend remembers Elise."><figcaption>In Paris, an old friend remembers Elise.</figcaption></figure>
+      <div class="chapter-body"><p>Café Belle Vue was small and warm, glowing with soft yellow lights and decorated with old black-and-white photographs on every wall. It was already evening by the time Mia and Tom finally arrived, tired and hungry from the long walk across the city with their heavy bags.</p>
+<p>A woman stood behind the counter, wiping cups with a cloth. She looked to be around seventy years old, with grey hair tied neatly back and sharp, kind eyes that seemed to notice everything at once.</p>
+<blockquote>&quot;Excuse me,&quot; Mia said nervously, stepping forward. &quot;Are you... Madame Dubois?&quot;</blockquote>
+<p>The woman's face changed instantly, just like the old man's had, back in the London bookshop.</p>
+<blockquote>&quot;Nobody has called me that name in a very long time,&quot; she said softly, setting down the cup she was holding. &quot;Who are you? And — wait. Where did you get that notebook?&quot;</blockquote>
+<p>Mia looked down and realised, with a small jolt, that the blue notebook was already half out of her open bag, its familiar cover clearly visible.</p>
+<p>She took it out fully and held it up. Madame Dubois raised a trembling hand to her mouth.</p>
+<blockquote>&quot;Elise's notebook,&quot; she whispered, her eyes suddenly bright with tears. &quot;I never, ever thought I would see this again, not in my whole life.&quot;</blockquote>
+<p>She quickly invited Mia and Tom to sit at a small table by the window, brought them hot tea and warm bread with butter, and sat down across from them, her hands still trembling slightly around her own cup.</p>
+<blockquote>&quot;Elise was my very best friend,&quot; Madame Dubois began. &quot;Fifty years ago, we were young — just like the two of you are now. She came here, to Paris, to find her grandmother's ring. Her family owned an old house in a small village, near the mountains, far to the south. But something happened, something that changed everything...&quot;</blockquote>
+<p>She stopped speaking suddenly. Her eyes looked far away, lost somewhere in the past, remembering something clearly painful.</p>
+<blockquote>&quot;What happened?&quot; Mia asked gently, almost afraid to break the silence.</blockquote>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">counter</span><span class="chip">photograph</span><span class="chip">nervous</span><span class="chip">invite</span><span class="chip">mountain</span><span class="chip">tremble</span><span class="chip">jolt</span></div></div></div>
+    </section><section class="chapter" style="--accent:#7c3aed">
+      <div class="chapter-kicker">CHAPTER 09</div>
+      <h2>Madame Dubois's Story</h2>
+      <div class="chapter-body"><p>Madame Dubois told them the whole story slowly, choosing each word with great care, as though she were handling something fragile.</p>
+<blockquote>&quot;Elise's grandmother lived her whole life in a village called Saint-Rémy. Before she died, she secretly hid her wedding ring somewhere in the old family house, because she no longer trusted Elise's mother — they had argued bitterly for years, about money, about the house, about many small things that grew into large ones. The grandmother wanted only Elise to find the ring, because Elise was the only person in the family who ever visited her simply to see her, without asking for anything in return.</blockquote>
+<blockquote>&quot;Elise travelled to Paris and stayed with me for exactly one week. We searched for clues together, just as you two are doing now. We laughed constantly that week, do you know. We felt like detectives in an old film, completely certain that nothing could stop us.</blockquote>
+<blockquote>&quot;But then, one evening, Elise received an urgent telephone call. Her mother had fallen seriously ill, back home in London. Elise had to leave immediately, that same night. She left behind her bag, most of her notes, almost everything except the notebook itself, and ran to catch the very last train. She never came back to finish what she had started.&quot;</blockquote>
+<blockquote>&quot;Did she ever return, later on?&quot; Tom asked quietly.</blockquote>
+<p>Madame Dubois shook her head slowly, sadly. &quot;No. Life simply became busy, the way it always does, without anyone deciding it should. Her mother recovered, thankfully, but then Elise fell in love, got married, had children of her own, and eventually moved away to another country entirely. For many years, we wrote long letters back and forth, full of news and old memories and small jokes between old friends. But slowly, without either of us truly deciding to stop, the letters became fewer, and then they stopped altogether. I do not know exactly what happened to her after that. I only know that she never once forgot about that ring. Even in her very last letter, more than twenty years ago now, she still mentioned it.&quot;</p>
+<p>Mia felt something warm and unexpectedly strong swell inside her chest. &quot;I want to finish it,&quot; she said firmly. &quot;For Elise. And for you, too, Madame Dubois.&quot;</p>
+<p>Madame Dubois looked up and smiled properly for the very first time that evening, a full, genuine smile that reached all the way to her eyes. &quot;Then I will help you,&quot; she said. &quot;I still remember the road to Saint-Rémy, even after all of these years. Some roads, it seems, you never truly forget.&quot;</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">fragile</span><span class="chip">trust</span><span class="chip">argue</span><span class="chip">detective</span><span class="chip">recover</span><span class="chip">eventually</span><span class="chip">swell</span></div></div></div>
+    </section><section class="chapter" style="--accent:#be123c">
+      <div class="chapter-kicker">CHAPTER 10</div>
+      <h2>The Paris Market</h2>
+      <div class="chapter-body"><p>The next morning, before setting off south, Mia and Tom found they had a few free hours to spare. Madame Dubois suggested they visit the small street market that opened every morning near her café.</p>
+<blockquote>&quot;See a little of Paris properly, before you leave it again,&quot; she said, smiling as she handed them fresh coffee in paper cups.</blockquote>
+<p>The market was wonderfully loud and colourful, full of noise and smells and movement. Stalls sold soft cheeses, bright flowers, warm bread straight from the oven, ripe fruit, and small, hand-painted pictures of the city. Mia bought a warm, flaky croissant and ate it while walking slowly between the stalls, still quietly amazed by how different everything smelled and sounded compared to grey, familiar London.</p>
+<blockquote>&quot;Look at this,&quot; Tom said suddenly, holding up an old postcard from a dusty stall. It showed Tower Bridge, drawn almost exactly like the small sketch in Elise's notebook, down to the same angle and shadows.</blockquote>
+<blockquote>&quot;Maybe it's a sign,&quot; Mia joked, though part of her almost believed it.</blockquote>
+<p>They wandered happily between the stalls for nearly an hour, laughing, tasting small pieces of cheese offered by friendly sellers, forgetting for a little while about rings and old letters and fifty-year-old mysteries. It simply felt good to enjoy an ordinary morning together, like any two friends on holiday.</p>
+<p>Then, quite suddenly, a young man in a dark jacket bumped hard into Mia's shoulder, mumbled a quick, unclear apology in rapid French, and disappeared instantly into the moving crowd.</p>
+<blockquote>&quot;Wait — my wallet!&quot; Tom shouted, patting frantically at his pockets.</blockquote>
+<p>For one terrible, frozen second, Tom's pockets seemed completely empty. Mia's heart jumped painfully. But then Tom laughed loudly with sudden relief, pulling his wallet triumphantly out from his jacket's inside pocket, exactly where he had put it that morning.</p>
+<blockquote>&quot;It's here, it's fine,&quot; he said, still laughing a little at himself. &quot;I just forgot where I'd put it. Sorry — false alarm.&quot;</blockquote>
+<p>Mia laughed too, more from relief than from the joke itself. &quot;Let's be a bit more careful from now on,&quot; she said, taking his arm. &quot;We still have a long journey ahead of us.&quot;</p>
+<p>They finished their coffee slowly, said a warm goodbye to Madame Dubois with long hugs at the café door, and walked together to the train station, ready and excited for the next part of their journey south.</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">stall</span><span class="chip">croissant</span><span class="chip">mumble</span><span class="chip">apology</span><span class="chip">relief</span><span class="chip">hug</span><span class="chip">frantic</span></div></div></div>
+    </section><section class="chapter" style="--accent:#0f766e">
+      <div class="chapter-kicker">CHAPTER 11</div>
+      <h2>Lost in the Metro</h2>
+      <div class="chapter-body"><p>Before leaving the busy city centre, Mia and Tom decided to take the Paris metro to reach the main train station a little faster. But Paris's underground metro turned out to be enormous and thoroughly confusing, with dozens of coloured lines crossing and re-crossing beneath the city.</p>
+<blockquote>&quot;This definitely isn't the right platform,&quot; Tom said, turning a large wall map in different directions, trying desperately to understand it.</blockquote>
+<blockquote>&quot;We're completely lost,&quot; Mia said, glancing anxiously at her watch. &quot;And our train to Saint-Rémy leaves in less than an hour.&quot;</blockquote>
+<p>They stopped a young man walking past with headphones around his neck and asked for help. He turned out to be friendly, patient, and spoke very good English.</p>
+<blockquote>&quot;You need line four, then you change onto line one,&quot; he explained clearly, tracing the coloured lines with his finger on the map. &quot;Here, come with me — it's on my way anyway, more or less.&quot;</blockquote>
+<p>He walked with them all the way to the correct platform, chatting easily about his own studies and his love of travelling to new places, seemingly in no hurry at all despite helping two total strangers.</p>
+<p>Mia thanked him warmly, several times, as their train finally rumbled into the station. &quot;People really are kind,&quot; Mia said quietly to Tom, once they had found seats. &quot;Even here, in a huge city we barely understand at all.&quot;</p>
+<blockquote>&quot;Maybe that's exactly what Elise learned too,&quot; Tom said thoughtfully, &quot;in this very same city, fifty years ago.&quot;</blockquote>
+<p>They reached the main station with only minutes to spare, running the final hundred metres with their suitcases bouncing noisily behind them across the tiled floor, and jumped through the train doors just as they began, with a warning beep, to slide firmly closed.</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">confusing</span><span class="chip">platform</span><span class="chip">headphones</span><span class="chip">chat</span><span class="chip">bounce</span><span class="chip">rumble</span></div></div></div>
+    </section><section class="chapter" style="--accent:#2563eb">
+      <div class="chapter-kicker">CHAPTER 12</div>
+      <h2>The Letter</h2>
+      <div class="chapter-body"><p>The train moved steadily south, out of the city and into open French countryside. Green fields, small stone farms, and clusters of old houses passed slowly by the window, all bathed in warm, golden afternoon light.</p>
+<p>Sometime during the long journey, Mia looked through the notebook once more, more slowly and carefully than before. Near the very back, tucked between two pages, she noticed something she had completely missed until now — a small, tightly folded letter, hidden inside a thin pocket carefully sewn into the notebook's soft cover.</p>
+<p>She worked it free and opened it gently, her fingers trembling slightly with anticipation. It was written in English this time, in handwriting quite different from Elise's — older, shakier, clearly written by a much older hand.</p>
+<blockquote>&quot;My dearest Elise, I am sorry I could not wait for you. If you read this one day, know that I kept your ring safe, in the garden, under the old oak tree, inside a small stone box. I hope you find peace, wherever your life takes you. With love, always, Grandmother.&quot;</blockquote>
+<p>Mia felt her eyes fill with tears she had not at all expected. &quot;Tom — look at this. Read it.&quot;</p>
+<p>Tom read the short letter twice, in complete silence. &quot;So the grandmother somehow knew Elise might not make it back in time,&quot; he said finally, quietly. &quot;And she left this letter here anyway, just in case. She must have loved her granddaughter very deeply indeed.&quot;</p>
+<blockquote>&quot;We absolutely have to find that oak tree,&quot; Mia said firmly, carefully wiping her eyes and folding the fragile letter back into its hidden pocket.</blockquote>
+<p>Slowly, the train began to slow down, brakes hissing softly. A blue sign outside the window, in tall painted letters, read simply: SAINT-RÉMY.</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">countryside</span><span class="chip">bathe (in light)</span><span class="chip">sew/sewn</span><span class="chip">shaky</span><span class="chip">peace</span><span class="chip">anticipation</span></div></div></div>
+    </section><section class="chapter" style="--accent:#0f4c5c">
+      <div class="chapter-kicker">CHAPTER 13</div>
+      <h2>The Road to the Village</h2>
+      <div class="chapter-body"><p>The tiny train station at Saint-Rémy consisted of little more than one narrow platform and a small wooden building, entirely deserted. No taxis waited outside, and no buses passed.</p>
+<blockquote>&quot;How far is the actual village centre from here?&quot; Mia asked, squinting down the empty, sun-baked road.</blockquote>
+<p>An old farmer nearby, busy loading crates of vegetables onto the back of his small truck, overheard them and looked up. &quot;Two kilometres, more or less,&quot; he said in slow, careful English. &quot;You are walking there, or you would like a ride, perhaps?&quot;</p>
+<p>Mia and Tom glanced at each other and laughed with sudden relief. &quot;A ride would honestly be wonderful,&quot; Tom said gratefully. &quot;Thank you so much.&quot;</p>
+<p>They climbed up into the open back of the small truck, settling themselves comfortably among wooden boxes of ripe tomatoes and fresh green lettuce, the warm afternoon wind blowing pleasantly through their hair as the truck bumped gently along the narrow, dusty country road.</p>
+<blockquote>&quot;You are looking for something in particular?&quot; the farmer asked, glancing back at them through his cracked side mirror.</blockquote>
+<blockquote>&quot;An old house,&quot; Mia said, raising her voice a little over the engine noise. &quot;La Maison Rouge. Do you happen to know it?&quot;</blockquote>
+<p>The farmer nodded slowly, his expression turning thoughtful. &quot;Everybody around here knows that house. It has stood empty for many, many years now. A rather sad story, that house, if the old people are to be believed.&quot;</p>
+<blockquote>&quot;What exactly happened there?&quot; Tom asked, curious.</blockquote>
+<p>The farmer simply shrugged his shoulders. &quot;Old family troubles, I think. Nobody really talks about it these days. Just an empty house, with a faded red door and a big, wild garden that nobody ever bothers to cut anymore.&quot;</p>
+<p>The truck finally rolled to a stop at the edge of the village, near an old grey stone church. &quot;This is as far as I go today,&quot; the farmer said kindly, helping them down. &quot;The house you want is that way — past the church, right at the very end of that road.&quot;</p>
+<p>Mia and Tom thanked him sincerely and set off walking, the soft, distant sound of church bells ringing gently somewhere behind them in the warm afternoon air.</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">farmer</span><span class="chip">truck</span><span class="chip">lettuce</span><span class="chip">mirror</span><span class="chip">shrug</span><span class="chip">church bell</span><span class="chip">deserted</span></div></div></div>
+    </section><section class="chapter" style="--accent:#d97706">
+      <div class="chapter-kicker">CHAPTER 14</div>
+      <h2>The Village</h2>
+      <div class="chapter-body"><p>Saint-Rémy turned out to be small, quiet, and genuinely beautiful. Narrow cobbled streets, warm stone houses, and cheerful flowers spilling from nearly every window box. It felt peaceful and unhurried, as though time itself moved a little slower there than anywhere else in the entire world.</p>
+<p>They passed a small, fragrant bakery, a tiny shop selling faded postcards, and an old man sitting quietly outside his front door, watching them with mild curiosity as they walked slowly past. Nobody, it seemed, ever hurried in Saint-Rémy.</p>
+<p>They stopped to ask a shopkeeper, sweeping her doorstep, about &quot;La Maison Rouge.&quot;</p>
+<blockquote>&quot;Ah yes, the Red House,&quot; the woman said, wiping her hands on her worn apron. &quot;Nobody has lived there for many years now, poor place. It stands at the end of that road, just past the old church, right beside the stone fountain.&quot;</blockquote>
+<p>They walked on and found the house exactly as she had described. It was old and clearly neglected, with a red door, badly faded now but still just recognisable, matching the small drawing in the notebook almost perfectly. The garden around it had grown completely wild, full of tall grass and stubborn flowers that climbed unchecked over an old, leaning wooden fence.</p>
+<blockquote>&quot;There,&quot; Tom said suddenly, pointing towards the far corner of the overgrown garden. &quot;Look — an oak tree.&quot;</blockquote>
+<p>The tree was genuinely huge, with thick roots pushing up visibly through the soil and old, twisting branches that seemed to reach up hungrily towards the pale evening sky. It looked exactly like the tiny drawing in Elise's notebook, only far, far older now, having grown steadily for fifty long years while nobody watched.</p>
+<p>Mia's hands were noticeably shaking as she pushed her way carefully through the tall, damp grass towards it.</p>
+<blockquote>&quot;Somewhere right here,&quot; she said, half to herself, &quot;under this tree, there is a stone box waiting for us.&quot;</blockquote>
+<p>Together, they knelt down in the grass exactly where the largest roots met the soft ground, and began to search patiently and carefully, gently moving fallen leaves and loose stones aside with careful, searching hands.</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">narrow</span><span class="chip">apron</span><span class="chip">fountain</span><span class="chip">faded</span><span class="chip">recognisable</span><span class="chip">fence</span><span class="chip">twist</span><span class="chip">neglect</span></div></div></div>
+    </section><section class="chapter" style="--accent:#7c3aed">
+      <div class="chapter-kicker">CHAPTER 15</div>
+      <h2>The Secret Garden</h2>
+      <figure class="scene"><img src="/blue-notebook-assets/04_secret_garden.png" alt="Under the oak tree, the lost ring is found."><figcaption>Under the oak tree, the lost ring is found.</figcaption></figure>
+      <div class="chapter-body"><p>After nearly twenty minutes of careful searching, Tom's fingers finally brushed against something hard and flat beneath a stone, half-buried among the thickest roots.</p>
+<blockquote>&quot;Mia! I think — I think I've actually found something!&quot;</blockquote>
+<p>He dug carefully with both hands, gently moving aside the damp, dark earth bit by bit, taking great care not to break anything hidden underneath. Slowly, a small stone box began to emerge, covered in years of dirt and soft green moss, its edges worn smooth by decades of rain, sun, and passing seasons.</p>
+<p>Mia's heart pounded loudly in her chest as she knelt beside him. She carefully wiped the remaining dirt away with the sleeve of her jumper and gently opened the box, its old stone lid stiff and difficult to move at first.</p>
+<p>Inside, wrapped protectively in a soft cloth that had once, long ago, been pure white, lay a small gold ring set with a tiny blue stone, still catching the light despite everything.</p>
+<blockquote>&quot;It's beautiful,&quot; Mia whispered, lifting it gently into her open palm.</p>
+<p>For a long moment, neither of them spoke a single word. They simply looked down at the ring — such a small object, and yet one that connected a grandmother, a granddaughter, and a lifelong friendship, stretched across fifty long years and two different countries. Somewhere above them, birds sang quietly in the branches of the old oak tree, almost as though celebrating softly along with them.</p>
+<blockquote>&quot;So — what should we actually do with it now?&quot; Tom asked eventually, breaking the comfortable silence.</blockquote>
+<p>Mia thought carefully, turning the delicate ring slowly between her fingers. &quot;We have to try and find Elise,&quot; she said firmly. &quot;Or at least find her family. This ring belongs to them, not to us. I think we were only ever meant to carry it the rest of the way home.&quot;</p>
+<p>Tom nodded slowly in agreement. &quot;Madame Dubois might well know how to find her. Perhaps there's still a way, even after all this time has passed.&quot;</p>
+<p>Mia closed her fingers gently around the ring, holding it safe. For the very first time, she understood something clearly and completely: this whole journey had never really been about a simple gold ring at all. It had always been about finishing a story that someone, long ago, had been forced to leave unfinished — and finally, after fifty years, giving it a proper, worthy ending.</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">bury/buried</span><span class="chip">damp</span><span class="chip">worn</span><span class="chip">sleeve</span><span class="chip">stiff</span><span class="chip">palm</span><span class="chip">celebrate</span><span class="chip">decade</span></div></div></div>
+    </section><section class="chapter" style="--accent:#be123c">
+      <div class="chapter-kicker">CHAPTER 16</div>
+      <h2>The Ring</h2>
+      <div class="chapter-body"><p>They stayed a little longer in the quiet garden, sitting together on the soft grass beneath the old oak tree, simply enjoying the stillness. Slowly, the sun began to set, painting the whole evening sky a deep orange and soft pink above the faded red roof of the empty house.</p>
+<blockquote>&quot;Do you think Elise still thinks about this place, even now?&quot; Mia asked quietly.</blockquote>
+<blockquote>&quot;I'm quite sure she does,&quot; Tom said gently. &quot;Some places stay with you forever, in your heart, even if you never manage to go back to them in person.&quot;</blockquote>
+<p>They walked slowly back through the sleepy village as the evening grew steadily cooler, passing the old stone fountain, then the little bakery, now closed for the night, its windows dark and quiet. They found a small, welcoming guesthouse near the church and decided to stay there overnight, both of them far too tired, and far too happy, to travel any further that day.</p>
+<p>Before falling asleep, Mia wrote a long message to Madame Dubois, carefully describing absolutely everything — the enormous oak tree, the hidden letter, the small gold ring — and attaching several photographs she had taken in the fading evening light.</p>
+<p>The next morning, there was already a reply waiting for her, sent late the night before.</p>
+<blockquote>&quot;I am crying as I read this, truly crying,&quot; Madame Dubois had written. &quot;I will begin searching for Elise immediately, this very morning. Please, bring the ring back to Paris safely, as soon as you can. I promise I will do everything within my power to find her.&quot;</blockquote>
+<p>Mia and Tom travelled back north to Paris the following day, the small stone box carefully wrapped inside a jumper in Mia's bag, protected like something genuinely precious — which, of course, by now, it truly was.</p>
+<p>They handed the ring to Madame Dubois that same evening, in her small, familiar café, placing it gently into her open, waiting hands. She held it silently for a long, long moment without speaking a single word, quiet tears falling steadily down her weathered face.</p>
+<blockquote>&quot;Thank you,&quot; she finally whispered, her voice breaking slightly. &quot;Both of you. You cannot possibly imagine what this means to me, after all these years.&quot;</blockquote>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">guesthouse</span><span class="chip">attach</span><span class="chip">reply</span><span class="chip">precious</span><span class="chip">weathered</span><span class="chip">stillness</span></div></div></div>
+    </section><section class="chapter" style="--accent:#0f766e">
+      <div class="chapter-kicker">CHAPTER 17</div>
+      <h2>Going Home</h2>
+      <div class="chapter-body"><p>Mia and Tom stayed on in Paris for one final day before finally returning home to London. Madame Dubois insisted, quite firmly, on cooking them a proper French dinner that evening, filling her small kitchen with the rich smell of melting butter, roasted garlic, and fresh herbs.</p>
+<blockquote>&quot;I promise you both, I will find her,&quot; Madame Dubois said again, holding both their hands tightly as they said their goodbyes at the busy train station the next morning. &quot;I still have some old letters, with an address somewhere in Scotland, from many years ago now. It may well take some time, but I will not give up trying. I owe her at least this much.&quot;</blockquote>
+<p>Back in London, ordinary life slowly returned to normal. Mia went back to her classes, back to her part-time job at the coffee shop, back to watching television with Sarah on quiet evenings. But something inside her, something quiet and permanent, had genuinely changed. She noticed small things far more than before — old buildings on familiar streets, the faces of complete strangers, forgotten objects sitting patiently in shop windows.</p>
+<p>Weeks passed slowly by. Then, one perfectly ordinary Tuesday evening, Mia received an email that made her heart stop for a moment.</p>
+<blockquote>&quot;I found her,&quot; it began simply. &quot;Elise is eighty-one years old now. She lives quietly in Scotland, near the sea, together with her daughter. I telephoned her myself, just yesterday evening. I sent her a photograph of the ring, taken on my old phone. She was completely silent for a long time, and then she began to cry, and then, almost at the very same moment, she began to laugh too, all at once. She very much wants to meet you, Mia. She wants to say thank you properly, in person, face to face.&quot;</blockquote>
+<p>Mia read the short email three times over, sitting perfectly still on the edge of her bed. She thought carefully about the whole journey — the blue notebook, the old London bookshop, Tower Bridge, the fast train beneath the sea, Café Belle Vue, the busy market, the confusing metro, the farmer's bumpy truck, and finally the great old oak tree standing quietly in Saint-Rémy.</p>
+<p>One small, ordinary-looking blue notebook had somehow given her an entire, extraordinary adventure — and, after fifty long years, a story that finally, properly, had an ending.</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">insist</span><span class="chip">herb</span><span class="chip">ordinary</span><span class="chip">silent</span><span class="chip">entire</span><span class="chip">extraordinary</span></div></div></div>
+    </section><section class="chapter" style="--accent:#2563eb">
+      <div class="chapter-kicker">CHAPTER 18</div>
+      <h2>The Journey to Scotland</h2>
+      <figure class="scene"><img src="/blue-notebook-assets/05_scotland_reunion.png" alt="At last, Mia brings the story home."><figcaption>At last, Mia brings the story home.</figcaption></figure>
+      <div class="chapter-body"><p>Two weeks later, Mia boarded a train heading north, travelling alone this time, all the way from London towards the wild coast of Scotland. Tom had important exams that week and simply could not come, though he sent a warm message that same morning: &quot;Tell her I said hello. And please, take lots and lots of photos for me.&quot;</p>
+<p>The Scottish landscape, when it finally appeared through the window, looked completely different from Paris or sleepy Saint-Rémy — grey, ancient stone hills, a cold, bracing wind, and a wide, silver sea stretching endlessly towards the distant horizon. Mia watched it all pass slowly by, feeling nervous and quietly excited in almost equal measure.</p>
+<p>Elise's daughter, a warm, friendly woman in her fifties, met Mia at the small, windswept station. Her kind eyes, Mia noticed immediately, looked remarkably similar to the description Madame Dubois had given of Elise, all those years ago.</p>
+<blockquote>&quot;My mother genuinely hasn't stopped talking about you,&quot; she said, smiling warmly, as they drove together towards a small stone house sitting close to the water's edge.</blockquote>
+<p>Elise herself was sitting quietly in a chair beside the window when Mia finally walked in, a soft woollen blanket draped over her knees, watching the restless sea outside. She was small and thin now, with pure white hair, but her eyes remained remarkably sharp and bright, full of unmistakable life and warmth.</p>
+<blockquote>&quot;You found my ring,&quot; Elise said softly, her voice trembling just slightly with emotion. &quot;After fifty long years. I honestly never thought, not for one single moment...&quot;</blockquote>
+<p>Mia knelt down gently beside her chair and carefully placed both the small stone box and the worn blue notebook into Elise's waiting, outstretched hands.</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">coast</span><span class="chip">horizon</span><span class="chip">equal</span><span class="chip">blanket</span><span class="chip">bracing</span><span class="chip">windswept</span></div></div></div>
+    </section><section class="chapter" style="--accent:#0f4c5c">
+      <div class="chapter-kicker">CHAPTER 19</div>
+      <h2>Home, Finally</h2>
+      <div class="chapter-body"><p>Elise opened the small stone box slowly, her thin fingers trembling even more than Mia's own had trembled, all those weeks before, beneath the old oak tree. She carefully lifted out the ring and held it up gently towards the soft window light, turning it slowly.</p>
+<blockquote>&quot;My grandmother gave me this, in a letter I never fully understood until just this very moment,&quot; she said quietly. &quot;I searched for it for exactly one week, fifty years ago now, and then life simply... carried me somewhere else entirely, the way it so often does. I always wondered, every single year, what had happened to it. I always wondered what became of that one small part of my life that I never managed to finish.&quot;</blockquote>
+<blockquote>&quot;We finished it for you,&quot; Mia said gently. &quot;Well — Tom, and Madame Dubois, and I. All three of us, together.&quot;</blockquote>
+<p>Elise smiled then, a warm, wide, genuine smile that made her look, for just one brief and beautiful moment, young again. &quot;Dear Josephine,&quot; she said softly, meaning Madame Dubois by her first name. &quot;I really must telephone her again tonight, properly this time. It has been far, far too long.&quot;</p>
+<p>They talked together for hours that afternoon — about the old bookshop, about Tower Bridge, about Paris and its noisy market, about the friendly farmer's bumpy truck, about the wild garden and the great old oak tree, still standing strong after all these years. Elise laughed warmly when she heard the story of Tom's lost wallet in the market, and cried softly again, quietly, when she finally heard about the hidden letter from her own grandmother.</p>
+<p>Before Mia left that evening, as the light outside slowly faded towards dusk, Elise reached out and gently took her hand.</p>
+<blockquote>&quot;Some journeys,&quot; she said carefully, &quot;take very much longer than any of us ever expect them to. But they are never, I think, truly lost — not completely, not forever. Someone, somewhere, sooner or later, is always ready to finish them, if we are only patient enough to wait.&quot;</blockquote>
+<p>Mia travelled home to London that same night, watching the dark, quiet countryside slide gently past the window, the ring now safely back exactly where it belonged, and the small blue notebook, finally, carrying a proper ending written carefully on its very last page — in Mia's own handwriting, this time, for everyone who might one day find it.</p>
+<p>The End</p>
+<div class="new-words"><strong>New words</strong><div class="chips"><span class="chip">tremble</span><span class="chip">wonder</span><span class="chip">dusk</span><span class="chip">patient</span></div></div></div>
+    </section>
+<section class="study-section"><h2>About This Story</h2><p>This story was written especially for English learners at level A2. It uses simple grammar, mostly the past simple tense, with some present simple used for facts and general description. The vocabulary is everyday and common, and the sentences are kept fairly short, so that you can read naturally without stopping too often to reach for a dictionary.</p></section><section class="study-section"><h2>Tips For Using This Story To Practice</h2><p>First, read each chapter once quickly, without stopping at all, simply to understand the general idea of what happens. Afterwards, read it a second time much more slowly, and look up any new words that you did not already know, using the short glossary provided at the end of each chapter as a helpful starting point. Try to summarise each chapter out loud afterwards, in two or three simple sentences, using entirely your own words rather than the book's. Pay close attention to how past simple verbs are used throughout to tell the story clearly — walked, found, opened, said, whispered — and notice how dialogue is written and punctuated. If possible, try reading some of the conversations out loud together with a friend or classmate, with each of you taking one character.</p></section><section class="study-section"><h2>Characters In This Story</h2><p><strong>Mia</strong> — a nineteen-year-old student living in London, who discovers the notebook by chance in an old bookshop.</p><p><strong>Tom</strong> — Mia's close friend, a history student at university who helps her follow each of the clues.</p><p><strong>Elise</strong> — the young woman who originally wrote the notebook, fifty years before the main story begins.</p><p><strong>Madame Dubois</strong> — Elise's oldest and closest friend in Paris, who still remembers everything clearly.</p><p><strong>Sarah</strong> — Mia's roommate back in London, supportive though initially quite doubtful about the whole plan.</p></section><section class="study-section"><h2>A Note On The Places In This Story</h2><p>London, Paris, Saint-Rémy, and a small town on the coast of Scotland are all real kinds of places that genuinely exist, though the exact streets, shops, bookshops, and houses described in this particular story have been imagined specifically for the purposes of this reading practice, and should not be searched for as real addresses.</p></section>
+<div class="footer-note">The End · Keep reading, keep wondering, and follow the clues.</div>
+</main></body></html>

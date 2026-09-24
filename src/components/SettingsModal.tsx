@@ -197,11 +197,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   ];
 
   const readerThemes: Array<{ id: ReaderTheme; name: string; bg: string; text: string }> = [
-    { id: 'sunset', name: 'Ribble Mint', bg: 'bg-[#EFF1EE]', text: 'text-[#222222]' },
+    { id: 'sunset', name: 'Ribble Mint', bg: 'bg-[#F5F5F7]', text: 'text-[#222222]' },
     { id: 'paper', name: 'Pure Clean', bg: 'bg-white', text: 'text-[#222222]' },
-    { id: 'azure', name: 'Lavender Soft', bg: 'bg-[#B2A1FF]/10', text: 'text-[#222222]' },
+    { id: 'azure', name: 'Lavender Soft', bg: 'bg-[#007AFF]/10', text: 'text-[#222222]' },
     { id: 'sepia', name: 'Warm Cream', bg: 'bg-[#F5F4EF]', text: 'text-[#222222]' },
-    { id: 'dark', name: 'Charcoal Dark', bg: 'bg-[#1E1E1E]', text: 'text-[#EFF1EE]' },
+    { id: 'dark', name: 'Charcoal Dark', bg: 'bg-[#1E1E1E]', text: 'text-[#F5F5F7]' },
   ];
 
   const renderDetailPanel = (tab: SettingsTab) => {
@@ -210,8 +210,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         return (
           <div className="space-y-6 animate-fade-in">
             <div>
-              <h2 className="text-xl font-bold text-[#222222] dark:text-[#EFF1EE]">{t.manageProfile || 'Manage Profile'}</h2>
-              <p className="text-xs text-[#666666] dark:text-[#D0D2CF] mt-1">
+              <h2 className="text-xl font-bold text-[#222222] dark:text-[#F5F5F7]">{t.manageProfile || 'Manage Profile'}</h2>
+              <p className="text-xs text-[#666666] dark:text-[#D1D1D6] mt-1">
                 {t.profileSubtitle || 'Update your personal info, display name, and avatar image'}
               </p>
             </div>
@@ -227,7 +227,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center pt-2">
               <div className="sm:col-span-4 flex flex-col items-center gap-3">
                 <div className="relative group">
-                  <div className="w-24 h-24 rounded-full bg-[#222222] text-[#EFF1EE] flex items-center justify-center font-bold text-3xl shadow-md border-4 border-white dark:border-[#1E1E1E] overflow-hidden">
+                  <div className="w-24 h-24 rounded-full bg-[#222222] text-[#F5F5F7] flex items-center justify-center font-bold text-3xl shadow-md border-4 border-white dark:border-[#1E1E1E] overflow-hidden">
                     <img 
                       src={getEffectiveAvatar(profileAvatar, profileEmail || profileName)} 
                       alt={profileName} 
@@ -237,7 +237,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute bottom-0 end-0 p-2 rounded-full bg-[#222222] text-[#EFF1EE] shadow-md hover:bg-[#A4F5A6] hover:text-[#222222] transition-all cursor-pointer hover:scale-110"
+                    className="absolute bottom-0 end-0 p-2 rounded-full bg-[#222222] text-[#F5F5F7] shadow-md hover:bg-[#34C759] hover:text-[#222222] transition-all cursor-pointer hover:scale-110"
                     title={t.uploadAvatar || 'Upload Avatar Image'}
                   >
                     <Camera className="w-3.5 h-3.5" />
@@ -248,7 +248,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="px-3 py-1 rounded-xl border border-[#D0D2CF] dark:border-white/10 bg-white dark:bg-[#1E1E1E] text-xs font-bold text-[#222222] dark:text-[#EFF1EE] hover:bg-[#EFF1EE] transition-colors flex items-center gap-1.5 cursor-pointer"
+                    className="px-3 py-1 rounded-xl border border-[#D1D1D6] dark:border-white/10 bg-white dark:bg-[#1E1E1E] text-xs font-bold text-[#222222] dark:text-[#F5F5F7] hover:bg-[#F5F5F7] transition-colors flex items-center gap-1.5 cursor-pointer"
                   >
                     <Upload className="w-3 h-3" />
                     <span>{t.uploadAvatar || 'Upload'}</span>
@@ -267,30 +267,30 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
               <div className="sm:col-span-8 space-y-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#666666] dark:text-[#D0D2CF]">{t.profileName}</label>
+                  <label className="text-xs font-bold text-[#666666] dark:text-[#D1D1D6]">{t.profileName}</label>
                   <input
                     type="text"
                     value={profileName}
                     onChange={(e) => setProfileName(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#D0D2CF] dark:border-white/10 bg-white dark:bg-[#1E1E1E] text-xs font-medium text-[#222222] dark:text-[#EFF1EE] focus:outline-none focus:ring-2 focus:ring-[#A4F5A6]"
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#D1D1D6] dark:border-white/10 bg-white dark:bg-[#1E1E1E] text-xs font-medium text-[#222222] dark:text-[#F5F5F7] focus:outline-none focus:ring-2 focus:ring-[#34C759]"
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-[#666666] dark:text-[#D0D2CF]">{t.profileEmail}</label>
+                  <label className="text-xs font-bold text-[#666666] dark:text-[#D1D1D6]">{t.profileEmail}</label>
                   <input
                     type="email"
                     value={profileEmail}
                     onChange={(e) => setProfileEmail(e.target.value)}
-                    className="w-full px-3.5 py-2 rounded-xl border border-[#D0D2CF] dark:border-white/10 bg-white dark:bg-[#1E1E1E] text-xs font-medium text-[#222222] dark:text-[#EFF1EE] focus:outline-none focus:ring-2 focus:ring-[#A4F5A6]"
+                    className="w-full px-3.5 py-2 rounded-xl border border-[#D1D1D6] dark:border-white/10 bg-white dark:bg-[#1E1E1E] text-xs font-medium text-[#222222] dark:text-[#F5F5F7] focus:outline-none focus:ring-2 focus:ring-[#34C759]"
                   />
                 </div>
               </div>
             </div>
 
             {/* Profile Picture Presets */}
-            <div className="pt-3 border-t border-[#D0D2CF]/60 dark:border-white/10">
-              <label className="text-xs font-bold text-[#666666] dark:text-[#D0D2CF] mb-2 block">{t.defaultAvatarsLabel || 'Default Profile Pictures'}</label>
+            <div className="pt-3 border-t border-[#D1D1D6]/60 dark:border-white/10">
+              <label className="text-xs font-bold text-[#666666] dark:text-[#D1D1D6] mb-2 block">{t.defaultAvatarsLabel || 'Default Profile Pictures'}</label>
               <div className="flex items-center gap-3">
                 {DEFAULT_AVATARS.map((avatarUri, idx) => {
                   const currentEffective = getEffectiveAvatar(profileAvatar, profileEmail || profileName);
@@ -301,7 +301,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       type="button"
                       onClick={() => setProfileAvatar(avatarUri)}
                       className={`w-12 h-12 rounded-full overflow-hidden border-2 transition-all cursor-pointer hover:scale-105 ${
-                        isSelected ? 'border-[#222222] dark:border-white ring-2 ring-[#A4F5A6] scale-105' : 'border-[#D0D2CF] dark:border-white/20 opacity-80'
+                        isSelected ? 'border-[#222222] dark:border-white ring-2 ring-[#34C759] scale-105' : 'border-[#D1D1D6] dark:border-white/20 opacity-80'
                       }`}
                       title={`Profile Picture Style ${idx + 1}`}
                     >
@@ -313,22 +313,22 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
 
             {/* Cross-Device Sync Info */}
-            <div className="pt-3 border-t border-[#D0D2CF]/60 dark:border-white/10">
-              <div className="p-3.5 rounded-2xl bg-[#A4F5A6]/20 border border-[#A4F5A6]/40 flex items-start gap-3">
-                <div className="p-2 rounded-xl bg-[#222222] text-[#A4F5A6] shrink-0 mt-0.5">
+            <div className="pt-3 border-t border-[#D1D1D6]/60 dark:border-white/10">
+              <div className="p-3.5 rounded-2xl bg-[#34C759]/20 border border-[#34C759]/40 flex items-start gap-3">
+                <div className="p-2 rounded-xl bg-[#222222] text-[#34C759] shrink-0 mt-0.5">
                   <Cloud className="w-4 h-4" />
                 </div>
                 <div className="space-y-1 text-xs">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-[#222222] dark:text-[#EFF1EE]">{t.crossDeviceSyncTitle || 'Cross-Device Account Sync'}</span>
-                    <span className="px-2 py-0.5 rounded-full bg-[#A4F5A6] text-[#222222] font-bold text-[10px]">
+                    <span className="font-bold text-[#222222] dark:text-[#F5F5F7]">{t.crossDeviceSyncTitle || 'Cross-Device Account Sync'}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-[#34C759] text-[#222222] font-bold text-[10px]">
                       {t.activeBadge || 'Active'}
                     </span>
                   </div>
-                  <p className="text-[#666666] dark:text-[#D0D2CF] text-[11px] leading-relaxed">
+                  <p className="text-[#666666] dark:text-[#D1D1D6] text-[11px] leading-relaxed">
                     {t.crossDeviceSyncDesc || 'Log in on any phone, iPad, tablet, or laptop. Your documents, vocabulary list, reader highlights, flashcards, and reading statistics automatically stay synchronized in real time.'}
                   </p>
-                  <div className="flex items-center gap-3 pt-1 text-[10px] text-[#666666] dark:text-[#D0D2CF]">
+                  <div className="flex items-center gap-3 pt-1 text-[10px] text-[#666666] dark:text-[#D1D1D6]">
                     <span className="flex items-center gap-1">
                       <Smartphone className="w-3 h-3 text-[#666666]" /> {t.phoneTabletSupported || 'Phone & Tablet Supported'}
                     </span>
@@ -343,7 +343,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <div className="flex justify-end pt-2">
               <button
                 onClick={handleSaveProfile}
-                className="flex items-center gap-2 bg-[#222222] hover:bg-[#A4F5A6] text-[#EFF1EE] hover:text-[#222222] px-5 py-2 rounded-xl font-bold text-xs shadow-xs transition-all cursor-pointer"
+                className="flex items-center gap-2 bg-[#222222] hover:bg-[#34C759] text-[#F5F5F7] hover:text-[#222222] px-5 py-2 rounded-xl font-bold text-xs shadow-xs transition-all cursor-pointer"
               >
                 {saveSuccess && <Check className="w-3.5 h-3.5" />}
                 <span>{saveSuccess ? t.saved : t.saveChanges}</span>
@@ -356,21 +356,21 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         return (
           <div className="space-y-6 animate-fade-in">
             <div>
-              <h2 className="text-xl font-bold text-[#222222] dark:text-[#EFF1EE]">{t.passwordAndSecurity || 'Password & Security'}</h2>
-              <p className="text-xs text-[#666666] dark:text-[#D0D2CF] mt-1">
+              <h2 className="text-xl font-bold text-[#222222] dark:text-[#F5F5F7]">{t.passwordAndSecurity || 'Password & Security'}</h2>
+              <p className="text-xs text-[#666666] dark:text-[#D1D1D6] mt-1">
                 {t.securitySubtitle || 'Protect app access with a passcode lock'}
               </p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#EFF1EE]/60 dark:bg-[#1E1E1E]/60 border border-[#D0D2CF] dark:border-white/10 space-y-4">
+            <div className="p-4 rounded-2xl bg-[#F5F5F7]/60 dark:bg-[#1E1E1E]/60 border border-[#D1D1D6] dark:border-white/10 space-y-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-xl ${settings.isPasswordProtected ? 'bg-[#A4F5A6] text-[#222222]' : 'bg-[#D0D2CF] dark:bg-white/10 text-[#666666]'}`}>
+                  <div className={`p-2 rounded-xl ${settings.isPasswordProtected ? 'bg-[#34C759] text-[#222222]' : 'bg-[#D1D1D6] dark:bg-white/10 text-[#666666]'}`}>
                     <Lock className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-xs text-[#222222] dark:text-[#EFF1EE]">{t.passcodeProtection || 'Passcode Protection'}</h3>
-                    <p className="text-[11px] text-[#666666] dark:text-[#D0D2CF]">{t.passcodeDesc || 'Require password entry on launch'}</p>
+                    <h3 className="font-bold text-xs text-[#222222] dark:text-[#F5F5F7]">{t.passcodeProtection || 'Passcode Protection'}</h3>
+                    <p className="text-[11px] text-[#666666] dark:text-[#D1D1D6]">{t.passcodeDesc || 'Require password entry on launch'}</p>
                   </div>
                 </div>
 
@@ -384,7 +384,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     onUpdateSettings({ isPasswordProtected: updated });
                   }}
                   className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${
-                    settings.isPasswordProtected ? 'bg-[#222222]' : 'bg-[#D0D2CF] dark:bg-white/20'
+                    settings.isPasswordProtected ? 'bg-[#222222]' : 'bg-[#D1D1D6] dark:bg-white/20'
                   }`}
                 >
                   <div
@@ -395,8 +395,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </button>
               </div>
 
-              <div className="pt-3 border-t border-[#D0D2CF] dark:border-white/10 space-y-2">
-                <label className="text-xs font-bold text-[#222222] dark:text-[#EFF1EE] block">
+              <div className="pt-3 border-t border-[#D1D1D6] dark:border-white/10 space-y-2">
+                <label className="text-xs font-bold text-[#222222] dark:text-[#F5F5F7] block">
                   {settings.appPassword ? (t.changePasscode || 'Change Current Passcode') : (t.setPasscode || 'Set New Passcode')}
                 </label>
                 <div className="flex gap-2">
@@ -405,7 +405,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     placeholder={t.enterPasscodePlaceholder || 'Enter passcode'}
                     defaultValue={settings.appPassword || ''}
                     id="setting-app-password-input"
-                    className="flex-1 px-3 py-2 rounded-xl border border-[#D0D2CF] dark:border-white/10 bg-white dark:bg-[#1E1E1E] text-xs font-medium text-[#222222] dark:text-[#EFF1EE]"
+                    className="flex-1 px-3 py-2 rounded-xl border border-[#D1D1D6] dark:border-white/10 bg-white dark:bg-[#1E1E1E] text-xs font-medium text-[#222222] dark:text-[#F5F5F7]"
                   />
                   <button
                     type="button"
@@ -421,7 +421,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         alert(t.enterPasscodePlaceholder || 'Please enter a valid passcode.');
                       }
                     }}
-                    className="px-3.5 py-2 rounded-xl bg-[#222222] hover:bg-[#A4F5A6] text-[#EFF1EE] hover:text-[#222222] text-xs font-bold transition-all cursor-pointer"
+                    className="px-3.5 py-2 rounded-xl bg-[#222222] hover:bg-[#34C759] text-[#F5F5F7] hover:text-[#222222] text-xs font-bold transition-all cursor-pointer"
                   >
                     {t.saveBtn || 'Save'}
                   </button>
@@ -435,18 +435,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         return (
           <div className="space-y-6 animate-fade-in">
             <div>
-              <h2 className="text-xl font-bold text-[#222222] dark:text-[#EFF1EE]">{t.tabNotifications}</h2>
-              <p className="text-xs text-[#666666] dark:text-[#D0D2CF] mt-1">
+              <h2 className="text-xl font-bold text-[#222222] dark:text-[#F5F5F7]">{t.tabNotifications}</h2>
+              <p className="text-xs text-[#666666] dark:text-[#D1D1D6] mt-1">
                 {t.notificationsSubtitle || 'Configure app activity alerts and progress updates'}
               </p>
             </div>
 
-            <div className="flex items-center justify-between py-3 border-t border-[#D0D2CF]/60 dark:border-white/10">
+            <div className="flex items-center justify-between py-3 border-t border-[#D1D1D6]/60 dark:border-white/10">
               <div>
-                <h3 className="text-xs font-semibold text-[#222222] dark:text-[#EFF1EE]">
+                <h3 className="text-xs font-semibold text-[#222222] dark:text-[#F5F5F7]">
                   {t.pushNotifications || 'Push Notifications'}
                 </h3>
-                <p className="text-[11px] text-[#666666] dark:text-[#D0D2CF] mt-0.5">
+                <p className="text-[11px] text-[#666666] dark:text-[#D1D1D6] mt-0.5">
                   {t.pushNotificationsDesc || 'Receive study reminders and SRS flashcard review alerts'}
                 </p>
               </div>
@@ -454,7 +454,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <button
                 onClick={() => setNotificationsEnabled(!notificationsEnabled)}
                 className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${
-                  notificationsEnabled ? 'bg-[#222222]' : 'bg-[#D0D2CF] dark:bg-white/20'
+                  notificationsEnabled ? 'bg-[#222222]' : 'bg-[#D1D1D6] dark:bg-white/20'
                 }`}
               >
                 <div
@@ -471,23 +471,23 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         return (
           <div className="space-y-6 animate-fade-in">
             <div>
-              <h2 className="text-xl font-bold text-[#222222] dark:text-[#EFF1EE]">{t.tabLanguage}</h2>
-              <p className="text-xs text-[#666666] dark:text-[#D0D2CF] mt-1">
+              <h2 className="text-xl font-bold text-[#222222] dark:text-[#F5F5F7]">{t.tabLanguage}</h2>
+              <p className="text-xs text-[#666666] dark:text-[#D1D1D6] mt-1">
                 {t.languageSubtitle || 'Set interface language and target learning language'}
               </p>
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center justify-between py-3 border-t border-[#D0D2CF]/60 dark:border-white/10">
+              <div className="flex items-center justify-between py-3 border-t border-[#D1D1D6]/60 dark:border-white/10">
                 <div>
-                  <h3 className="text-xs font-semibold text-[#222222] dark:text-[#EFF1EE]">{t.interfaceLanguage}</h3>
-                  <p className="text-[11px] text-[#666666] dark:text-[#D0D2CF] mt-0.5">{t.interfaceLanguageDesc}</p>
+                  <h3 className="text-xs font-semibold text-[#222222] dark:text-[#F5F5F7]">{t.interfaceLanguage}</h3>
+                  <p className="text-[11px] text-[#666666] dark:text-[#D1D1D6] mt-0.5">{t.interfaceLanguageDesc}</p>
                 </div>
 
                 <select
                   value={settings.interfaceLanguage || 'English'}
                   onChange={(e) => onUpdateSettings({ interfaceLanguage: e.target.value })}
-                  className="px-3 py-1.5 rounded-xl border border-[#D0D2CF] dark:border-white/10 bg-white dark:bg-[#1E1E1E] text-xs font-bold text-[#222222] dark:text-[#EFF1EE] focus:outline-none focus:ring-2 focus:ring-[#A4F5A6]"
+                  className="px-3 py-1.5 rounded-xl border border-[#D1D1D6] dark:border-white/10 bg-white dark:bg-[#1E1E1E] text-xs font-bold text-[#222222] dark:text-[#F5F5F7] focus:outline-none focus:ring-2 focus:ring-[#34C759]"
                 >
                   <option value="English">English 🇬🇧</option>
                   <option value="French">French (Français) 🇫🇷</option>
@@ -497,16 +497,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </select>
               </div>
 
-              <div className="flex items-center justify-between py-3 border-t border-[#D0D2CF]/60 dark:border-white/10">
+              <div className="flex items-center justify-between py-3 border-t border-[#D1D1D6]/60 dark:border-white/10">
                 <div>
-                  <h3 className="text-xs font-semibold text-[#222222] dark:text-[#EFF1EE]">{t.learningLanguage}</h3>
-                  <p className="text-[11px] text-[#666666] dark:text-[#D0D2CF] mt-0.5">{t.learningLanguageDesc}</p>
+                  <h3 className="text-xs font-semibold text-[#222222] dark:text-[#F5F5F7]">{t.learningLanguage}</h3>
+                  <p className="text-[11px] text-[#666666] dark:text-[#D1D1D6] mt-0.5">{t.learningLanguageDesc}</p>
                 </div>
 
                 <select
                   value={settings.targetLanguage || 'English'}
                   onChange={(e) => onUpdateSettings({ targetLanguage: e.target.value })}
-                  className="px-3 py-1.5 rounded-xl border border-[#D0D2CF] dark:border-white/10 bg-white dark:bg-[#1E1E1E] text-xs font-medium text-[#222222] dark:text-[#EFF1EE] focus:outline-none focus:ring-2 focus:ring-[#A4F5A6]"
+                  className="px-3 py-1.5 rounded-xl border border-[#D1D1D6] dark:border-white/10 bg-white dark:bg-[#1E1E1E] text-xs font-medium text-[#222222] dark:text-[#F5F5F7] focus:outline-none focus:ring-2 focus:ring-[#34C759]"
                 >
                   <option value="English">English</option>
                   <option value="French">French (Français)</option>
@@ -516,16 +516,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </select>
               </div>
 
-              <div className="flex items-center justify-between py-3 border-t border-[#D0D2CF]/60 dark:border-white/10">
+              <div className="flex items-center justify-between py-3 border-t border-[#D1D1D6]/60 dark:border-white/10">
                 <div>
-                  <h3 className="text-xs font-semibold text-[#222222] dark:text-[#EFF1EE]">Translate Words To (Reader)</h3>
-                  <p className="text-[11px] text-[#666666] dark:text-[#D0D2CF] mt-0.5">Language used for pop-up explanations and instant book word translations</p>
+                  <h3 className="text-xs font-semibold text-[#222222] dark:text-[#F5F5F7]">Translate Words To (Reader)</h3>
+                  <p className="text-[11px] text-[#666666] dark:text-[#D1D1D6] mt-0.5">Language used for pop-up explanations and instant book word translations</p>
                 </div>
 
                 <select
                   value={settings.translationLanguage || 'French'}
                   onChange={(e) => onUpdateSettings({ translationLanguage: e.target.value })}
-                  className="px-3 py-1.5 rounded-xl border border-[#D0D2CF] dark:border-white/10 bg-white dark:bg-[#1E1E1E] text-xs font-medium text-[#222222] dark:text-[#EFF1EE] focus:outline-none focus:ring-2 focus:ring-[#A4F5A6]"
+                  className="px-3 py-1.5 rounded-xl border border-[#D1D1D6] dark:border-white/10 bg-white dark:bg-[#1E1E1E] text-xs font-medium text-[#222222] dark:text-[#F5F5F7] focus:outline-none focus:ring-2 focus:ring-[#34C759]"
                 >
                   <option value="French">French (Français) 🇫🇷</option>
                   <option value="Arabic">Arabic (العربية) 🇪🇬</option>
@@ -549,27 +549,27 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         return (
           <div className="space-y-6 animate-fade-in">
             <div>
-              <h2 className="text-xl font-bold text-[#222222] dark:text-[#EFF1EE]">{t.tabAppearance}</h2>
-              <p className="text-xs text-[#666666] dark:text-[#D0D2CF] mt-1">
+              <h2 className="text-xl font-bold text-[#222222] dark:text-[#F5F5F7]">{t.tabAppearance}</h2>
+              <p className="text-xs text-[#666666] dark:text-[#D1D1D6] mt-1">
                 {t.appearanceSubtitle || 'Customize app light/dark theme and reader styling'}
               </p>
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center justify-between py-3 border-t border-[#D0D2CF]/60 dark:border-white/10">
+              <div className="flex items-center justify-between py-3 border-t border-[#D1D1D6]/60 dark:border-white/10">
                 <div>
-                  <h3 className="text-xs font-semibold text-[#222222] dark:text-[#EFF1EE]">{t.themeMode}</h3>
-                  <p className="text-[11px] text-[#666666] dark:text-[#D0D2CF] mt-0.5">{t.themeModeDesc}</p>
+                  <h3 className="text-xs font-semibold text-[#222222] dark:text-[#F5F5F7]">{t.themeMode}</h3>
+                  <p className="text-[11px] text-[#666666] dark:text-[#D1D1D6] mt-0.5">{t.themeModeDesc}</p>
                 </div>
 
-                <div className="bg-[#EFF1EE] dark:bg-white/10 p-1 rounded-xl flex gap-1">
+                <div className="bg-[#F5F5F7] dark:bg-white/10 p-1 rounded-xl flex gap-1">
                   {(['light', 'dark', 'system'] as const).map((m) => (
                     <button
                       key={m}
                       onClick={() => onUpdateSettings({ appTheme: m })}
                       className={`px-3 py-1 rounded-lg text-xs font-semibold capitalize transition-all cursor-pointer ${
                         (settings.appTheme || 'light') === m
-                          ? 'bg-[#222222] text-[#EFF1EE] shadow-2xs font-bold'
+                          ? 'bg-[#222222] text-[#F5F5F7] shadow-2xs font-bold'
                           : 'text-[#666666] hover:text-[#222222] dark:hover:text-white'
                       }`}
                     >
@@ -579,9 +579,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </div>
               </div>
 
-              <div className="space-y-2 pt-2 border-t border-[#D0D2CF]/60 dark:border-white/10">
-                <label className="text-xs font-bold text-[#222222] dark:text-[#EFF1EE] flex items-center gap-1.5">
-                  <Palette className="w-3.5 h-3.5 text-[#B2A1FF]" />
+              <div className="space-y-2 pt-2 border-t border-[#D1D1D6]/60 dark:border-white/10">
+                <label className="text-xs font-bold text-[#222222] dark:text-[#F5F5F7] flex items-center gap-1.5">
+                  <Palette className="w-3.5 h-3.5 text-[#007AFF]" />
                   {t.readerTheme}
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -592,7 +592,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       className={`p-2.5 rounded-xl text-xs font-semibold border transition-all cursor-pointer ${rt.bg} ${rt.text} ${
                         settings.readerTheme === rt.id
                           ? 'ring-2 ring-[#222222] dark:ring-white border-transparent shadow-2xs'
-                          : 'border-[#D0D2CF] dark:border-white/10 opacity-80'
+                          : 'border-[#D1D1D6] dark:border-white/10 opacity-80'
                       }`}
                     >
                       {rt.name}
@@ -608,18 +608,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         return (
           <div className="space-y-6 animate-fade-in">
             <div>
-              <h2 className="text-xl font-bold text-[#222222] dark:text-[#EFF1EE]">{t.remindersTitle || 'Appointments & Study Reminders'}</h2>
-              <p className="text-xs text-[#666666] dark:text-[#D0D2CF] mt-1">
+              <h2 className="text-xl font-bold text-[#222222] dark:text-[#F5F5F7]">{t.remindersTitle || 'Appointments & Study Reminders'}</h2>
+              <p className="text-xs text-[#666666] dark:text-[#D1D1D6] mt-1">
                 {t.remindersSubtitle || 'Schedule study sessions and daily target goals'}
               </p>
             </div>
 
-            <div className="flex items-center justify-between py-3 border-t border-[#D0D2CF]/60 dark:border-white/10">
+            <div className="flex items-center justify-between py-3 border-t border-[#D1D1D6]/60 dark:border-white/10">
               <div>
-                <h3 className="text-xs font-semibold text-[#222222] dark:text-[#EFF1EE]">
+                <h3 className="text-xs font-semibold text-[#222222] dark:text-[#F5F5F7]">
                   {t.dailyStudySchedule || 'Daily Study Schedule'}
                 </h3>
-                <p className="text-[11px] text-[#666666] dark:text-[#D0D2CF] mt-0.5">
+                <p className="text-[11px] text-[#666666] dark:text-[#D1D1D6] mt-0.5">
                   {t.dailyStudyScheduleDesc || 'Maintain your learning streak with timed check-ins'}
                 </p>
               </div>
@@ -627,7 +627,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <button
                 onClick={() => setStudyRemindersEnabled(!studyRemindersEnabled)}
                 className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${
-                  studyRemindersEnabled ? 'bg-[#222222]' : 'bg-[#D0D2CF] dark:bg-white/20'
+                  studyRemindersEnabled ? 'bg-[#007AFF]' : 'bg-[#D1D1D6] dark:bg-white/20'
                 }`}
               >
                 <div
@@ -644,24 +644,24 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         return (
           <div className="space-y-6 animate-fade-in">
             <div>
-              <h2 className="text-xl font-bold text-[#222222] dark:text-[#EFF1EE] flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-[#B2A1FF]" />
+              <h2 className="text-xl font-bold text-[#222222] dark:text-[#F5F5F7] flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-[#007AFF]" />
                 {t.developerTitle || 'AI Coach & Developer API'}
               </h2>
-              <p className="text-xs text-[#666666] dark:text-[#D0D2CF] mt-1">
+              <p className="text-xs text-[#666666] dark:text-[#D1D1D6] mt-1">
                 {t.developerSubtitle || 'Evaluate stats and access developer integration keys'}
               </p>
             </div>
 
             {/* AI Language Coach */}
-            <div className="p-4 rounded-2xl border border-[#D0D2CF] dark:border-white/10 bg-white dark:bg-[#1E1E1E] space-y-4">
+            <div className="p-4 rounded-2xl border border-[#D1D1D6] dark:border-white/10 bg-white dark:bg-[#1E1E1E] space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <h3 className="text-xs font-bold text-[#222222] dark:text-[#EFF1EE] flex items-center gap-1.5">
-                    <Sparkles className="w-4 h-4 text-[#B2A1FF]" />
+                  <h3 className="text-xs font-bold text-[#222222] dark:text-[#F5F5F7] flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-[#007AFF]" />
                     {t.aiCoachReview || 'AI Language Coach Review'}
                   </h3>
-                  <p className="text-[11px] text-[#666666] dark:text-[#D0D2CF] mt-0.5">
+                  <p className="text-[11px] text-[#666666] dark:text-[#D1D1D6] mt-0.5">
                     {t.aiCoachDesc || `Generate learning advice based on your ${userStats.currentStreak}-day streak and ${vocabulary.length} saved words.`}
                   </p>
                 </div>
@@ -686,7 +686,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     }
                   }}
                   disabled={isCoachLoading}
-                  className="px-3.5 py-2 bg-[#222222] hover:bg-[#A4F5A6] text-[#EFF1EE] hover:text-[#222222] text-xs font-bold rounded-xl transition-all shadow-xs flex items-center gap-1.5 cursor-pointer shrink-0 disabled:opacity-60"
+                  className="px-3.5 py-2 bg-[#007AFF] hover:bg-[#0066D6] text-white text-xs font-bold rounded-xl transition-all shadow-xs flex items-center gap-1.5 cursor-pointer shrink-0 disabled:opacity-60"
                 >
                   {isCoachLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
                   <span>{isCoachLoading ? (t.aiAnalyzing || 'Analyzing...') : (t.requestAiReview || 'Request AI Review')}</span>
@@ -700,8 +700,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               )}
 
               {coachResult && (
-                <div className="space-y-3 pt-3 border-t border-[#D0D2CF] dark:border-white/10 text-xs">
-                  <p className="font-serif italic text-[#222222] dark:text-[#EFF1EE] border-s-2 border-[#A4F5A6] ps-3">
+                <div className="space-y-3 pt-3 border-t border-[#D1D1D6] dark:border-white/10 text-xs">
+                  <p className="font-serif italic text-[#1D1D1F] dark:text-[#F5F5F7] border-s-2 border-[#007AFF] ps-3">
                     "{coachResult.overallEvaluation}"
                   </p>
                 </div>
@@ -709,13 +709,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
 
             {/* API Key */}
-            <div className="p-4 rounded-2xl border border-[#D0D2CF] dark:border-white/10 bg-white dark:bg-[#1E1E1E] space-y-3">
-              <h3 className="text-xs font-bold text-[#222222] dark:text-[#EFF1EE] flex items-center gap-1.5">
-                <Key className="w-4 h-4 text-[#B2A1FF]" />
+            <div className="p-4 rounded-2xl border border-[#D1D1D6] dark:border-white/10 bg-white dark:bg-[#1E1E1E] space-y-3">
+              <h3 className="text-xs font-bold text-[#222222] dark:text-[#F5F5F7] flex items-center gap-1.5">
+                <Key className="w-4 h-4 text-[#007AFF]" />
                 {t.developerApiKey || 'Developer API Key'}
               </h3>
               <div className="flex gap-2">
-                <div className="flex-1 bg-[#EFF1EE] dark:bg-black/40 px-3 py-2 rounded-xl text-xs font-mono text-[#222222] dark:text-[#EFF1EE] overflow-hidden truncate border border-[#D0D2CF] dark:border-white/10">
+                <div className="flex-1 bg-[#F5F5F7] dark:bg-black/40 px-3 py-2 rounded-xl text-xs font-mono text-[#222222] dark:text-[#F5F5F7] overflow-hidden truncate border border-[#D1D1D6] dark:border-white/10">
                   lf_dev_key_{profileName.toLowerCase().replace(/[^a-z0-9]/g, '') || 'guest'}_9a3f2d8
                 </div>
                 <button
@@ -725,30 +725,30 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     setCopiedApiKey(true);
                     setTimeout(() => setCopiedApiKey(false), 2000);
                   }}
-                  className="px-3 py-2 bg-[#EFF1EE] dark:bg-white/10 text-[#222222] dark:text-white text-xs font-bold rounded-xl hover:bg-[#D0D2CF] cursor-pointer"
+                  className="px-3 py-2 bg-[#F5F5F7] dark:bg-white/10 text-[#1D1D1F] dark:text-white text-xs font-bold rounded-xl hover:bg-[#D1D1D6] cursor-pointer"
                 >
-                  {copiedApiKey ? <Check className="w-4 h-4 text-[#A4F5A6]" /> : <Copy className="w-4 h-4" />}
+                  {copiedApiKey ? <Check className="w-4 h-4 text-[#007AFF]" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
             {/* Supabase Database Integration */}
-            <div className="p-4 rounded-2xl border border-[#D0D2CF] dark:border-white/10 bg-white dark:bg-[#1E1E1E] space-y-3">
+            <div className="p-4 rounded-2xl border border-[#D1D1D6] dark:border-white/10 bg-white dark:bg-[#1E1E1E] space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-xs font-bold text-[#222222] dark:text-[#EFF1EE] flex items-center gap-1.5">
-                  <Database className="w-4 h-4 text-[#B2A1FF]" />
+                <h3 className="text-xs font-bold text-[#222222] dark:text-[#F5F5F7] flex items-center gap-1.5">
+                  <Database className="w-4 h-4 text-[#007AFF]" />
                   {t.supabaseDatabase || 'Supabase Cloud Database'}
                 </h3>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                   !!getSupabase() 
-                    ? 'bg-[#A4F5A6]/20 text-[#222222] dark:text-[#A4F5A6] border border-[#A4F5A6]' 
-                    : 'bg-[#EFF1EE] text-[#666666] dark:bg-white/10 dark:text-[#D0D2CF] border border-[#D0D2CF]'
+                    ? 'bg-[#007AFF]/15 text-[#007AFF] border border-[#007AFF]/35' 
+                    : 'bg-[#F5F5F7] text-[#6E6E73] dark:bg-white/10 dark:text-[#D1D1D6] border border-[#D1D1D6]'
                 }`}>
                   {!!getSupabase() ? (t.connectedStatus || 'Connected') : (t.notConfiguredStatus || 'Not Configured')}
                 </span>
               </div>
 
-              <p className="text-[11px] text-[#666666] dark:text-[#D0D2CF]">
+              <p className="text-[11px] text-[#666666] dark:text-[#D1D1D6]">
                 {!!getSupabase() 
                   ? 'Your student profile, reading metrics, vocabulary lists, and study decks are securely backing up to your Supabase PostgreSQL cluster.'
                   : 'To enable Supabase database persistence, please configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY inside the Secrets panel.'
@@ -763,23 +763,23 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         return (
           <div className="space-y-6 animate-fade-in">
             <div>
-              <h2 className="text-xl font-bold text-[#222222] dark:text-[#EFF1EE]">{t.helpCenterTitle || 'Help Center & Guide'}</h2>
-              <p className="text-xs text-[#666666] dark:text-[#D0D2CF] mt-1">
+              <h2 className="text-xl font-bold text-[#222222] dark:text-[#F5F5F7]">{t.helpCenterTitle || 'Help Center & Guide'}</h2>
+              <p className="text-xs text-[#666666] dark:text-[#D1D1D6] mt-1">
                 {t.helpCenterSubtitle || 'Frequently asked questions and platform help'}
               </p>
             </div>
 
             <div className="space-y-3">
-              <div className="p-3.5 rounded-2xl border border-[#D0D2CF] dark:border-white/10 bg-white dark:bg-[#1E1E1E] space-y-1">
-                <h4 className="text-xs font-bold text-[#222222] dark:text-[#EFF1EE]">{t.faqTranslationTitle || 'How does Instant Translation work?'}</h4>
-                <p className="text-xs text-[#666666] dark:text-[#D0D2CF]">
+              <div className="p-3.5 rounded-2xl border border-[#D1D1D6] dark:border-white/10 bg-white dark:bg-[#1E1E1E] space-y-1">
+                <h4 className="text-xs font-bold text-[#222222] dark:text-[#F5F5F7]">{t.faqTranslationTitle || 'How does Instant Translation work?'}</h4>
+                <p className="text-xs text-[#666666] dark:text-[#D1D1D6]">
                   {t.faqTranslationDesc || 'Click or tap any word inside your reader document to view grammatical breakdowns and saved notes.'}
                 </p>
               </div>
 
-              <div className="p-3.5 rounded-2xl border border-[#D0D2CF] dark:border-white/10 bg-white dark:bg-[#1E1E1E] space-y-1">
-                <h4 className="text-xs font-bold text-[#222222] dark:text-[#EFF1EE]">{t.faqExportTitle || 'How do I export my study statistics?'}</h4>
-                <p className="text-xs text-[#666666] dark:text-[#D0D2CF]">
+              <div className="p-3.5 rounded-2xl border border-[#D1D1D6] dark:border-white/10 bg-white dark:bg-[#1E1E1E] space-y-1">
+                <h4 className="text-xs font-bold text-[#222222] dark:text-[#F5F5F7]">{t.faqExportTitle || 'How do I export my study statistics?'}</h4>
+                <p className="text-xs text-[#666666] dark:text-[#D1D1D6]">
                   {t.faqExportDesc || 'Navigate to the Developer API tab to copy raw JSON progress metrics or sync with external tools.'}
                 </p>
               </div>
@@ -807,7 +807,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     <div className="w-full max-w-md mx-auto py-2 px-3 sm:px-4 space-y-5">
       {/* Centered Profile Title */}
       <div className="text-center">
-        <h1 className="text-2xl font-bold tracking-tight text-[#222222] dark:text-[#EFF1EE]">
+        <h1 className="text-2xl font-bold tracking-tight text-[#222222] dark:text-[#F5F5F7]">
           {t.profileTitle || 'Profile'}
         </h1>
       </div>
@@ -817,20 +817,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         <div className="space-y-4">
           <button
             onClick={() => setSelectedDetailView(null)}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 text-[#222222] dark:text-[#EFF1EE] hover:bg-[#EFF1EE] text-xs font-bold transition-all cursor-pointer group shadow-2xs"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white dark:bg-[#1E1E1E] border border-[#D1D1D6] dark:border-white/10 text-[#222222] dark:text-[#F5F5F7] hover:bg-[#F5F5F7] text-xs font-bold transition-all cursor-pointer group shadow-2xs"
           >
-            <ChevronDown className="w-4 h-4 text-[#222222] dark:text-[#EFF1EE] rotate-90 group-hover:-translate-x-0.5 transition-transform" />
+            <ChevronDown className="w-4 h-4 text-[#222222] dark:text-[#F5F5F7] rotate-90 group-hover:-translate-x-0.5 transition-transform" />
             <span>{t.backToProfile || '← Back to Profile'}</span>
           </button>
 
-          <div className="bg-white dark:bg-[#1E1E1E] rounded-3xl p-5 border border-[#D0D2CF] dark:border-white/10 shadow-xs">
+          <div className="bg-white dark:bg-[#1E1E1E] rounded-3xl p-5 border border-[#D1D1D6] dark:border-white/10 shadow-xs">
             {renderDetailPanel(selectedDetailView)}
           </div>
         </div>
       ) : (
         <div className="space-y-5 animate-fade-in">
           {/* Top Profile Summary Card */}
-          <div className="bg-white dark:bg-[#1E1E1E] p-4 rounded-3xl border border-[#D0D2CF] dark:border-white/10 flex items-center gap-4 shadow-xs">
+          <div className="bg-white dark:bg-[#1E1E1E] p-4 rounded-3xl border border-[#D1D1D6] dark:border-white/10 flex items-center gap-4 shadow-xs">
             <input
               type="file"
               ref={fileInputRef}
@@ -843,7 +843,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               className="relative group cursor-pointer shrink-0"
               title="Click to change avatar"
             >
-              <div className="w-14 h-14 rounded-full bg-[#222222] text-[#EFF1EE] flex items-center justify-center font-bold text-2xl shadow-xs border-2 border-white dark:border-stone-800 overflow-hidden">
+              <div className="w-14 h-14 rounded-full bg-[#222222] text-[#F5F5F7] flex items-center justify-center font-bold text-2xl shadow-xs border-2 border-white dark:border-stone-800 overflow-hidden">
                 <img src={getEffectiveAvatar(profileAvatar, profileEmail || profileName)} alt={profileName} className="w-full h-full object-cover" />
               </div>
               <div className="absolute inset-0 bg-black/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
@@ -852,10 +852,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             </div>
 
             <div className="flex-1 min-w-0">
-              <h2 className="text-base font-bold text-[#222222] dark:text-[#EFF1EE] truncate">
+              <h2 className="text-base font-bold text-[#222222] dark:text-[#F5F5F7] truncate">
                 {profileName}
               </h2>
-              <p className="text-xs text-[#666666] dark:text-[#D0D2CF] truncate mt-0.5">
+              <p className="text-xs text-[#666666] dark:text-[#D1D1D6] truncate mt-0.5">
                 {profileEmail || 'user@example.com'}
               </p>
             </div>
@@ -863,20 +863,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
           {/* Group 1: Account */}
           <div className="space-y-1.5">
-            <h3 className="text-xs font-semibold text-[#666666] dark:text-[#D0D2CF] px-1 tracking-wide">
+            <h3 className="text-xs font-semibold text-[#666666] dark:text-[#D1D1D6] px-1 tracking-wide">
               {t.accountSection || 'Account'}
             </h3>
-            <div className="bg-white dark:bg-[#1E1E1E] rounded-2xl border border-[#D0D2CF] dark:border-white/10 divide-y divide-[#D0D2CF]/50 dark:divide-white/10 shadow-xs overflow-hidden">
+            <div className="bg-white dark:bg-[#1E1E1E] rounded-2xl border border-[#D1D1D6] dark:border-white/10 divide-y divide-[#D1D1D6]/50 dark:divide-white/10 shadow-xs overflow-hidden">
               {accountItems.map((item) => {
                 const Icon = item.icon;
                 return (
                   <button
                     key={item.id}
                     onClick={() => setSelectedDetailView(item.id)}
-                    className="w-full flex items-center justify-between px-4 py-3 text-xs font-semibold text-[#222222] dark:text-[#EFF1EE] hover:bg-[#EFF1EE] dark:hover:bg-white/5 transition-colors cursor-pointer group"
+                    className="w-full flex items-center justify-between px-4 py-3 text-xs font-semibold text-[#222222] dark:text-[#F5F5F7] hover:bg-[#F5F5F7] dark:hover:bg-white/5 transition-colors cursor-pointer group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-1.5 rounded-xl bg-[#EFF1EE] dark:bg-white/10 text-[#222222] dark:text-white">
+                      <div className="p-1.5 rounded-xl bg-[#F5F5F7] dark:bg-white/10 text-[#222222] dark:text-white">
                         <Icon className="w-4 h-4" />
                       </div>
                       <span>{item.label}</span>
@@ -884,7 +884,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
                     <div className="flex items-center gap-2">
                       {item.value && (
-                        <span className="text-[#666666] dark:text-[#D0D2CF] text-xs font-normal">
+                        <span className="text-[#666666] dark:text-[#D1D1D6] text-xs font-normal">
                           {item.value}
                         </span>
                       )}
@@ -898,20 +898,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
           {/* Group 2: Preferences */}
           <div className="space-y-1.5">
-            <h3 className="text-xs font-semibold text-[#666666] dark:text-[#D0D2CF] px-1 tracking-wide">
+            <h3 className="text-xs font-semibold text-[#666666] dark:text-[#D1D1D6] px-1 tracking-wide">
               {t.preferencesSection || 'Preferences'}
             </h3>
-            <div className="bg-white dark:bg-[#1E1E1E] rounded-2xl border border-[#D0D2CF] dark:border-white/10 divide-y divide-[#D0D2CF]/50 dark:divide-white/10 shadow-xs overflow-hidden">
+            <div className="bg-white dark:bg-[#1E1E1E] rounded-2xl border border-[#D1D1D6] dark:border-white/10 divide-y divide-[#D1D1D6]/50 dark:divide-white/10 shadow-xs overflow-hidden">
               {preferenceItems.map((item) => {
                 const Icon = item.icon;
                 return (
                   <button
                     key={item.id}
                     onClick={() => setSelectedDetailView(item.id)}
-                    className="w-full flex items-center justify-between px-4 py-3 text-xs font-semibold text-[#222222] dark:text-[#EFF1EE] hover:bg-[#EFF1EE] dark:hover:bg-white/5 transition-colors cursor-pointer group"
+                    className="w-full flex items-center justify-between px-4 py-3 text-xs font-semibold text-[#222222] dark:text-[#F5F5F7] hover:bg-[#F5F5F7] dark:hover:bg-white/5 transition-colors cursor-pointer group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-1.5 rounded-xl bg-[#EFF1EE] dark:bg-white/10 text-[#222222] dark:text-white">
+                      <div className="p-1.5 rounded-xl bg-[#F5F5F7] dark:bg-white/10 text-[#222222] dark:text-white">
                         <Icon className="w-4 h-4" />
                       </div>
                       <span>{item.label}</span>
@@ -919,7 +919,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
                     <div className="flex items-center gap-2">
                       {item.value && (
-                        <span className="text-[#666666] dark:text-[#D0D2CF] text-xs font-normal">
+                        <span className="text-[#666666] dark:text-[#D1D1D6] text-xs font-normal">
                           {item.value}
                         </span>
                       )}
@@ -933,20 +933,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
           {/* Group 3: Support */}
           <div className="space-y-1.5">
-            <h3 className="text-xs font-semibold text-[#666666] dark:text-[#D0D2CF] px-1 tracking-wide">
+            <h3 className="text-xs font-semibold text-[#666666] dark:text-[#D1D1D6] px-1 tracking-wide">
               {t.supportSection || 'Support'}
             </h3>
-            <div className="bg-white dark:bg-[#1E1E1E] rounded-2xl border border-[#D0D2CF] dark:border-white/10 divide-y divide-[#D0D2CF]/50 dark:divide-white/10 shadow-xs overflow-hidden">
+            <div className="bg-white dark:bg-[#1E1E1E] rounded-2xl border border-[#D1D1D6] dark:border-white/10 divide-y divide-[#D1D1D6]/50 dark:divide-white/10 shadow-xs overflow-hidden">
               {supportItems.map((item) => {
                 const Icon = item.icon;
                 return (
                   <button
                     key={item.id}
                     onClick={() => setSelectedDetailView(item.id)}
-                    className="w-full flex items-center justify-between px-4 py-3 text-xs font-semibold text-[#222222] dark:text-[#EFF1EE] hover:bg-[#EFF1EE] dark:hover:bg-white/5 transition-colors cursor-pointer group"
+                    className="w-full flex items-center justify-between px-4 py-3 text-xs font-semibold text-[#222222] dark:text-[#F5F5F7] hover:bg-[#F5F5F7] dark:hover:bg-white/5 transition-colors cursor-pointer group"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="p-1.5 rounded-xl bg-[#EFF1EE] dark:bg-white/10 text-[#222222] dark:text-white">
+                      <div className="p-1.5 rounded-xl bg-[#F5F5F7] dark:bg-white/10 text-[#222222] dark:text-white">
                         <Icon className="w-4 h-4" />
                       </div>
                       <span>{item.label}</span>
@@ -954,7 +954,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
                     <div className="flex items-center gap-2">
                       {item.value && (
-                        <span className="text-[#666666] dark:text-[#D0D2CF] text-xs font-normal">
+                        <span className="text-[#666666] dark:text-[#D1D1D6] text-xs font-normal">
                           {item.value}
                         </span>
                       )}

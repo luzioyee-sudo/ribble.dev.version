@@ -90,7 +90,7 @@ export const SentenceModal: React.FC<SentenceModalProps> = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 15 }}
         transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-        className="relative w-full max-w-2xl bg-white dark:bg-[#1D201A] rounded-3xl shadow-2xl border-2 border-[#334DAF]/30 dark:border-stone-800 p-6 sm:p-7 overflow-y-auto max-h-[85vh] custom-scrollbar"
+        className="relative w-full max-w-2xl bg-white dark:bg-[#1C1C1E] rounded-3xl shadow-2xl border-2 border-[#334DAF]/30 dark:border-stone-800 p-6 sm:p-7 overflow-y-auto max-h-[85vh] custom-scrollbar"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="absolute top-0 start-0 end-0 h-2 bg-[#334DAF]" />
@@ -193,7 +193,7 @@ export const SentenceModal: React.FC<SentenceModalProps> = ({
                 <span className="text-xs font-extrabold text-stone-500 tracking-wider uppercase block">
                   Grammar & Vocabulary Breakdown
                 </span>
-                <div className="divide-y divide-stone-100 dark:divide-stone-800 border border-stone-200/60 dark:border-stone-800 rounded-2xl overflow-hidden bg-white dark:bg-[#1D201A]">
+                <div className="divide-y divide-stone-100 dark:divide-stone-800 border border-stone-200/60 dark:border-stone-800 rounded-2xl overflow-hidden bg-white dark:bg-[#1C1C1E]">
                   {explanation.grammarBreakdown.map((item, idx) => (
                     <div key={idx} className="p-3 sm:p-4 hover:bg-stone-50/50 dark:hover:bg-stone-800/20 transition-colors flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 justify-between">
                       <div className="flex items-center gap-2 shrink-0 min-w-[100px]">

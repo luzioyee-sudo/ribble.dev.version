@@ -1,6 +1,8 @@
 import { DocumentFile, VocabularyItem, Folder, Deck } from '../types';
+import { THE_BLUE_NOTEBOOK_DOC } from '../data/theBlueNotebook';
 
 export const SAMPLE_DOCUMENTS: DocumentFile[] = [
+  THE_BLUE_NOTEBOOK_DOC,
   {
     id: 'doc-1',
     name: "Read People Like a Book",

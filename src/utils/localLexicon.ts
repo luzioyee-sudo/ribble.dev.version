@@ -11,6 +11,8 @@ import { SHOPPING_AND_MONEY_DATA } from '../data/shoppingAndMoney';
 import { WEATHER_AND_SEASONS_DATA } from '../data/weatherAndSeasons';
 import { INTRODUCING_YOURSELF_DATA } from '../data/introducingYourself';
 import { DAILY_ROUTINE_DATA } from '../data/dailyRoutine';
+import { UNIVERSITY_LIFE_AND_STUDIES_DATA } from '../data/universityLifeAndStudies';
+import { CAREER_GOALS_AND_BUSINESS_DATA } from '../data/careerGoalsAndBusiness';
 import { INITIAL_MASTER_LEXICON } from '../data/masterLexicon';
 
 let cachedEntries: LexicalEntry[] | null = null;
@@ -36,7 +38,9 @@ export function getLocalLexiconEntries(): LexicalEntry[] {
     { name: 'Hobbies & Free Time', data: HOBBIES_AND_FREE_TIME_DATA },
     { name: 'Home & Where You Live', data: HOME_AND_WHERE_YOU_LIVE_DATA },
     { name: 'Shopping & Money', data: SHOPPING_AND_MONEY_DATA },
-    { name: 'Weather & Seasons', data: WEATHER_AND_SEASONS_DATA }
+    { name: 'Weather & Seasons', data: WEATHER_AND_SEASONS_DATA },
+    { name: 'University Life & Studies', data: UNIVERSITY_LIFE_AND_STUDIES_DATA },
+    { name: 'Career Goals & Business', data: CAREER_GOALS_AND_BUSINESS_DATA }
   ];
 
   datasets.forEach((dataset) => {
@@ -48,6 +52,7 @@ export function getLocalLexiconEntries(): LexicalEntry[] {
         { name: 'English', code: 'en', getWord: (r: any) => r.english, getPhonetic: (r: any) => r.phonetic?.english },
         { name: 'Spanish', code: 'es', getWord: (r: any) => r.spanish, getPhonetic: (r: any) => r.phonetic?.spanish },
         { name: 'German', code: 'de', getWord: (r: any) => r.german, getPhonetic: (r: any) => r.phonetic?.german },
+        { name: 'Italian', code: 'it', getWord: (r: any) => r.italian, getPhonetic: (r: any) => r.phonetic?.italian },
         { name: 'Arabic', code: 'ar', getWord: (r: any) => r.arabic, getPhonetic: (r: any) => r.phonetic?.arabic },
         { name: 'French', code: 'fr', getWord: (r: any) => r.french, getPhonetic: (r: any) => r.phonetic?.french },
         { name: 'Chinese', code: 'zh', getWord: (r: any) => r.chinese, getPhonetic: (r: any) => r.phonetic?.chinese },
@@ -93,13 +98,14 @@ export function getLocalLexiconEntries(): LexicalEntry[] {
           partOfSpeech: pos,
           phonetic: lang.getPhonetic(row) || undefined,
           frequency: 'Common',
-          cefr: row.cefr || 'A1',
+          cefr: (row.cefr as any) || 'A1',
           topics: [topicName],
           arabicTranslation: row.arabic || undefined,
           translations: {
             english: row.english,
             spanish: row.spanish,
             german: row.german,
+            italian: row.italian,
             arabic: row.arabic,
             french: row.french,
           },
@@ -108,7 +114,7 @@ export function getLocalLexiconEntries(): LexicalEntry[] {
               senseId: `${id}_s1`,
               definition: row.english,
               partOfSpeech: pos,
-              cefr: row.cefr || 'A1',
+              cefr: (row.cefr as any) || 'A1',
               examples: [],
               arabicTranslation: row.arabic ? {
                 text: row.arabic

@@ -908,27 +908,27 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
   // Active quiz render utilizing the imported QuizRunner subcomponent
   if (activeQuiz) {
     return (
-      <div id="active-quiz-portal-container" className="w-full max-w-5xl mx-auto px-4 py-8 md:px-6 md:py-10 min-h-screen bg-[#EFF1EE]">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 border-b border-[#D0D2CF]/60 pb-5">
+      <div id="active-quiz-portal-container" className="w-full max-w-5xl mx-auto px-4 py-8 md:px-6 md:py-10 min-h-screen bg-[#F5F5F7]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 border-b border-[#D1D1D6]/60 pb-5">
           <div className="flex items-center gap-3">
             <button 
               id="active-quiz-back-btn"
               onClick={() => setActiveQuiz(null)}
-              className="flex items-center justify-center w-10 h-10 bg-white border border-[#D0D2CF] rounded-xl hover:bg-stone-50 transition-all cursor-pointer shadow-xs active:scale-95"
+              className="flex items-center justify-center w-10 h-10 bg-white border border-[#D1D1D6] rounded-xl hover:bg-stone-50 transition-all cursor-pointer shadow-xs active:scale-95"
               title={t.backToList || 'Return to Practice list'}
             >
-              <ArrowLeft className="w-5 h-5 text-[#222222]" />
+              <ArrowLeft className="w-5 h-5 text-[#1D1D1F]" />
             </button>
             <div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-[#222222]/50">{t.activeSession || 'ACTIVE SESSION'}</span>
-              <h1 className="text-xl md:text-2xl font-black text-[#222222] line-clamp-1">{activeQuiz.title}</h1>
+              <span className="text-[10px] font-black uppercase tracking-widest text-[#1D1D1F]/50">{t.activeSession || 'ACTIVE SESSION'}</span>
+              <h1 className="text-xl md:text-2xl font-black text-[#1D1D1F] line-clamp-1">{activeQuiz.title}</h1>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-black bg-[#A4F5A6] text-[#222222] px-3 py-1 rounded-full uppercase tracking-wider">
+            <span className="text-xs font-semibold text-[#007AFF] dark:text-[#0A84FF] bg-[#007AFF]/10 dark:bg-[#0A84FF]/15 px-3 py-1 rounded-lg uppercase tracking-wider">
               {activeQuiz.category}
             </span>
-            <span className="text-xs font-black bg-[#222222] text-[#EFF1EE] px-3 py-1 rounded-full">
+            <span className="text-xs font-medium text-[#6E6E73] dark:text-[#98989D] bg-[#F5F5F7] dark:bg-[#1C1C1E] px-3 py-1 rounded-lg border border-[#D1D1D6] dark:border-[#38383A]">
               {activeQuiz.level} {t.levelLabel || 'Level'}
             </span>
           </div>
@@ -957,13 +957,13 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
   }
 
   return (
-    <div id="practice-view-container" className="w-full max-w-7xl mx-auto px-4 py-6 md:px-8 md:py-10 min-h-screen bg-[#EFF1EE]">
+    <div id="practice-view-container" className="w-full max-w-7xl mx-auto px-4 py-6 md:px-8 md:py-10 min-h-screen bg-[#F5F5F7]">
       
       {/* 1. Header with Title & Live Search bar */}
       <header id="quizzes-view-header" className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-10">
         <div className="space-y-1">
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight text-[#222222]">{t.quizzesTitle || 'Quizzes'}</h1>
-          <p className="text-sm md:text-base text-[#666666] font-medium">
+          <h1 className="text-3xl font-bold tracking-tight text-[#1D1D1F] dark:text-[#F5F5F7]">{t.quizzesTitle || 'Quizzes'}</h1>
+          <p className="text-sm md:text-base text-[#6E6E73] font-medium">
             {t.quizzesSubtitle || "Test what you know. Build what you don't."}
           </p>
         </div>
@@ -971,40 +971,40 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
         {/* Search Bar Container */}
         <div className="flex items-center gap-3 w-full lg:w-auto">
           <div className="relative flex-1 lg:w-80">
-            <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#222222]/40" />
+            <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-[#1D1D1F]/40" />
             <input 
               id="quiz-search-bar"
               type="text"
               placeholder={t.searchQuizzesPlaceholder || "Search quizzes..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full ps-11 pe-4 py-3 rounded-2xl border border-[#D0D2CF] bg-white text-[#222222] text-sm font-semibold placeholder:text-[#222222]/30 focus:outline-none focus:border-[#222222] focus:ring-1 focus:ring-[#222222] transition-all"
+              className="w-full ps-11 pe-4 py-3 rounded-2xl border border-[#D1D1D6] bg-white text-[#1D1D1F] text-sm font-semibold placeholder:text-[#1D1D1F]/30 focus:outline-none focus:border-[#007AFF] focus:ring-1 focus:ring-[#007AFF] transition-all"
             />
           </div>
         </div>
       </header>
 
       {/* Tab Switcher */}
-      <div className="flex items-center gap-2 mb-8 bg-white/50 p-1.5 rounded-2xl border border-[#D0D2CF] w-fit">
+      <div className="flex items-center gap-1 mb-8 bg-[#F5F5F7] dark:bg-[#1C1C1E] p-1 rounded-xl border border-[#D1D1D6] dark:border-[#38383A] w-fit">
         <button
           onClick={() => setActiveTab('quizzes')}
-          className={`px-6 py-2 rounded-xl text-sm font-black transition-all ${
+          className={`px-5 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
             activeTab === 'quizzes' 
-              ? 'bg-[#222222] text-[#EFF1EE] shadow-sm' 
-              : 'text-[#222222]/60 hover:text-[#222222] hover:bg-white'
+              ? 'bg-white dark:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] shadow-xs' 
+              : 'text-[#6E6E73] dark:text-[#98989D] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7]'
           }`}
         >
           {t.quizzesTab || 'Quizzes'}
         </button>
         <button
           onClick={() => setActiveTab('history')}
-          className={`px-6 py-2 rounded-xl text-sm font-black transition-all flex items-center gap-2 ${
+          className={`px-5 py-2 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 cursor-pointer ${
             activeTab === 'history' 
-              ? 'bg-[#222222] text-[#EFF1EE] shadow-sm' 
-              : 'text-[#222222]/60 hover:text-[#222222] hover:bg-white'
+              ? 'bg-white dark:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] shadow-xs' 
+              : 'text-[#6E6E73] dark:text-[#98989D] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7]'
           }`}
         >
-          <History className="w-4 h-4" />
+          <History className="w-3.5 h-3.5" />
           {t.historyTab || 'History'}
         </button>
       </div>
@@ -1019,36 +1019,37 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             transition={{ duration: 0.2 }}
           >
             {/* 3. Recommended For You Section with Isometric 3D Blocks SVG */}
-            <section id="recommended-quiz-section" className="mb-12">
-              <div className="bg-[#A4F5A6]/10 border border-[#A4F5A6]/30 p-6 md:p-8 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden shadow-xs hover:border-[#A4F5A6]/60 transition-all">
+            <section id="recommended-quiz-section" className="mb-10">
+              <div className="bg-gradient-to-br from-[#007AFF]/8 via-[#007AFF]/3 to-transparent dark:from-[#0A84FF]/12 dark:via-[#0A84FF]/5 dark:to-transparent border border-[#007AFF]/20 dark:border-[#0A84FF]/25 p-6 md:p-8 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden shadow-xs hover:border-[#007AFF]/40 transition-all">
                 <div className="space-y-4 max-w-xl z-10">
-                  <span className="text-[10px] font-black tracking-widest text-[#3b9d4e] uppercase">
-                    {t.recommendedForYou || 'RECOMMENDED FOR YOU'}
+                  <span className="text-[11px] font-semibold tracking-wider text-[#007AFF] dark:text-[#0A84FF] uppercase flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    {t.recommendedForYou || 'Recommended for you'}
                   </span>
-                  <h2 className="text-2xl md:text-3xl font-black text-[#222222] leading-tight">
+                  <h2 className="text-2xl md:text-3xl font-bold text-[#1D1D1F] dark:text-[#F5F5F7] tracking-tight leading-tight">
                     {t.dailyUltimatePracticeMix || 'Daily Ultimate Practice Mix'}
                   </h2>
 
-                  {/* Simple, brand-aligned green pill controller - way much smaller */}
-                  <div className="inline-flex items-center justify-between bg-[#A4F5A6]/20 border border-[#A4F5A6]/40 p-1 rounded-full w-44 shadow-xs">
+                  {/* Clean Apple-style Stepper Counter */}
+                  <div className="inline-flex items-center bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] p-1 rounded-xl shadow-xs">
                     <button 
                       type="button"
                       onClick={() => setMixedCount(prev => Math.max(3, prev - 5))}
-                      className="w-7 h-7 flex items-center justify-center bg-white hover:bg-stone-50 border border-[#D0D2CF]/60 text-[#222222] rounded-full transition-all cursor-pointer shadow-xs active:scale-95 text-xs font-black"
+                      className="w-7 h-7 flex items-center justify-center hover:bg-[#F5F5F7] dark:hover:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] rounded-lg transition-colors cursor-pointer text-xs font-semibold"
                       title="Decrease"
                     >
                       —
                     </button>
                     
-                    <div className="flex flex-col items-center select-none px-1">
-                      <span className="text-[8px] font-black tracking-wider text-[#3b9d4e] uppercase leading-none mb-0.5">{t.sizeLabel || 'SIZE'}</span>
-                      <span className="text-xs font-black text-[#222222] leading-none">{mixedCount} {t.qsLabel || 'Qs'}</span>
+                    <div className="flex items-center gap-1.5 px-3 select-none">
+                      <span className="text-[10px] font-medium text-[#6E6E73] dark:text-[#98989D] uppercase">{t.sizeLabel || 'SIZE'}</span>
+                      <span className="text-xs font-bold text-[#1D1D1F] dark:text-[#F5F5F7] tabular-nums">{mixedCount} {t.qsLabel || 'Qs'}</span>
                     </div>
 
                     <button 
                       type="button"
                       onClick={() => setMixedCount(prev => Math.min(100, prev + 5))}
-                      className="w-7 h-7 flex items-center justify-center bg-white hover:bg-stone-50 border border-[#D0D2CF]/60 text-[#222222] rounded-full transition-all cursor-pointer shadow-xs active:scale-95 text-xs font-black"
+                      className="w-7 h-7 flex items-center justify-center hover:bg-[#F5F5F7] dark:hover:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] rounded-lg transition-colors cursor-pointer text-xs font-semibold"
                       title="Increase"
                     >
                       +
@@ -1056,46 +1057,17 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
                   </div>
                 </div>
 
-                {/* Isometric cubes illustration block pile */}
-                <div id="isometric-blocks-art" className="hidden lg:block absolute end-52 top-1/2 -translate-y-1/2 pointer-events-none opacity-90 select-none">
-                  <svg viewBox="0 0 200 160" className="w-44 h-36 drop-shadow-sm">
-                    <g transform="translate(40, 90)">
-                      <polygon points="0,-15 25,-30 50,-15 25,0" fill="#EAEAEA" />
-                      <polygon points="0,-15 25,0 25,30 0,15" fill="#CCCCCC" />
-                      <polygon points="25,0 50,-15 50,15 25,30" fill="#B3B3B3" />
-                    </g>
-                    <g transform="translate(90, 100)">
-                      <polygon points="0,-15 25,-30 50,-15 25,0" fill="#444444" />
-                      <polygon points="0,-15 25,0 25,30 0,15" fill="#222222" />
-                      <polygon points="25,0 50,-15 50,15 25,30" fill="#111111" />
-                    </g>
-                    <g transform="translate(70, 70)">
-                      <polygon points="0,-15 25,-30 50,-15 25,0" fill="#FFFFFF" />
-                      <polygon points="0,-15 25,0 25,30 0,15" fill="#E2E2E2" />
-                      <polygon points="25,0 50,-15 50,15 25,30" fill="#D0D0D0" />
-                    </g>
-                    <g transform="translate(80, 55)">
-                      <polygon points="0,-15 25,-30 50,-15 25,0" fill="#C1F9C2" />
-                      <polygon points="0,-15 25,0 25,30 0,15" fill="#A4F5A6" />
-                      <polygon points="25,0 50,-15 50,15 25,30" fill="#7EE781" />
-                    </g>
-                    <g transform="translate(145, 45) scale(0.5)">
-                      <polygon points="0,-15 25,-30 50,-15 25,0" fill="#C1F9C2" />
-                      <polygon points="0,-15 25,0 25,30 0,15" fill="#A4F5A6" />
-                      <polygon points="25,0 50,-15 50,15 25,30" fill="#7EE781" />
-                    </g>
-                    <g transform="translate(15, 50) scale(0.4)">
-                      <polygon points="0,-15 25,-30 50,-15 25,0" fill="#FFFFFF" />
-                      <polygon points="0,-15 25,0 25,30 0,15" fill="#E2E2E2" />
-                      <polygon points="25,0 50,-15 50,15 25,30" fill="#D0D0D0" />
-                    </g>
-                  </svg>
+                {/* Subtle Graphic Visual */}
+                <div id="recommended-quiz-art" className="hidden lg:flex items-center justify-center absolute end-56 top-1/2 -translate-y-1/2 pointer-events-none opacity-80 select-none">
+                  <div className="w-28 h-28 rounded-2xl bg-[#007AFF]/5 dark:bg-[#0A84FF]/10 border border-[#007AFF]/10 flex items-center justify-center rotate-3">
+                    <Brain className="w-14 h-14 text-[#007AFF]/40 dark:text-[#0A84FF]/40" />
+                  </div>
                 </div>
 
                 <button 
                   id="start-rec-quiz-btn"
                   onClick={() => handleStartDynamicQuiz('mixed')}
-                  className="px-6 py-4 bg-[#A4F5A6] text-[#222222] border border-[#222222]/15 hover:border-[#222222]/80 font-black text-sm rounded-2xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-98 shrink-0 hover:shadow-xs self-start md:self-auto z-10"
+                  className="px-6 py-3.5 bg-[#007AFF] hover:bg-[#0066D6] dark:bg-[#0A84FF] dark:hover:bg-[#0071E3] text-white font-semibold text-sm rounded-xl flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-[0.98] shrink-0 shadow-xs self-start md:self-auto z-10"
                 >
                   <span>{t.startPracticeMix || 'Start Practice Mix'}</span>
                   <ChevronRight className="w-4 h-4 stroke-[2.5]" />
@@ -1105,187 +1077,187 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
             
             {/* Quiz Modes Hub */}
             <section id="quiz-modes-hub" className="mb-12 space-y-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-black text-[#222222] tracking-tight">{t.selectQuizMode || 'Select your Quiz Mode'}</h2>
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-6">
-          {/* Card 1: Test New Words */}
-          <div id="mode-card-new" className="bg-white border border-[#D0D2CF]/65 p-6 rounded-3xl flex flex-col justify-between hover:border-[#3b9d4e]/70 transition-all shadow-2xs group relative overflow-hidden">
-            <div className="space-y-4">
-              <div className="w-12 h-12 bg-[#A4F5A6]/20 border border-[#A4F5A6]/40 rounded-2xl flex items-center justify-center text-emerald-800">
-                <Compass className="w-6 h-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-black text-[#222222] text-lg leading-tight">{t.testNewWords || 'Test New Words'}</h3>
-                  <span className="text-[10px] font-black bg-[#A4F5A6] text-[#222222] px-2 py-0.5 rounded-full uppercase">{t.newLabel || 'NEW'}</span>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-[#1D1D1F] dark:text-[#F5F5F7] tracking-tight">{t.selectQuizMode || 'Select your Quiz Mode'}</h2>
                 </div>
-                <p className="text-xs md:text-sm font-semibold text-[#666666] leading-relaxed">
-                  {t.testNewWordsDesc || 'Focus specifically on the words you have recently added or collected from document sources.'}
-                </p>
               </div>
-            </div>
-            
-            <div className="mt-8 pt-4 border-t border-[#D0D2CF]/30 flex items-center justify-between">
-              <span className="text-xs font-bold text-[#666666]">
-                {vocabulary?.length || 0} {t.vocabularyItems || 'vocabulary items'}
-              </span>
-              <button 
-                onClick={() => handleStartDynamicQuiz('new')}
-                className="px-4 py-2.5 bg-[#A4F5A6] hover:bg-[#8ee091] text-[#222222] border border-[#222222]/10 font-black text-xs rounded-xl flex items-center gap-1 transition-all cursor-pointer active:scale-95"
-              >
-                <span>{t.generateBtn || 'Generate'}</span>
-                <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
-              </button>
-            </div>
-          </div>
 
-          {/* Card 2: Words Needing Practice */}
-          <div id="mode-card-old" className="bg-white border border-[#D0D2CF]/65 p-6 rounded-3xl flex flex-col justify-between hover:border-[#B2A1FF]/70 transition-all shadow-2xs group relative overflow-hidden">
-            <div className="space-y-4">
-              <div className="w-12 h-12 bg-[#B2A1FF]/20 border border-[#B2A1FF]/40 rounded-2xl flex items-center justify-center text-purple-800">
-                <Clock className="w-6 h-6" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-black text-[#222222] text-lg leading-tight">{t.wordsNeedingPractice || 'Words Needing Practice'}</h3>
-                  <span className="text-[10px] font-black bg-[#B2A1FF]/30 text-purple-800 px-2 py-0.5 rounded-full uppercase">{t.priorityLabel || 'Priority'}</span>
+              <div className="grid md:grid-cols-3 gap-6">
+                {/* Card 1: Test New Words */}
+                <div id="mode-card-new" className="bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] p-6 rounded-2xl flex flex-col justify-between hover:border-[#007AFF] dark:hover:border-[#0A84FF] transition-all shadow-xs group">
+                  <div className="space-y-4">
+                    <div className="w-11 h-11 bg-[#007AFF]/10 dark:bg-[#0A84FF]/15 text-[#007AFF] dark:text-[#0A84FF] rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                      <Compass className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <h3 className="font-bold text-[#1D1D1F] dark:text-[#F5F5F7] text-lg leading-tight group-hover:text-[#007AFF] dark:group-hover:text-[#0A84FF] transition-colors">{t.testNewWords || 'Test New Words'}</h3>
+                        <span className="text-[11px] font-semibold text-[#007AFF] dark:text-[#0A84FF] bg-[#007AFF]/10 dark:bg-[#0A84FF]/15 px-2 py-0.5 rounded-md uppercase">{t.newLabel || 'NEW'}</span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-[#6E6E73] dark:text-[#98989D] leading-relaxed">
+                        {t.testNewWordsDesc || 'Focus specifically on the words you have recently added or collected from document sources.'}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8 pt-4 border-t border-[#D1D1D6]/40 dark:border-[#38383A] flex items-center justify-between">
+                    <span className="text-xs font-medium text-[#6E6E73] dark:text-[#98989D] tabular-nums">
+                      {vocabulary?.length || 0} {t.vocabularyItems || 'vocabulary items'}
+                    </span>
+                    <button 
+                      onClick={() => handleStartDynamicQuiz('new')}
+                      className="px-4 py-2 bg-[#007AFF] hover:bg-[#0066D6] dark:bg-[#0A84FF] text-white font-semibold text-xs rounded-xl flex items-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95"
+                    >
+                      <span>{t.generateBtn || 'Generate'}</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
-                <p className="text-xs md:text-sm font-semibold text-[#666666] leading-relaxed">
-                  {t.wordsNeedingPracticeDesc || 'Focus on challenging words. The app tracks your answers, lapses, and retention difficulty to generate your customized practice list.'}
-                </p>
-              </div>
-            </div>
-            
-            <div className="mt-8 pt-4 border-t border-[#D0D2CF]/30 flex items-center justify-between">
-              <span className="text-xs font-bold text-[#666666]">
-                {challengingWordsCount > 0 ? `${challengingWordsCount} ${t.challengingWords || 'challenging words'}` : (t.smartPriorityList || 'Smart priority list')}
-              </span>
-              <button 
-                onClick={() => handleStartDynamicQuiz('old')}
-                className="px-4 py-2.5 bg-[#B2A1FF]/30 hover:bg-[#B2A1FF]/50 text-purple-950 font-black text-xs rounded-xl flex items-center gap-1 transition-all cursor-pointer active:scale-95"
-              >
-                <span>{t.reviewBtn || 'Review'}</span>
-                <ChevronRight className="w-3.5 h-3.5 stroke-[2.5]" />
-              </button>
-            </div>
-          </div>
 
-          {/* Card 3: Custom Quiz Engine */}
-          <div id="mode-card-custom" className="bg-[#222222] text-[#EFF1EE] p-6 rounded-3xl flex flex-col justify-between shadow-2xs relative overflow-hidden border border-[#222222]">
-            <div className="space-y-4">
-              <div className="w-12 h-12 bg-white/10 rounded-2xl flex items-center justify-center text-[#A4F5A6]">
-                <Layers className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="font-black text-lg leading-tight text-white mb-1">{t.customQuizBuilder || 'Custom Quiz Builder'}</h3>
-                <p className="text-[11px] text-stone-400 font-bold leading-tight">{t.customQuizBuilderDesc || 'Generate a personalized practice session instantly.'}</p>
-              </div>
+                {/* Card 2: Words Needing Practice */}
+                <div id="mode-card-old" className="bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] p-6 rounded-2xl flex flex-col justify-between hover:border-[#5856D6] dark:hover:border-[#5E5CE6] transition-all shadow-xs group">
+                  <div className="space-y-4">
+                    <div className="w-11 h-11 bg-[#5856D6]/10 text-[#5856D6] dark:text-[#5E5CE6] rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform">
+                      <Clock className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <h3 className="font-bold text-[#1D1D1F] dark:text-[#F5F5F7] text-lg leading-tight group-hover:text-[#5856D6] dark:group-hover:text-[#5E5CE6] transition-colors">{t.wordsNeedingPractice || 'Words Needing Practice'}</h3>
+                        <span className="text-[11px] font-semibold text-[#5856D6] dark:text-[#5E5CE6] bg-[#5856D6]/10 px-2 py-0.5 rounded-md uppercase">{t.priorityLabel || 'Priority'}</span>
+                      </div>
+                      <p className="text-xs sm:text-sm text-[#6E6E73] dark:text-[#98989D] leading-relaxed">
+                        {t.wordsNeedingPracticeDesc || 'Focus on challenging words. The app tracks your answers, lapses, and retention difficulty to generate your customized practice list.'}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8 pt-4 border-t border-[#D1D1D6]/40 dark:border-[#38383A] flex items-center justify-between">
+                    <span className="text-xs font-medium text-[#6E6E73] dark:text-[#98989D] tabular-nums">
+                      {challengingWordsCount > 0 ? `${challengingWordsCount} ${t.challengingWords || 'challenging words'}` : (t.smartPriorityList || 'Smart priority list')}
+                    </span>
+                    <button 
+                      onClick={() => handleStartDynamicQuiz('old')}
+                      className="px-4 py-2 bg-[#5856D6] hover:bg-[#4745B8] text-white font-semibold text-xs rounded-xl flex items-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95"
+                    >
+                      <span>{t.reviewBtn || 'Review'}</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
 
-              {/* Mode Toggle Tabs */}
-              <div className="flex bg-white/5 p-1 rounded-xl border border-white/10">
-                <button
-                  type="button"
-                  onClick={() => { setCustomMode('deck'); setCustomError(null); }}
-                  className={`flex-1 py-1.5 text-center text-xs font-black rounded-lg transition-all cursor-pointer ${
-                    customMode === 'deck'
-                      ? 'bg-[#A4F5A6] text-[#222222]'
-                      : 'text-stone-300 hover:text-white'
-                  }`}
-                >
-                  {t.chooseDeck || 'Choose Deck'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => { setCustomMode('manual'); setCustomError(null); }}
-                  className={`flex-1 py-1.5 text-center text-xs font-black rounded-lg transition-all cursor-pointer ${
-                    customMode === 'manual'
-                      ? 'bg-[#A4F5A6] text-[#222222]'
-                      : 'text-stone-300 hover:text-white'
-                  }`}
-                >
-                  {t.typeWords || 'Type Words'}
-                </button>
-              </div>
-              
-              {/* Form Controls */}
-              <div className="space-y-3 text-xs text-[#222222]">
-                {customMode === 'deck' ? (
-                  <>
-                    {/* Deck Selection */}
-                    <div className="flex flex-col gap-1.5 bg-white/5 p-3 rounded-xl border border-white/10 text-[#EFF1EE]">
-                      <span className="font-black text-stone-400">{t.flashcardDeckLabel || 'Flashcard Deck:'}</span>
-                      {decks.length > 0 ? (
-                        <select 
-                          value={selectedDeckId} 
-                          onChange={(e) => setSelectedDeckId(e.target.value)}
-                          className="bg-transparent text-[#EFF1EE] border-none font-bold focus:outline-none cursor-pointer w-full text-xs"
-                        >
-                          {decks.map(d => (
-                            <option key={d.id} value={d.id} className="bg-[#222222] text-white">
-                              {d.name} ({vocabulary.filter(v => v.deckId === d.id).length} {t.words || 'words'})
-                            </option>
-                          ))}
-                        </select>
+                {/* Card 3: Custom Quiz Engine */}
+                <div id="mode-card-custom" className="bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] p-6 rounded-2xl flex flex-col justify-between hover:border-[#007AFF] dark:hover:border-[#0A84FF] transition-all shadow-xs group">
+                  <div className="space-y-4">
+                    <div className="w-11 h-11 bg-[#F5F5F7] dark:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] rounded-xl flex items-center justify-center">
+                      <Layers className="w-5 h-5 text-[#007AFF] dark:text-[#0A84FF]" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg leading-tight text-[#1D1D1F] dark:text-[#F5F5F7] mb-1">{t.customQuizBuilder || 'Custom Quiz Builder'}</h3>
+                      <p className="text-xs text-[#6E6E73] dark:text-[#98989D] leading-relaxed">{t.customQuizBuilderDesc || 'Generate a personalized practice session instantly.'}</p>
+                    </div>
+
+                    {/* Mode Toggle Tabs */}
+                    <div className="flex bg-[#F5F5F7] dark:bg-[#2C2C2E] p-1 rounded-xl border border-[#D1D1D6] dark:border-[#38383A]">
+                      <button
+                        type="button"
+                        onClick={() => { setCustomMode('deck'); setCustomError(null); }}
+                        className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                          customMode === 'deck'
+                            ? 'bg-white dark:bg-[#1C1C1E] text-[#1D1D1F] dark:text-[#F5F5F7] shadow-xs'
+                            : 'text-[#6E6E73] dark:text-[#98989D] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7]'
+                        }`}
+                      >
+                        {t.chooseDeck || 'Choose Deck'}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setCustomMode('manual'); setCustomError(null); }}
+                        className={`flex-1 py-1.5 text-center text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                          customMode === 'manual'
+                            ? 'bg-white dark:bg-[#1C1C1E] text-[#1D1D1F] dark:text-[#F5F5F7] shadow-xs'
+                            : 'text-[#6E6E73] dark:text-[#98989D] hover:text-[#1D1D1F] dark:hover:text-[#F5F5F7]'
+                        }`}
+                      >
+                        {t.typeWords || 'Type Words'}
+                      </button>
+                    </div>
+                    
+                    {/* Form Controls */}
+                    <div className="space-y-3 text-xs">
+                      {customMode === 'deck' ? (
+                        <>
+                          {/* Deck Selection */}
+                          <div className="flex flex-col gap-1.5 bg-[#F5F5F7] dark:bg-[#2C2C2E] p-3 rounded-xl border border-[#D1D1D6] dark:border-[#38383A]">
+                            <span className="font-semibold text-xs text-[#6E6E73] dark:text-[#98989D]">{t.flashcardDeckLabel || 'Flashcard Deck:'}</span>
+                            {decks.length > 0 ? (
+                              <select 
+                                value={selectedDeckId} 
+                                onChange={(e) => setSelectedDeckId(e.target.value)}
+                                className="bg-transparent text-[#1D1D1F] dark:text-[#F5F5F7] border-none font-medium focus:outline-none cursor-pointer w-full text-xs"
+                              >
+                                {decks.map(d => (
+                                  <option key={d.id} value={d.id} className="bg-white dark:bg-[#1C1C1E] text-[#1D1D1F] dark:text-[#F5F5F7]">
+                                    {d.name} ({vocabulary.filter(v => v.deckId === d.id).length} {t.words || 'words'})
+                                  </option>
+                                ))}
+                              </select>
+                            ) : (
+                              <div className="text-[#8E8E93] text-xs italic py-1">{t.noDecksAvailable || 'No decks available. Create one in Flashcards first!'}</div>
+                            )}
+                          </div>
+
+                          {/* Questions Count Selection */}
+                          <div className="flex items-center justify-between gap-2 bg-[#F5F5F7] dark:bg-[#2C2C2E] p-3 rounded-xl border border-[#D1D1D6] dark:border-[#38383A]">
+                            <span className="font-semibold text-xs text-[#6E6E73] dark:text-[#98989D]">{t.questionsLabel || 'Questions:'}</span>
+                            <select 
+                              value={customCount} 
+                              onChange={(e) => setCustomCount(Number(e.target.value))}
+                              className="bg-transparent text-[#1D1D1F] dark:text-[#F5F5F7] border-none font-medium focus:outline-none cursor-pointer text-xs"
+                            >
+                              <option value={5} className="bg-white dark:bg-[#1C1C1E] text-[#1D1D1F] dark:text-[#F5F5F7]">5 {t.questionsCountText || 'Questions'}</option>
+                              <option value={10} className="bg-white dark:bg-[#1C1C1E] text-[#1D1D1F] dark:text-[#F5F5F7]">10 {t.questionsCountText || 'Questions'}</option>
+                              <option value={15} className="bg-white dark:bg-[#1C1C1E] text-[#1D1D1F] dark:text-[#F5F5F7]">15 {t.questionsCountText || 'Questions'}</option>
+                              <option value={20} className="bg-white dark:bg-[#1C1C1E] text-[#1D1D1F] dark:text-[#F5F5F7]">20 {t.questionsCountText || 'Questions'}</option>
+                            </select>
+                          </div>
+                        </>
                       ) : (
-                        <div className="text-stone-400 font-bold italic py-1">{t.noDecksAvailable || 'No decks available. Create one in Flashcards first!'}</div>
+                        /* Manual input mode */
+                        <div className="flex flex-col gap-2 bg-[#F5F5F7] dark:bg-[#2C2C2E] p-3 rounded-xl border border-[#D1D1D6] dark:border-[#38383A]">
+                          <span className="font-semibold text-xs text-[#6E6E73] dark:text-[#98989D]">{t.typeOrPasteWords || 'Type or paste words:'}</span>
+                          <textarea 
+                            value={manualWordsInput}
+                            onChange={(e) => setManualWordsInput(e.target.value)}
+                            placeholder="e.g. Pernicious, Serendipity, Resilient"
+                            rows={3}
+                            className="w-full bg-white dark:bg-[#1C1C1E] text-[#1D1D1F] dark:text-[#F5F5F7] rounded-lg p-2.5 font-normal text-xs border border-[#D1D1D6] dark:border-[#38383A] focus:outline-none focus:border-[#007AFF] focus:ring-1 focus:ring-[#007AFF] placeholder:text-[#8E8E93] resize-none"
+                          />
+                          <p className="text-[11px] text-[#6E6E73] dark:text-[#98989D] leading-normal">
+                            {t.separateWordsDesc || "Separate words with commas, semicolons, or newlines. We'll automatically generate definitions for them!"}
+                          </p>
+                        </div>
                       )}
                     </div>
 
-                    {/* Questions Count Selection */}
-                    <div className="flex items-center justify-between gap-2 bg-white/5 p-3 rounded-xl border border-white/10 text-[#EFF1EE]">
-                      <span className="font-black text-stone-400">{t.questionsLabel || 'Questions:'}</span>
-                      <select 
-                        value={customCount} 
-                        onChange={(e) => setCustomCount(Number(e.target.value))}
-                        className="bg-transparent text-[#EFF1EE] border-none font-bold focus:outline-none cursor-pointer text-xs"
-                      >
-                        <option value={5} className="bg-[#222222]">5 {t.questionsCountText || 'Questions'}</option>
-                        <option value={10} className="bg-[#222222]">10 {t.questionsCountText || 'Questions'}</option>
-                        <option value={15} className="bg-[#222222]">15 {t.questionsCountText || 'Questions'}</option>
-                        <option value={20} className="bg-[#222222]">20 {t.questionsCountText || 'Questions'}</option>
-                      </select>
-                    </div>
-                  </>
-                ) : (
-                  /* Manual input mode */
-                  <div className="flex flex-col gap-2 bg-white/5 p-3 rounded-xl border border-white/10 text-[#EFF1EE]">
-                    <span className="font-black text-stone-400">{t.typeOrPasteWords || 'Type or paste words:'}</span>
-                    <textarea
-                      value={manualWordsInput}
-                      onChange={(e) => setManualWordsInput(e.target.value)}
-                      placeholder="e.g. Pernicious, Serendipity, Resilient"
-                      rows={3}
-                      className="w-full bg-[#111111]/60 text-white rounded-lg p-2 font-semibold text-xs border border-white/10 focus:outline-none focus:border-[#A4F5A6] placeholder:text-stone-500 resize-none"
-                    />
-                    <p className="text-[10px] text-stone-400 leading-normal">
-                      {t.separateWordsDesc || "Separate words with commas, semicolons, or newlines. We'll automatically generate definitions for them!"}
-                    </p>
+                    {/* Graceful Dynamic Error Banner */}
+                    {customError && (
+                      <div className="text-xs font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 p-2.5 rounded-xl">
+                        {customError}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
 
-              {/* Graceful Dynamic Error Banner */}
-              {customError && (
-                <div className="text-[11px] font-bold text-red-300 bg-red-950/40 border border-red-900/60 p-2.5 rounded-xl">
-                  {customError}
+                  <button 
+                    onClick={() => handleStartDynamicQuiz('custom')}
+                    className="mt-6 w-full py-2.5 bg-[#007AFF] hover:bg-[#0066D6] dark:bg-[#0A84FF] text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer active:scale-95"
+                  >
+                    <span>{t.buildAndStart || 'Build & Start'}</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
                 </div>
-              )}
-            </div>
-
-            <button 
-              onClick={() => handleStartDynamicQuiz('custom')}
-              className="mt-6 w-full py-3 bg-[#A4F5A6] hover:bg-[#8ee091] text-[#222222] font-black text-xs rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-md"
-            >
-              <span>{t.buildAndStart || 'Build & Start'}</span>
-              <ChevronRight className="w-4 h-4 stroke-[2.5]" />
-            </button>
-          </div>
-        </div>
-      </section>
+              </div>
+            </section>
 
     </motion.div>
         ) : (

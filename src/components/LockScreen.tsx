@@ -49,7 +49,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({
         initial={{ opacity: 0, scale: 0.95, y: 15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.3 }}
-        className={`w-full max-w-sm sm:max-w-md bg-[#1D201A] border border-stone-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative z-10 space-y-5 sm:space-y-6 text-center my-auto ${
+        className={`w-full max-w-sm sm:max-w-md bg-[#1C1C1E] border border-stone-800 rounded-3xl p-6 sm:p-8 shadow-2xl relative z-10 space-y-5 sm:space-y-6 text-center my-auto ${
           isShaking ? 'animate-shake' : ''
         }`}
       >
@@ -63,7 +63,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({
                 className="w-full h-full object-cover" 
               />
             </div>
-            <div className="absolute -bottom-1 -end-1 p-1.5 sm:p-2 rounded-full bg-[#334DAF] text-white shadow-md border-2 border-[#1D201A]">
+            <div className="absolute -bottom-1 -end-1 p-1.5 sm:p-2 rounded-full bg-[#334DAF] text-white shadow-md border-2 border-[#1C1C1E]">
               <Lock className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             </div>
           </div>
@@ -150,7 +150,7 @@ export const LockScreen: React.FC<LockScreenProps> = ({
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-sm bg-[#1D201A] border border-stone-800 rounded-3xl p-6 text-stone-200 shadow-2xl relative space-y-4"
+              className="w-full max-w-sm bg-[#1C1C1E] border border-stone-800 rounded-3xl p-6 text-stone-200 shadow-2xl relative space-y-4"
             >
               <button
                 onClick={() => setShowHintModal(false)}

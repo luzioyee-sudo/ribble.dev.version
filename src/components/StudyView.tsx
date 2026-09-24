@@ -146,7 +146,7 @@ export const StudyView: React.FC<StudyViewProps> = ({
         particleCount: 80,
         spread: 60,
         origin: { y: 0.7 },
-        colors: ['#222222', '#A4F5A6', '#EFF1EE'],
+        colors: ['#007AFF', '#34C759', '#1D1D1F'],
       });
     }
   };
@@ -186,10 +186,10 @@ export const StudyView: React.FC<StudyViewProps> = ({
           <div className="relative shrink-0">
             <button
               onClick={() => setIsDeckDropdownOpen(!isDeckDropdownOpen)}
-              className="flex items-center gap-1.5 px-3 py-1.5 md:px-5 md:py-2.5 bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 rounded-xl md:rounded-2xl shadow-xs text-xs md:text-sm font-bold text-[#222222] dark:text-white hover:bg-[#EFF1EE] dark:hover:bg-white/5 transition-all cursor-pointer shrink-0"
+              className="flex items-center gap-1.5 px-3 py-1.5 md:px-5 md:py-2.5 bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] rounded-xl md:rounded-2xl shadow-xs text-xs md:text-sm font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#F5F5F7] dark:hover:bg-[#2C2C2E] transition-all cursor-pointer shrink-0"
             >
               <span>{currentDeckName}</span>
-              <ChevronDown className={`w-3.5 h-3.5 md:w-4 md:h-4 text-[#666666] dark:text-[#D0D2CF] transition-transform ${isDeckDropdownOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`w-3.5 h-3.5 md:w-4 md:h-4 text-[#6E6E73] dark:text-[#98989D] transition-transform ${isDeckDropdownOpen ? 'rotate-180' : ''}`} />
             </button>
 
             <AnimatePresence>
@@ -200,14 +200,14 @@ export const StudyView: React.FC<StudyViewProps> = ({
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute start-0 mt-2 w-64 bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 rounded-2xl shadow-xl z-20 overflow-hidden whitespace-normal"
+                    className="absolute start-0 mt-2 w-64 bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] rounded-2xl shadow-xl z-20 overflow-hidden whitespace-normal"
                   >
                     <button
                       onClick={() => {
                         setSelectedDeckId('all');
                         setIsDeckDropdownOpen(false);
                       }}
-                      className="w-full text-start px-4 py-3 text-xs font-bold text-[#222222] dark:text-stone-300 hover:bg-[#EFF1EE] dark:hover:bg-white/10 border-b border-[#D0D2CF]/50 dark:border-white/10 transition-colors flex items-center justify-between"
+                      className="w-full text-start px-4 py-3 text-xs font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#F5F5F7] dark:hover:bg-[#2C2C2E] border-b border-[#D1D1D6]/50 dark:border-[#38383A] transition-colors flex items-center justify-between"
                     >
                       <span>{t.filterAll || "All"} ({
                         settings?.interfaceLanguage === 'Arabic' ? 'الرئيسية' :
@@ -215,7 +215,7 @@ export const StudyView: React.FC<StudyViewProps> = ({
                         settings?.interfaceLanguage === 'Spanish' ? 'Principal' :
                         settings?.interfaceLanguage === 'German' ? 'Haupt-Deck' : 'Main Deck'
                       })</span>
-                      <span className="text-[10px] bg-[#EFF1EE] dark:bg-stone-800 px-2 py-0.5 rounded-full">{vocabulary.length}</span>
+                      <span className="text-[10px] bg-[#F5F5F7] dark:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] px-2 py-0.5 rounded-full">{vocabulary.length}</span>
                     </button>
                     {decks.map((deck) => {
                       const count = vocabulary.filter((v) => v.deckId === deck.id).length;
@@ -226,10 +226,10 @@ export const StudyView: React.FC<StudyViewProps> = ({
                             setSelectedDeckId(deck.id);
                             setIsDeckDropdownOpen(false);
                           }}
-                          className="w-full text-start px-4 py-3 text-xs font-semibold text-[#222222] dark:text-stone-300 hover:bg-[#EFF1EE] dark:hover:bg-white/10 border-b border-[#D0D2CF]/50 dark:border-white/10 last:border-0 transition-colors flex items-center justify-between"
+                          className="w-full text-start px-4 py-3 text-xs font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#F5F5F7] dark:hover:bg-[#2C2C2E] border-b border-[#D1D1D6]/50 dark:border-[#38383A] last:border-0 transition-colors flex items-center justify-between"
                         >
                           <span className="truncate">{deck.name} ({deck.language})</span>
-                          <span className="text-[10px] bg-[#EFF1EE] dark:bg-stone-800 px-2 py-0.5 rounded-full">{count}</span>
+                          <span className="text-[10px] bg-[#F5F5F7] dark:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] px-2 py-0.5 rounded-full">{count}</span>
                         </button>
                       );
                     })}
@@ -243,7 +243,7 @@ export const StudyView: React.FC<StudyViewProps> = ({
           <div className="flex md:hidden items-center gap-1 shrink-0">
             <button
               onClick={onNewDeckClick}
-              className="flex items-center gap-1 px-2.5 py-1.5 bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 text-[#222222] dark:text-white rounded-xl text-[10px] font-black hover:bg-[#EFF1EE] cursor-pointer shrink-0"
+              className="flex items-center gap-1 px-2.5 py-1.5 bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] text-[#1D1D1F] dark:text-[#F5F5F7] rounded-xl text-[10px] font-semibold hover:bg-[#F5F5F7] dark:hover:bg-[#2C2C2E] cursor-pointer shrink-0"
               title={t.newDeck || "New Deck"}
             >
               <Plus className="w-3 h-3" />
@@ -251,7 +251,7 @@ export const StudyView: React.FC<StudyViewProps> = ({
             </button>
             <button
               onClick={onAddWordClick}
-              className="flex items-center gap-1 px-2.5 py-1.5 bg-[#A4F5A6] hover:bg-[#8ee590] text-[#222222] rounded-xl text-[10px] font-black cursor-pointer shadow-xs shrink-0"
+              className="flex items-center gap-1 px-2.5 py-1.5 bg-[#007AFF] hover:bg-[#0066D6] text-white rounded-xl text-[10px] font-semibold cursor-pointer shadow-xs shrink-0"
               title={t.addBookmark?.replace("+", "") || "Add Word"}
             >
               <Plus className="w-3 h-3" />
@@ -260,43 +260,43 @@ export const StudyView: React.FC<StudyViewProps> = ({
           </div>
 
           {/* Phone-only compact filters */}
-          <div className="flex md:hidden items-center gap-1 bg-[#EFF1EE] dark:bg-[#1E1E1E] p-0.5 rounded-full border border-[#D0D2CF] dark:border-white/10 shrink-0">
+          <div className="flex md:hidden items-center gap-1 bg-[#F5F5F7] dark:bg-[#1C1C1E] p-0.5 rounded-full border border-[#D1D1D6] dark:border-[#38383A] shrink-0">
             <button
               onClick={() => setSelectedFilter('all')}
-              className={`px-2.5 py-1 rounded-full text-[9px] font-extrabold tracking-wider uppercase transition-all duration-150 ${
+              className={`px-2.5 py-1 rounded-full text-[9px] font-semibold tracking-wider uppercase transition-all duration-150 ${
                 selectedFilter === 'all'
-                  ? 'bg-[#A4F5A6] text-[#222222] shadow-xs'
-                  : 'text-[#666666] hover:text-[#222222] dark:text-[#D0D2CF]'
+                  ? 'bg-[#007AFF] text-white shadow-xs'
+                  : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:text-[#98989D] dark:hover:text-[#F5F5F7]'
               }`}
             >
               {t.filterAll || "All"} {deckVocabulary.length}
             </button>
             <button
               onClick={() => setSelectedFilter('new')}
-              className={`px-2.5 py-1 rounded-full text-[9px] font-extrabold tracking-wider uppercase transition-all duration-150 ${
+              className={`px-2.5 py-1 rounded-full text-[9px] font-semibold tracking-wider uppercase transition-all duration-150 ${
                 selectedFilter === 'new'
-                  ? 'bg-[#A4F5A6] text-[#222222] shadow-xs'
-                  : 'text-[#666666] hover:text-[#222222] dark:text-[#D0D2CF]'
+                  ? 'bg-[#007AFF] text-white shadow-xs'
+                  : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:text-[#98989D] dark:hover:text-[#F5F5F7]'
               }`}
             >
               {t.filterNew || "New"} {newCount}
             </button>
             <button
               onClick={() => setSelectedFilter('learning')}
-              className={`px-2.5 py-1 rounded-full text-[9px] font-extrabold tracking-wider uppercase transition-all duration-150 ${
+              className={`px-2.5 py-1 rounded-full text-[9px] font-semibold tracking-wider uppercase transition-all duration-150 ${
                 selectedFilter === 'learning'
-                  ? 'bg-[#A4F5A6] text-[#222222] shadow-xs'
-                  : 'text-[#666666] hover:text-[#222222] dark:text-[#D0D2CF]'
+                  ? 'bg-[#007AFF] text-white shadow-xs'
+                  : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:text-[#98989D] dark:hover:text-[#F5F5F7]'
               }`}
             >
               {t.filterLearning || "Learning"} {learningCount}
             </button>
             <button
               onClick={() => setSelectedFilter('mastered')}
-              className={`px-2.5 py-1 rounded-full text-[9px] font-extrabold tracking-wider uppercase transition-all duration-150 ${
+              className={`px-2.5 py-1 rounded-full text-[9px] font-semibold tracking-wider uppercase transition-all duration-150 ${
                 selectedFilter === 'mastered'
-                  ? 'bg-[#A4F5A6] text-[#222222] shadow-xs'
-                  : 'text-[#666666] hover:text-[#222222] dark:text-[#D0D2CF]'
+                  ? 'bg-[#007AFF] text-white shadow-xs'
+                  : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:text-[#98989D] dark:hover:text-[#F5F5F7]'
               }`}
             >
               {t.filterMastered || "Mastered"} {masteredCount}
@@ -305,43 +305,43 @@ export const StudyView: React.FC<StudyViewProps> = ({
         </div>
 
         {/* Center: Filters ALL / NEW / LEARNING / MASTERED */}
-        <div className="hidden md:flex items-center justify-center gap-1.5 self-center bg-[#EFF1EE] dark:bg-[#1E1E1E] p-1 rounded-full border border-[#D0D2CF] dark:border-white/10">
+        <div className="hidden md:flex items-center justify-center gap-1.5 self-center bg-[#F5F5F7] dark:bg-[#1C1C1E] p-1 rounded-full border border-[#D1D1D6] dark:border-[#38383A]">
           <button
             onClick={() => setSelectedFilter('all')}
-            className={`px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-wider uppercase transition-all duration-150 ${
+            className={`px-4 py-1.5 rounded-full text-[10px] font-semibold tracking-wider uppercase transition-all duration-150 ${
               selectedFilter === 'all'
-                ? 'bg-[#A4F5A6] text-[#222222] shadow-xs'
-                : 'text-[#666666] hover:text-[#222222] dark:text-[#D0D2CF]'
+                ? 'bg-[#007AFF] text-white shadow-xs'
+                : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:text-[#98989D] dark:hover:text-[#F5F5F7]'
             }`}
           >
             {t.filterAll || "All"} {deckVocabulary.length}
           </button>
           <button
             onClick={() => setSelectedFilter('new')}
-            className={`px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-wider uppercase transition-all duration-150 ${
+            className={`px-4 py-1.5 rounded-full text-[10px] font-semibold tracking-wider uppercase transition-all duration-150 ${
               selectedFilter === 'new'
-                ? 'bg-[#A4F5A6] text-[#222222] shadow-xs'
-                : 'text-[#666666] hover:text-[#222222] dark:text-[#D0D2CF]'
+                ? 'bg-[#007AFF] text-white shadow-xs'
+                : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:text-[#98989D] dark:hover:text-[#F5F5F7]'
             }`}
           >
             {t.filterNew || "New"} {newCount}
           </button>
           <button
             onClick={() => setSelectedFilter('learning')}
-            className={`px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-wider uppercase transition-all duration-150 ${
+            className={`px-4 py-1.5 rounded-full text-[10px] font-semibold tracking-wider uppercase transition-all duration-150 ${
               selectedFilter === 'learning'
-                ? 'bg-[#A4F5A6] text-[#222222] shadow-xs'
-                : 'text-[#666666] hover:text-[#222222] dark:text-[#D0D2CF]'
+                ? 'bg-[#007AFF] text-white shadow-xs'
+                : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:text-[#98989D] dark:hover:text-[#F5F5F7]'
             }`}
           >
             {t.filterLearning || "Learning"} {learningCount}
           </button>
           <button
             onClick={() => setSelectedFilter('mastered')}
-            className={`px-4 py-1.5 rounded-full text-[10px] font-extrabold tracking-wider uppercase transition-all duration-150 ${
+            className={`px-4 py-1.5 rounded-full text-[10px] font-semibold tracking-wider uppercase transition-all duration-150 ${
               selectedFilter === 'mastered'
-                ? 'bg-[#A4F5A6] text-[#222222] shadow-xs'
-                : 'text-[#666666] hover:text-[#222222] dark:text-[#D0D2CF]'
+                ? 'bg-[#007AFF] text-white shadow-xs'
+                : 'text-[#6E6E73] hover:text-[#1D1D1F] dark:text-[#98989D] dark:hover:text-[#F5F5F7]'
             }`}
           >
             {t.filterMastered || "Mastered"} {masteredCount}
@@ -352,14 +352,14 @@ export const StudyView: React.FC<StudyViewProps> = ({
         <div className="hidden md:flex items-center gap-2 self-end md:self-auto">
           <button
             onClick={onNewDeckClick}
-            className="flex items-center gap-1.5 px-3.5 py-2.5 bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 rounded-2xl text-xs font-bold text-[#222222] dark:text-white hover:bg-[#EFF1EE] transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2.5 bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] rounded-2xl text-xs font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#F5F5F7] dark:hover:bg-[#2C2C2E] transition-colors cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>{t.newDeck || "New Deck"}</span>
           </button>
           <button
             onClick={onAddWordClick}
-            className="flex items-center gap-1.5 px-4 py-2.5 bg-[#A4F5A6] hover:bg-[#8ee590] rounded-2xl text-xs font-bold text-[#222222] transition-colors cursor-pointer shadow-xs"
+            className="flex items-center gap-1.5 px-4 py-2.5 bg-[#007AFF] hover:bg-[#0066D6] rounded-2xl text-xs font-semibold text-white transition-colors cursor-pointer shadow-xs"
           >
             <Plus className="w-4 h-4" />
             <span>{t.addBookmark?.replace("+", "") || "Add Word"}</span>
@@ -369,19 +369,19 @@ export const StudyView: React.FC<StudyViewProps> = ({
 
       {/* Main Flashcard review container */}
       {itemsToReview.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-[#1E1E1E] rounded-[28px] border border-[#D0D2CF] dark:border-white/10 text-center p-8 space-y-4 shadow-xs">
-          <div className="w-16 h-16 rounded-full bg-[#EFF1EE] dark:bg-white/10 flex items-center justify-center text-[#222222] dark:text-white">
+        <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-[#1C1C1E] rounded-2xl border border-[#D1D1D6] dark:border-[#38383A] text-center p-8 space-y-4 shadow-xs">
+          <div className="w-16 h-16 rounded-full bg-[#F5F5F7] dark:bg-[#2C2C2E] flex items-center justify-center text-[#1D1D1F] dark:text-[#F5F5F7]">
             <FolderOpen className="w-8 h-8" />
           </div>
-          <h3 className="text-xl font-bold font-serif text-[#222222] dark:text-white">
+          <h3 className="text-xl font-semibold text-[#1D1D1F] dark:text-[#F5F5F7]">
             Deck is completely empty!
           </h3>
-          <p className="text-xs text-[#666666] dark:text-[#D0D2CF] max-w-sm leading-relaxed">
-            There are no words matching the status <span className="font-bold text-[#222222] dark:text-white uppercase">{selectedFilter}</span> in this deck. Add a flashcard to start practicing.
+          <p className="text-xs text-[#6E6E73] dark:text-[#98989D] max-w-sm leading-relaxed">
+            There are no words matching the status <span className="font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] uppercase">{selectedFilter}</span> in this deck. Add a flashcard to start practicing.
           </p>
           <button
             onClick={onAddWordClick}
-            className="px-5 py-2.5 bg-[#A4F5A6] hover:bg-[#8ee590] text-[#222222] text-xs font-bold rounded-xl shadow-md transition-colors cursor-pointer"
+            className="px-5 py-2.5 bg-[#007AFF] hover:bg-[#0066D6] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
           >
             Add First Word
           </button>
@@ -390,12 +390,12 @@ export const StudyView: React.FC<StudyViewProps> = ({
         <div className="space-y-6">
           
           {/* Top card metadata and controls */}
-          <div className="flex items-center justify-between text-[11px] font-bold text-[#666666] dark:text-[#D0D2CF] uppercase tracking-widest px-1">
+          <div className="flex items-center justify-between text-[11px] font-semibold text-[#6E6E73] dark:text-[#98989D] uppercase tracking-widest px-1">
             <span>{t.card} {currentIndex + 1} {t.of} {itemsToReview.length}</span>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => onEditCardClick(currentItem)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 text-[#222222] dark:text-white rounded-lg hover:bg-[#EFF1EE] dark:hover:bg-white/10 transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] text-[#1D1D1F] dark:text-[#F5F5F7] rounded-lg hover:bg-[#F5F5F7] dark:hover:bg-[#2C2C2E] transition-colors cursor-pointer"
               >
                 <Edit className="w-3.5 h-3.5" />
                 <span>{t.edit || "Edit"}</span>
@@ -409,7 +409,7 @@ export const StudyView: React.FC<StudyViewProps> = ({
                     }
                   }
                 }}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-[#1E1E1E] border border-rose-200 text-rose-500 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950 transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-[#1C1C1E] border border-[#FF3B30]/30 text-[#FF3B30] rounded-lg hover:bg-[#FF3B30]/10 transition-colors cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>{t.deleteItem || "Delete"}</span>
@@ -427,16 +427,16 @@ export const StudyView: React.FC<StudyViewProps> = ({
               animate={{ rotateY: isFlipped ? 180 : 0 }}
               transition={{ type: 'spring', stiffness: 120, damping: 20 }}
               style={{ transformStyle: 'preserve-3d' }}
-              className="relative w-full h-full min-h-[360px] rounded-[28px]"
+              className="relative w-full h-full min-h-[360px] rounded-2xl"
             >
               
               {/* CARD FRONT */}
               <div
                 style={{ backfaceVisibility: 'hidden' }}
-                className="absolute inset-0 w-full h-full p-8 sm:p-12 bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 rounded-[28px] shadow-lg flex flex-col justify-between overflow-hidden"
+                className="absolute inset-0 w-full h-full p-8 sm:p-12 bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] rounded-2xl shadow-lg flex flex-col justify-between overflow-hidden"
               >
                 <div className="flex items-center justify-between">
-                  <span className="px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider uppercase bg-[#EFF1EE] text-[#222222] dark:bg-white/10 dark:text-stone-300">
+                  <span className="px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-[#F5F5F7] text-[#1D1D1F] dark:bg-[#2C2C2E] dark:text-[#F5F5F7]">
                     {(() => {
                       const isAr = settings?.interfaceLanguage === 'Arabic';
                       const isFr = settings?.interfaceLanguage === 'French';
@@ -450,7 +450,7 @@ export const StudyView: React.FC<StudyViewProps> = ({
                       return `Review ${reps} • Recall`;
                     })()}
                   </span>
-                  <span className="text-[10px] font-extrabold text-[#222222] dark:text-[#A4F5A6] uppercase tracking-wider">
+                  <span className="text-[10px] font-semibold text-[#007AFF] dark:text-[#0A84FF] uppercase tracking-wider">
                     {(() => {
                       const isAr = settings?.interfaceLanguage === 'Arabic';
                       const isFr = settings?.interfaceLanguage === 'French';
@@ -466,20 +466,20 @@ export const StudyView: React.FC<StudyViewProps> = ({
                 </div>
 
                 <div className="my-auto text-center space-y-6 py-6">
-                  {/* Huge elegant serif language display */}
-                  <h2 className="text-3xl sm:text-4xl font-black font-serif-classic text-[#222222] dark:text-white leading-relaxed max-w-2xl mx-auto">
+                  {/* Huge elegant language display */}
+                  <h2 className="text-3xl sm:text-4xl font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] leading-relaxed max-w-2xl mx-auto">
                     {currentItem.translation}
                   </h2>
                   
                   {currentItem.partOfSpeech && (
-                    <p className="text-sm font-semibold text-[#666666] dark:text-stone-300 leading-relaxed max-w-xl mx-auto">
+                    <p className="text-sm font-medium text-[#6E6E73] dark:text-[#98989D] leading-relaxed max-w-xl mx-auto">
                       <span className="italic">{currentItem.partOfSpeech}</span>
                       {currentItem.definition && ` · ${currentItem.definition}`}
                     </p>
                   )}
                 </div>
 
-                <div className="text-center text-[10px] font-semibold text-[#666666] tracking-wider">
+                <div className="text-center text-[10px] font-medium text-[#6E6E73] dark:text-[#98989D] tracking-wider">
                   {t.clickToReveal || "Tap card or press Space to reveal answer"}
                 </div>
               </div>
@@ -490,20 +490,20 @@ export const StudyView: React.FC<StudyViewProps> = ({
                   backfaceVisibility: 'hidden',
                   transform: 'rotateY(180deg)',
                 }}
-                className="absolute inset-0 w-full h-full p-8 sm:p-12 bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 rounded-[28px] shadow-lg flex flex-col justify-between overflow-hidden"
+                className="absolute inset-0 w-full h-full p-8 sm:p-12 bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] rounded-2xl shadow-lg flex flex-col justify-between overflow-hidden"
               >
                 <div className="flex items-center justify-between">
-                  <span className="px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider uppercase bg-[#A4F5A6] text-[#222222]">{t.translationLabel || "Answer Revealed"}</span>
+                  <span className="px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase bg-[#007AFF]/10 text-[#007AFF] dark:bg-[#0A84FF]/15 dark:text-[#0A84FF]">{t.translationLabel || "Answer Revealed"}</span>
                   <div className="flex gap-2">
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleSpeech(currentItem.word);
                       }}
-                      className="p-2 rounded-full bg-[#EFF1EE] dark:bg-stone-800 text-[#222222] dark:text-stone-300 hover:bg-[#A4F5A6] transition-colors cursor-pointer"
+                      className="p-2 rounded-full bg-[#F5F5F7] dark:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#007AFF] hover:text-white transition-colors cursor-pointer"
                       title="Speak"
                     >
-                      <Volume2 className="w-4 h-4 text-[#222222] dark:text-white" />
+                      <Volume2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={(e) => {
@@ -528,12 +528,12 @@ export const StudyView: React.FC<StudyViewProps> = ({
                       }}
                       className={`p-2 rounded-full transition-colors cursor-pointer ${
                         isListening
-                          ? 'bg-[#A4F5A6] text-[#222222] animate-pulse'
-                          : 'bg-[#EFF1EE] dark:bg-stone-800 text-[#222222] dark:text-stone-300 hover:bg-[#A4F5A6]'
+                          ? 'bg-[#007AFF] text-white animate-pulse'
+                          : 'bg-[#F5F5F7] dark:bg-[#2C2C2E] text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#007AFF] hover:text-white'
                       }`}
                       title="Practice Pronunciation"
                     >
-                      <Mic className={`w-4 h-4 ${isListening ? 'text-[#222222]' : 'text-[#666666]'}`} />
+                      <Mic className={`w-4 h-4 ${isListening ? 'text-white' : 'text-[#6E6E73] dark:text-[#98989D]'}`} />
                     </button>
                   </div>
                 </div>
@@ -541,45 +541,45 @@ export const StudyView: React.FC<StudyViewProps> = ({
                 {pronunciationFeedback && (
                   <div className={`mt-2 p-3 rounded-xl border text-sm font-medium ${
                     pronunciationFeedback.isMatch 
-                      ? 'bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-400' 
-                      : 'bg-red-50 border-red-200 text-red-700 dark:bg-red-900/20 dark:border-red-800 dark:text-red-400'
+                      ? 'bg-[#34C759]/10 border-[#34C759]/30 text-[#34C759]' 
+                      : 'bg-[#FF3B30]/10 border-[#FF3B30]/30 text-[#FF3B30]'
                   }`}>
                     <div className="flex items-center gap-2">
-                      <span className="font-bold">{pronunciationFeedback.isMatch ? 'Great!' : 'Try again.'}</span>
+                      <span className="font-semibold">{pronunciationFeedback.isMatch ? 'Great!' : 'Try again.'}</span>
                       <span>{t.youSaid || "You said:"} <span className="italic">"{pronunciationFeedback.transcript}"</span></span>
                     </div>
                   </div>
                 )}
 
                 <div className="my-auto text-center space-y-4 py-4">
-                  <h2 className="text-3xl sm:text-4xl font-black font-serif-classic text-[#222222] dark:text-white leading-relaxed max-w-xl mx-auto">
+                  <h2 className="text-3xl sm:text-4xl font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] leading-relaxed max-w-xl mx-auto">
                     {currentItem.word}
                   </h2>
 
                   {currentItem.phonetic && (
-                    <p className="text-sm font-mono text-[#666666] dark:text-stone-400 font-semibold tracking-wide">
+                    <p className="text-sm font-mono text-[#6E6E73] dark:text-[#98989D] font-medium tracking-wide">
                       {currentItem.phonetic}
                     </p>
                   )}
 
                   {/* Memory Hook card block */}
                   {currentItem.grammarNote && (
-                    <div className="p-4 bg-[#EFF1EE] dark:bg-stone-800/60 border border-[#D0D2CF] dark:border-stone-700 rounded-2xl text-xs text-[#666666] dark:text-stone-300 max-w-md mx-auto text-start flex gap-2.5 items-start">
-                      <Lightbulb className="w-5 h-5 text-[#222222] dark:text-[#A4F5A6] shrink-0 mt-0.5" />
+                    <div className="p-4 bg-[#F5F5F7] dark:bg-[#2C2C2E] border border-[#D1D1D6] dark:border-[#38383A] rounded-2xl text-xs text-[#6E6E73] dark:text-[#98989D] max-w-md mx-auto text-start flex gap-2.5 items-start">
+                      <Lightbulb className="w-5 h-5 text-[#007AFF] dark:text-[#0A84FF] shrink-0 mt-0.5" />
                       <div>
-                        <span className="font-bold text-[#222222] dark:text-white block mb-0.5">{t.memoryHook || "Memory Hook:"}</span>
+                        <span className="font-semibold text-[#1D1D1F] dark:text-[#F5F5F7] block mb-0.5">{t.memoryHook || "Memory Hook:"}</span>
                         {currentItem.grammarNote}
                       </div>
                     </div>
                   )}
 
-                  <p className="text-xs text-[#666666] dark:text-stone-400 max-w-md mx-auto">
-                    <span className="italic font-bold">{currentItem.partOfSpeech}</span>
+                  <p className="text-xs text-[#6E6E73] dark:text-[#98989D] max-w-md mx-auto">
+                    <span className="italic font-semibold">{currentItem.partOfSpeech}</span>
                     {currentItem.definition && ` · ${currentItem.definition}`}
                   </p>
                 </div>
 
-                <div className="text-center text-[10px] font-semibold text-[#666666] tracking-wider">{t.rateDifficulty || "Rate difficulty below to schedule next review"}</div>
+                <div className="text-center text-[10px] font-medium text-[#6E6E73] dark:text-[#98989D] tracking-wider">{t.rateDifficulty || "Rate difficulty below to schedule next review"}</div>
               </div>
 
             </motion.div>
@@ -590,7 +590,7 @@ export const StudyView: React.FC<StudyViewProps> = ({
             {!isFlipped ? (
               <button
                 onClick={() => setIsFlipped(true)}
-                className="px-10 py-3.5 rounded-full bg-[#A4F5A6] hover:bg-[#8ee590] text-[#222222] font-black text-xs shadow-xs transition-all cursor-pointer"
+                className="px-10 py-3.5 rounded-full bg-[#007AFF] hover:bg-[#0066D6] text-white font-semibold text-xs shadow-xs transition-all cursor-pointer"
               >
                 {t.showAnswer || "Show Answer"}
               </button>
@@ -598,34 +598,34 @@ export const StudyView: React.FC<StudyViewProps> = ({
               <div className="grid grid-cols-4 gap-3 w-full max-w-xl">
                 <button
                   onClick={() => handleGrade(1)}
-                  className="p-3 rounded-2xl bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 text-[#222222] dark:text-stone-200 hover:bg-[#EFF1EE] dark:hover:bg-white/10 transition-all text-center cursor-pointer"
+                  className="p-3 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#FF3B30]/10 hover:border-[#FF3B30]/40 transition-all text-center cursor-pointer"
                 >
-                  <span className="block text-xs font-bold text-[#222222] dark:text-white">{t.srsAgain}</span>
-                  <span className="block text-[9px] text-[#666666] font-semibold font-mono mt-0.5">{getDueIntervalLabel(currentItem, 'again')}</span>
+                  <span className="block text-xs font-semibold text-[#FF3B30]">{t.srsAgain}</span>
+                  <span className="block text-[9px] text-[#6E6E73] dark:text-[#98989D] font-medium font-mono mt-0.5">{getDueIntervalLabel(currentItem, 'again')}</span>
                 </button>
 
                 <button
                   onClick={() => handleGrade(2)}
-                  className="p-3 rounded-2xl bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 text-[#222222] dark:text-stone-200 hover:bg-[#EFF1EE] dark:hover:bg-white/10 transition-all text-center cursor-pointer"
+                  className="p-3 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#FF9500]/10 hover:border-[#FF9500]/40 transition-all text-center cursor-pointer"
                 >
-                  <span className="block text-xs font-bold text-[#222222] dark:text-white">{t.srsHard}</span>
-                  <span className="block text-[9px] text-[#666666] font-semibold font-mono mt-0.5">{getDueIntervalLabel(currentItem, 'hard')}</span>
+                  <span className="block text-xs font-semibold text-[#FF9500]">{t.srsHard}</span>
+                  <span className="block text-[9px] text-[#6E6E73] dark:text-[#98989D] font-medium font-mono mt-0.5">{getDueIntervalLabel(currentItem, 'hard')}</span>
                 </button>
 
                 <button
                   onClick={() => handleGrade(3)}
-                  className="p-3 rounded-2xl bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 text-[#222222] dark:text-stone-200 hover:bg-[#A4F5A6]/30 transition-all text-center cursor-pointer"
+                  className="p-3 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#007AFF]/10 hover:border-[#007AFF]/40 transition-all text-center cursor-pointer"
                 >
-                  <span className="block text-xs font-bold text-[#222222] dark:text-white">{t.srsGood}</span>
-                  <span className="block text-[9px] text-[#666666] font-semibold font-mono mt-0.5">{getDueIntervalLabel(currentItem, 'good')}</span>
+                  <span className="block text-xs font-semibold text-[#007AFF] dark:text-[#0A84FF]">{t.srsGood}</span>
+                  <span className="block text-[9px] text-[#6E6E73] dark:text-[#98989D] font-medium font-mono mt-0.5">{getDueIntervalLabel(currentItem, 'good')}</span>
                 </button>
 
                 <button
                   onClick={() => handleGrade(4)}
-                  className="p-3 rounded-2xl bg-white dark:bg-[#1E1E1E] border border-[#D0D2CF] dark:border-white/10 text-[#222222] dark:text-stone-200 hover:bg-[#EFF1EE] dark:hover:bg-white/10 transition-all text-center cursor-pointer"
+                  className="p-3 rounded-2xl bg-white dark:bg-[#1C1C1E] border border-[#D1D1D6] dark:border-[#38383A] text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#34C759]/10 hover:border-[#34C759]/40 transition-all text-center cursor-pointer"
                 >
-                  <span className="block text-xs font-bold text-[#222222] dark:text-white">{t.srsEasy}</span>
-                  <span className="block text-[9px] text-[#666666] font-semibold font-mono mt-0.5">{getDueIntervalLabel(currentItem, 'easy')}</span>
+                  <span className="block text-xs font-semibold text-[#34C759]">{t.srsEasy}</span>
+                  <span className="block text-[9px] text-[#6E6E73] dark:text-[#98989D] font-medium font-mono mt-0.5">{getDueIntervalLabel(currentItem, 'easy')}</span>
                 </button>
               </div>
             )}
