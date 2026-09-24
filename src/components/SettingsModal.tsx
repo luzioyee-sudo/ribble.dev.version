@@ -627,7 +627,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               <button
                 onClick={() => setStudyRemindersEnabled(!studyRemindersEnabled)}
                 className={`w-11 h-6 flex items-center rounded-full p-1 transition-colors cursor-pointer ${
-                  studyRemindersEnabled ? 'bg-[#007AFF]' : 'bg-[#D1D1D6] dark:bg-white/20'
+                  studyRemindersEnabled ? 'bg-[#222222]' : 'bg-[#D1D1D6] dark:bg-white/20'
                 }`}
               >
                 <div
@@ -686,7 +686,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     }
                   }}
                   disabled={isCoachLoading}
-                  className="px-3.5 py-2 bg-[#007AFF] hover:bg-[#0066D6] text-white text-xs font-bold rounded-xl transition-all shadow-xs flex items-center gap-1.5 cursor-pointer shrink-0 disabled:opacity-60"
+                  className="px-3.5 py-2 bg-[#222222] hover:bg-[#34C759] text-[#F5F5F7] hover:text-[#222222] text-xs font-bold rounded-xl transition-all shadow-xs flex items-center gap-1.5 cursor-pointer shrink-0 disabled:opacity-60"
                 >
                   {isCoachLoading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
                   <span>{isCoachLoading ? (t.aiAnalyzing || 'Analyzing...') : (t.requestAiReview || 'Request AI Review')}</span>
@@ -701,7 +701,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
               {coachResult && (
                 <div className="space-y-3 pt-3 border-t border-[#D1D1D6] dark:border-white/10 text-xs">
-                  <p className="font-serif italic text-[#1D1D1F] dark:text-[#F5F5F7] border-s-2 border-[#007AFF] ps-3">
+                  <p className="font-serif italic text-[#222222] dark:text-[#F5F5F7] border-s-2 border-[#34C759] ps-3">
                     "{coachResult.overallEvaluation}"
                   </p>
                 </div>
@@ -725,9 +725,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     setCopiedApiKey(true);
                     setTimeout(() => setCopiedApiKey(false), 2000);
                   }}
-                  className="px-3 py-2 bg-[#F5F5F7] dark:bg-white/10 text-[#1D1D1F] dark:text-white text-xs font-bold rounded-xl hover:bg-[#D1D1D6] cursor-pointer"
+                  className="px-3 py-2 bg-[#F5F5F7] dark:bg-white/10 text-[#222222] dark:text-white text-xs font-bold rounded-xl hover:bg-[#D1D1D6] cursor-pointer"
                 >
-                  {copiedApiKey ? <Check className="w-4 h-4 text-[#007AFF]" /> : <Copy className="w-4 h-4" />}
+                  {copiedApiKey ? <Check className="w-4 h-4 text-[#34C759]" /> : <Copy className="w-4 h-4" />}
                 </button>
               </div>
             </div>
@@ -741,8 +741,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </h3>
                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                   !!getSupabase() 
-                    ? 'bg-[#007AFF]/15 text-[#007AFF] border border-[#007AFF]/35' 
-                    : 'bg-[#F5F5F7] text-[#6E6E73] dark:bg-white/10 dark:text-[#D1D1D6] border border-[#D1D1D6]'
+                    ? 'bg-[#34C759]/20 text-[#222222] dark:text-[#34C759] border border-[#34C759]' 
+                    : 'bg-[#F5F5F7] text-[#666666] dark:bg-white/10 dark:text-[#D1D1D6] border border-[#D1D1D6]'
                 }`}>
                   {!!getSupabase() ? (t.connectedStatus || 'Connected') : (t.notConfiguredStatus || 'Not Configured')}
                 </span>

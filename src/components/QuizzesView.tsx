@@ -683,33 +683,33 @@ export const QuizzesView: React.FC<QuizzesViewProps> = ({ settings,  onNavigate,
               <div 
                 id={`quiz-card-${quiz.id}`}
                 key={quiz.id} 
-                className="bg-white border border-[#D1D1D6]/60 p-6 rounded-3xl flex flex-col justify-between hover:border-[#007AFF]/50 transition-all group shadow-2xs"
+                className="bg-white border border-[#D1D1D6]/60 p-6 rounded-3xl flex flex-col justify-between hover:border-[#222222]/50 transition-all group shadow-2xs"
               >
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between items-start gap-4">
-                    <h4 className="text-lg font-black text-[#1D1D1F] group-hover:text-[#007AFF] transition-colors leading-tight">
+                    <h4 className="text-lg font-black text-[#222222] group-hover:text-[#3b9d4e] transition-colors leading-tight">
                       {quiz.title}
                     </h4>
-                    <span className="text-[10px] font-black bg-[#F5F5F7] text-[#1D1D1F] px-2.5 py-1 rounded-full border border-[#D1D1D6]/30 uppercase tracking-wider shrink-0">
+                    <span className="text-[10px] font-black bg-[#F5F5F7] text-[#222222] px-2.5 py-1 rounded-full border border-[#D1D1D6]/30 uppercase tracking-wider shrink-0">
                       {quiz.level}
                     </span>
                   </div>
-                  <p className="text-xs md:text-sm font-semibold text-[#6E6E73] leading-relaxed line-clamp-2">
+                  <p className="text-xs md:text-sm font-semibold text-[#666666] leading-relaxed line-clamp-2">
                     {quiz.description}
                   </p>
-                  <div className="inline-block text-[9px] font-black uppercase bg-[#F5F5F7] text-[#1D1D1F] px-2.5 py-1 rounded-full border border-[#D1D1D6]/30">
+                  <div className="inline-block text-[9px] font-black uppercase bg-[#F5F5F7] text-[#222222] px-2.5 py-1 rounded-full border border-[#D1D1D6]/30">
                     {quiz.category}
                   </div>
                 </div>
                 
                 <div className="flex items-center justify-between pt-4 border-t border-[#D1D1D6]/25">
-                  <span className="text-xs font-bold text-[#6E6E73]">
+                  <span className="text-xs font-bold text-[#666666]">
                     {quiz.questionCount} questions • {quiz.estimatedTimeMinutes} min
                   </span>
                   <button 
                     id={`start-quiz-btn-${quiz.id}`}
                     onClick={() => handleStartQuiz(quiz.id)}
-                    className="px-4.5 py-2.5 bg-[#007AFF] text-white hover:bg-[#0066D6] rounded-xl font-black text-xs transition-all cursor-pointer active:scale-95 shadow-xs"
+                    className="px-4.5 py-2.5 bg-[#222222] text-[#F5F5F7] border border-[#222222] hover:bg-stone-800 rounded-xl font-black text-xs transition-all cursor-pointer active:scale-95"
                   >
                     Start
                   </button>

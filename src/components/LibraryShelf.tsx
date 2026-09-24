@@ -474,8 +474,8 @@ export const LibraryShelf: React.FC<LibraryShelfProps> = ({
                             onClick={(e) => toggleCompleted(e, doc)}
                             className={`p-1.5 rounded-full shadow-md transition-all cursor-pointer ${
                               doc.completed
-                                ? 'bg-[#007AFF] text-white'
-                                : 'bg-white/95 dark:bg-[#2C2C2E]/95 text-[#6E6E73] dark:text-[#98989D] hover:bg-[#007AFF]/20'
+                                ? 'bg-[#34C759] text-white'
+                                : 'bg-white/95 dark:bg-[#2C2C2E]/95 text-[#6E6E73] dark:text-[#98989D] hover:bg-[#34C759]/20'
                             }`}
                             title={doc.completed ? "Mark as Uncompleted" : "Mark as Completed"}
                           >
@@ -565,7 +565,7 @@ export const LibraryShelf: React.FC<LibraryShelfProps> = ({
                       </span>
                       <div className="w-full h-1 bg-[#EDEDF0] dark:bg-[#2C2C2E] rounded-full mt-1 overflow-hidden">
                         <div
-                          className="h-full bg-[#007AFF] rounded-full"
+                          className="h-full bg-[#34C759] rounded-full"
                           style={{ width: `${progressPercent}%` }}
                         />
                       </div>
@@ -594,7 +594,7 @@ export const LibraryShelf: React.FC<LibraryShelfProps> = ({
                     <button
                       onClick={(e) => toggleCompleted(e, doc)}
                       className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
-                        doc.completed ? 'text-[#007AFF] bg-[#007AFF]/10' : 'text-[#8E8E93] hover:text-[#007AFF]'
+                        doc.completed ? 'text-[#34C759] bg-[#34C759]/10' : 'text-[#8E8E93] hover:text-[#34C759]'
                       }`}
                       title={doc.completed ? "Mark as Uncompleted" : "Mark as Completed"}
                     >

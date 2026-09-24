@@ -978,7 +978,7 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
               placeholder={t.searchQuizzesPlaceholder || "Search quizzes..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full ps-11 pe-4 py-3 rounded-2xl border border-[#D1D1D6] bg-white text-[#1D1D1F] text-sm font-semibold placeholder:text-[#1D1D1F]/30 focus:outline-none focus:border-[#007AFF] focus:ring-1 focus:ring-[#007AFF] transition-all"
+              className="w-full ps-11 pe-4 py-3 rounded-2xl border border-[#D1D1D6] bg-white text-[#1D1D1F] text-sm font-semibold placeholder:text-[#1D1D1F]/30 focus:outline-none focus:border-[#222222] focus:ring-1 focus:ring-[#222222] transition-all"
             />
           </div>
         </div>

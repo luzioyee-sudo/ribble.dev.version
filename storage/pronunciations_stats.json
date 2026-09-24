@@ -1,0 +1,9 @@
+{
+  "total_assets": 8,
+  "cache_hits": 9,
+  "cache_misses": 27,
+  "gemini_generations": 8,
+  "failed_generations": 19,
+  "estimated_tokens_saved": 225,
+  "last_updated": "2026-08-16T13:34:33.044Z"
+}

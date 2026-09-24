@@ -133,7 +133,7 @@ export const WordModal: React.FC<WordModalProps> = ({
             onClick={(e) => e.stopPropagation()} // Prevent close on self click
           >
             {/* Top Decorative Branding Accent Strip */}
-            <div className="absolute top-0 start-0 end-0 h-1 bg-[#007AFF] z-10 shrink-0" />
+            <div className="absolute top-0 start-0 end-0 h-1 bg-[#222222] z-10 shrink-0" />
             
             {/* Generous Slide Gesture Indicator Handle */}
             <div 
@@ -141,7 +141,7 @@ export const WordModal: React.FC<WordModalProps> = ({
               className="w-full flex justify-center py-4 cursor-grab active:cursor-grabbing select-none shrink-0"
               style={{ touchAction: 'none' }}
             >
-              <div className="w-16 h-1.5 bg-[#D1D1D6] dark:bg-[#38383A] rounded-full hover:bg-stone-400 dark:hover:bg-stone-600 transition-colors" />
+              <div className="w-16 h-1.5 bg-[#D1D1D6] dark:bg-stone-700/80 rounded-full hover:bg-stone-400 dark:hover:bg-stone-600 transition-colors" />
             </div>
 
             {isLoading ? (
@@ -149,23 +149,23 @@ export const WordModal: React.FC<WordModalProps> = ({
                 {/* Header skeleton */}
                 <div className="flex justify-between items-start">
                   <div className="space-y-2.5 flex-1">
-                    <div className="h-6 bg-[#F5F5F7] dark:bg-[#2C2C2E] rounded-lg w-1/2" />
-                    <div className="h-5 bg-[#F5F5F7] dark:bg-[#2C2C2E] rounded-lg w-1/3" />
+                    <div className="h-6 bg-[#F5F5F7] dark:bg-stone-800 rounded-lg w-1/2" />
+                    <div className="h-5 bg-[#F5F5F7] dark:bg-stone-800 rounded-lg w-1/3" />
                   </div>
                   <div className="flex gap-2">
-                    <div className="w-11 h-11 bg-[#F5F5F7] dark:bg-[#2C2C2E] rounded-2xl" />
-                    <div className="w-11 h-11 bg-[#F5F5F7] dark:bg-[#2C2C2E] rounded-2xl" />
+                    <div className="w-11 h-11 bg-[#F5F5F7] dark:bg-stone-800 rounded-2xl" />
+                    <div className="w-11 h-11 bg-[#F5F5F7] dark:bg-stone-800 rounded-2xl" />
                   </div>
                 </div>
                 {/* Body skeleton */}
                 <div className="h-24 bg-[#F5F5F7]/60 dark:bg-stone-800/40 rounded-2xl border border-[#D1D1D6]/40 dark:border-white/10 flex flex-col justify-center items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-[#007AFF] dark:text-[#0A84FF] animate-spin" />
-                  <span className="text-xs font-semibold text-[#6E6E73] dark:text-[#98989D]">{t.translating}</span>
+                  <Sparkles className="w-5 h-5 text-[#222222] dark:text-[#34C759] animate-spin" />
+                  <span className="text-xs font-semibold text-[#666666] dark:text-[#D1D1D6]">{t.translating}</span>
                 </div>
                 {/* Footer skeleton */}
                 <div className="flex gap-3 pt-4 border-t border-[#D1D1D6]/60 dark:border-white/10">
-                  <div className="flex-1 h-12 bg-[#F5F5F7] dark:bg-[#2C2C2E] rounded-2xl" />
-                  <div className="flex-1 h-12 bg-[#007AFF]/20 rounded-2xl" />
+                  <div className="flex-1 h-12 bg-[#F5F5F7] dark:bg-stone-800 rounded-2xl" />
+                  <div className="flex-1 h-12 bg-[#34C759]/30 rounded-2xl" />
                 </div>
               </div>
             ) : wordData ? (() => {
@@ -178,18 +178,18 @@ export const WordModal: React.FC<WordModalProps> = ({
                     {/* Header: Words & Pronounce Controls */}
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0" dir={wordIsAr || translationIsAr ? 'rtl' : 'ltr'}>
-                        <h3 className={`text-2xl font-bold text-[#1D1D1F] dark:text-white break-words whitespace-pre-wrap leading-tight tracking-tight ${
+                        <h3 className={`text-2xl font-bold text-[#222222] dark:text-white break-words whitespace-pre-wrap leading-tight tracking-tight ${
                           wordIsAr ? 'font-arabic-serif text-3xl' : 'font-serif-classic'
                         }`}>
                           {wordData.word}
                         </h3>
-                        <p className={`text-lg font-bold text-[#1D1D1F] dark:text-[#F5F5F7] mt-1 break-words whitespace-pre-wrap leading-snug ${
+                        <p className={`text-lg font-bold text-[#222222] dark:text-[#D1D1D6] mt-1 break-words whitespace-pre-wrap leading-snug ${
                           translationIsAr ? 'font-arabic-sans text-xl' : ''
                         }`}>
                           {wordData.translation}
                         </p>
                         {wordData.phonetic && (
-                          <p className="text-xs font-mono text-[#6E6E73] dark:text-[#98989D] mt-1" dir="ltr">
+                          <p className="text-xs font-mono text-[#666666] dark:text-[#D1D1D6] mt-1" dir="ltr">
                             {wordData.phonetic}
                           </p>
                         )}
@@ -471,18 +471,18 @@ export const WordModal: React.FC<WordModalProps> = ({
                   wordIsAr || translationIsAr ? 'flex-row-reverse' : ''
                 }`}>
                   <div className="flex-1 min-w-0" dir={wordIsAr || translationIsAr ? 'rtl' : 'ltr'}>
-                    <h2 className={`text-3xl font-bold text-[#1D1D1F] dark:text-white leading-snug ${
+                    <h2 className={`text-3xl font-bold text-[#222222] dark:text-white leading-snug ${
                       wordIsAr ? 'font-arabic-serif' : 'font-serif'
                     }`}>
                       {wordData.word}
                     </h2>
-                    <p className={`text-xl font-bold mt-1 text-[#1D1D1F] dark:text-[#D1D1D6] ${
+                    <p className={`text-xl font-bold mt-1 text-[#222222] dark:text-[#D1D1D6] ${
                       translationIsAr ? 'font-arabic-sans' : ''
                     }`}>
                       {wordData.translation}
                     </p>
                     {wordData.phonetic && (
-                      <p className="text-sm font-mono text-[#6E6E73] dark:text-[#D1D1D6] mt-2" dir="ltr">
+                      <p className="text-sm font-mono text-[#666666] dark:text-[#D1D1D6] mt-2" dir="ltr">
                         {wordData.phonetic}
                       </p>
                     )}
@@ -490,7 +490,7 @@ export const WordModal: React.FC<WordModalProps> = ({
                   <button
                     onClick={() => handlePlayTTS(wordData.word, wordData.sourceLanguage)}
                     className={`p-3 rounded-2xl transition-colors shrink-0 ${
-                      isPlayingAudio ? 'bg-[#007AFF] text-white animate-pulse' : 'bg-[#F5F5F7] dark:bg-white/10 text-[#1D1D1F] dark:text-[#F5F5F7]'
+                      isPlayingAudio ? 'bg-[#222222] text-[#F5F5F7] animate-pulse' : 'bg-[#F5F5F7] dark:bg-white/10 text-[#222222] dark:text-[#F5F5F7]'
                     }`}
                   >
                     <Volume2 className="w-6 h-6" />
@@ -499,7 +499,7 @@ export const WordModal: React.FC<WordModalProps> = ({
                 
                 {wordData.definition && (
                   <div className="p-4 rounded-2xl bg-[#F5F5F7] dark:bg-white/5 border border-[#D1D1D6] dark:border-white/10" dir={definitionIsAr ? 'rtl' : 'ltr'}>
-                    <p className={`text-sm text-[#1D1D1F] dark:text-[#D1D1D6] leading-relaxed ${
+                    <p className={`text-sm text-[#222222] dark:text-[#D1D1D6] leading-relaxed ${
                       definitionIsAr ? 'font-arabic-sans text-end rtl' : ''
                     }`}>
                       {wordData.definition}
@@ -510,17 +510,17 @@ export const WordModal: React.FC<WordModalProps> = ({
                 {wordData.contextSentence && (
                   <div className="text-sm space-y-2" dir={contextIsAr ? 'rtl' : 'ltr'}>
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-[#6E6E73] block text-start rtl:text-end">{t.contextSentence}:</span>
+                      <span className="font-bold text-[#666666] block text-start rtl:text-end">{t.contextSentence}:</span>
                       <button
                         onClick={() => handlePlayTTS(wordData.contextSentence, wordData.sourceLanguage)}
-                        className="px-2 py-1 rounded-lg bg-[#F5F5F7] dark:bg-white/10 text-[#1D1D1F] dark:text-[#F5F5F7] hover:bg-[#D1D1D6] transition-colors cursor-pointer flex items-center gap-1 text-xs font-semibold"
+                        className="px-2 py-1 rounded-lg bg-[#F5F5F7] dark:bg-white/10 text-[#222222] dark:text-[#F5F5F7] hover:bg-[#D1D1D6] transition-colors cursor-pointer flex items-center gap-1 text-xs font-semibold"
                         title="Listen to context sentence"
                       >
-                        <Volume2 className="w-3.5 h-3.5 text-[#007AFF]" />
+                        <Volume2 className="w-3.5 h-3.5" />
                         <span>Listen</span>
                       </button>
                     </div>
-                    <p className={`italic text-[#1D1D1F] dark:text-[#D1D1D6] bg-[#F5F5F7] dark:bg-white/5 p-3 rounded-xl ${
+                    <p className={`italic text-[#222222] dark:text-[#D1D1D6] bg-[#F5F5F7] dark:bg-white/5 p-3 rounded-xl ${
                       contextIsAr ? 'font-arabic-serif text-end rtl' : ''
                     }`}>
                       "{wordData.contextSentence}"
@@ -530,15 +530,15 @@ export const WordModal: React.FC<WordModalProps> = ({
                 <div className="pt-4 flex items-center justify-between border-t border-[#D1D1D6] dark:border-white/10">
                   <button
                     onClick={handleCopy}
-                    className="px-4 py-2 rounded-xl text-sm font-semibold text-[#6E6E73] hover:bg-[#F5F5F7] dark:hover:bg-white/10 transition-colors flex items-center gap-2"
+                    className="px-4 py-2 rounded-xl text-sm font-semibold text-[#666666] hover:bg-[#F5F5F7] dark:hover:bg-white/10 transition-colors flex items-center gap-2"
                   >
-                    {copied ? <Check className="w-4 h-4 text-[#34C759]" /> : <Copy className="w-4 h-4 text-[#6E6E73]" />}
+                    {copied ? <Check className="w-4 h-4 text-[#222222]" /> : <Copy className="w-4 h-4" />}
                     {copied ? t.copied : t.copy}
                   </button>
                   <button
                     onClick={() => onSaveToVocabulary(wordData)}
                     className={`px-5 py-2.5 rounded-2xl text-sm font-bold transition-all flex items-center gap-2 ${
-                      isSaved ? 'bg-[#007AFF]/15 text-[#007AFF] dark:text-[#0A84FF] border border-[#007AFF]/40' : 'bg-[#007AFF] text-white shadow-xs hover:bg-[#0066D6]'
+                      isSaved ? 'bg-[#34C759]/20 text-[#222222] dark:text-[#F5F5F7] border border-[#34C759]' : 'bg-[#222222] text-[#F5F5F7] shadow-xs hover:bg-[#34C759] hover:text-[#222222]'
                     }`}
                   >
                     {isSaved ? <Check className="w-4 h-4" /> : <BookmarkPlus className="w-4 h-4" />}

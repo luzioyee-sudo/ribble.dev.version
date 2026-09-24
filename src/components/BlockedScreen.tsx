@@ -1,7 +1,8 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { AlertCircle, LogOut } from 'lucide-react';
-import { signOutFromSupabase } from '../lib/supabase';
+import { auth } from '../lib/firebase';
+import { signOut } from 'firebase/auth';
 
 interface BlockedScreenProps {
   userEmail: string;
@@ -10,9 +11,9 @@ interface BlockedScreenProps {
 export const BlockedScreen: React.FC<BlockedScreenProps> = ({ userEmail }) => {
   const handleLogout = async () => {
     try {
-      await signOutFromSupabase();
+      await signOut(auth);
     } catch (err) {
-      console.error("Failed to sign out of Supabase:", err);
+      console.error("Failed to sign out:", err);
     }
   };
 

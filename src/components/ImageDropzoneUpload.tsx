@@ -32,7 +32,7 @@ const PRESET_BANNERS = [
 ];
 
 /**
- * Compresses an image File to a base64 Data URL to fit cleanly in local storage and Supabase-backed payloads.
+ * Compresses an image File to a base64 Data URL to fit cleanly in local storage & Firestore.
  */
 async function compressImageFile(file: File, maxDim = 1200, quality = 0.85): Promise<string> {
   return new Promise((resolve, reject) => {

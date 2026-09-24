@@ -1,7 +1,7 @@
 import { getTranslation } from '../utils/i18n';
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowLeft, Search, BookOpen, Layers, Library, Brain, Settings, Sparkles, ChevronRight, SquarePen, Youtube } from 'lucide-react';
+import { ArrowLeft, Search, BookOpen, Layers, Library, Brain, Settings, Sparkles, ChevronRight, SquarePen } from 'lucide-react';
 import { AppView } from '../types';
 
 interface AllToolsViewProps {
@@ -65,20 +65,12 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({ settings,  onNavigat
       color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
     },
     {
-      id: 'youtube',
-      title: 'YouTube Studio',
-      description: 'Learn with interactive YouTube video transcripts',
-      icon: Youtube,
-      path: '/watch-standalone.html',
-      color: 'bg-red-500/10 text-red-600 dark:text-red-400'
-    },
-    {
       id: 'settings',
       title: t.navSettings || 'Settings',
       description: t.settingsSubtitle || 'Preferences and account configuration',
       icon: Settings,
       view: 'settings' as AppView,
-      color: 'bg-[#EFF1EE] text-[#222222] dark:text-stone-300'
+      color: 'bg-[#F5F5F7] text-[#222222] dark:text-stone-300'
     }
   ];
 
@@ -117,7 +109,7 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({ settings,  onNavigat
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder={t.searchPlaceholder || 'Search tools...'}
-          className="w-full bg-stone-100 dark:bg-stone-850 border border-[#D0D2CF] dark:border-stone-700/80 rounded-2xl ps-10 pe-4 py-3 text-sm text-[#222222] dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#222222] transition-all shadow-3xs"
+          className="w-full bg-stone-100 dark:bg-stone-850 border border-[#D1D1D6] dark:border-stone-700/80 rounded-2xl ps-10 pe-4 py-3 text-sm text-[#222222] dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[#222222] transition-all shadow-3xs"
         />
       </div>
 
@@ -128,8 +120,8 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({ settings,  onNavigat
           return (
             <button
               key={tool.id}
-              onClick={() => tool.path ? window.location.assign(tool.path) : tool.view && onNavigate(tool.view)}
-              className={`w-full items-center justify-between p-4 rounded-2xl bg-white dark:bg-stone-900 border border-[#D0D2CF]/80 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700 transition-all cursor-pointer group shadow-2xs hover:shadow-xs ${
+              onClick={() => tool.view && onNavigate(tool.view)}
+              className={`w-full items-center justify-between p-4 rounded-2xl bg-white dark:bg-stone-900 border border-[#D1D1D6]/80 dark:border-stone-800 hover:border-stone-300 dark:hover:border-stone-700 transition-all cursor-pointer group shadow-2xs hover:shadow-xs ${
                 tool.id === 'settings' ? 'hidden sm:flex' : 'flex'
               }`}
             >
@@ -138,7 +130,7 @@ export const AllToolsView: React.FC<AllToolsViewProps> = ({ settings,  onNavigat
                   <Icon className="w-5 h-5 stroke-[2]" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-[#222222] dark:text-stone-100 group-hover:text-[#222222] dark:group-hover:text-[#A4F5A6] transition-colors">
+                  <h3 className="text-sm font-bold text-[#222222] dark:text-stone-100 group-hover:text-[#222222] dark:group-hover:text-[#34C759] transition-colors">
                     {tool.title}
                   </h3>
                   <p className="text-xs text-stone-500 dark:text-stone-400">

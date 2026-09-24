@@ -624,7 +624,7 @@ export const WritingView: React.FC<WritingViewProps> = ({ settings, onNavigate }
 
           <button
             onClick={handleAcceptCorrections}
-            className="w-full mt-1 py-2.5 bg-[#007AFF] hover:bg-[#0066D6] text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-[0.99] transition-all"
+            className="w-full mt-1 py-2.5 bg-[#34C759] hover:bg-[#30D158] text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-[0.99] transition-all"
           >
             <CheckCheck className="w-4 h-4 stroke-[2.2]" />
             {t.acceptAndApplyCorrections || 'Accept & Apply Corrections'}

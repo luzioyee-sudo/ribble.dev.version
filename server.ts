@@ -19,7 +19,9 @@ import {
   getLexiconStats,
   deleteLexicalEntry,
 } from "./src/server/lexiconService.ts";
-import { getServerSupabase } from "./src/server/supabaseServer.ts";
+import { db } from "./src/db/index.ts";
+import { analyticsEvents } from "./src/db/schema.ts";
+import { sql } from "drizzle-orm";
 import { CURATED_TRANSCRIPTS } from "./src/data/curatedTranscripts.ts";
 
 dotenv.config();
@@ -124,138 +126,504 @@ app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// Supabase-backed analytics event ingestion and aggregation.
-function normalizeAnalyticsEvent(event: any) {
-  const metadata = typeof event.metadata === 'string'
-    ? (() => { try { return JSON.parse(event.metadata); } catch { return {}; } })()
-    : (event.metadata || {});
-  return {
-    event_id: String(event.event_id || event.eventId || `evt_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`),
-    user_id: event.user_id || event.userId || null,
-    anonymous_id: event.anonymous_id || event.anonymousId || null,
-    session_id: String(event.session_id || event.sessionId || 'unknown'),
-    event_name: String(event.event_name || event.eventName || 'unknown'),
-    event_category: String(event.event_category || event.eventCategory || 'unknown'),
-    event_timestamp: event.timestamp || event.event_timestamp || new Date().toISOString(),
-    route: event.route || null,
-    page: event.page || null,
-    element_id: event.element_id || event.elementId || null,
-    language_id: event.language_id || event.languageId || null,
-    language_profile_id: event.language_profile_id || event.languageProfileId || null,
-    device_type: event.device_type || event.deviceType || null,
-    viewport: event.viewport || null,
-    metadata,
-  };
-}
-
-function filterAnalyticsRows(rows: any[], body: any) {
-  const now = Date.now();
-  let since: number | null = null;
-  if (body.timeRange === '7d') since = now - 7 * 86400000;
-  if (body.timeRange === '30d') since = now - 30 * 86400000;
-  if (body.timeRange === '90d') since = now - 90 * 86400000;
-  if (body.timeRange === 'custom' && body.startDate) since = new Date(body.startDate).getTime();
-  const until = body.timeRange === 'custom' && body.endDate ? new Date(`${body.endDate}T23:59:59.999Z`).getTime() : null;
-  return rows.filter((row) => {
-    const timestamp = new Date(row.event_timestamp).getTime();
-    if (since && timestamp < since) return false;
-    if (until && timestamp > until) return false;
-    if (body.userId && body.userId !== 'all' && String(row.user_id || '') !== String(body.userId)) return false;
-    if (body.languageId && body.languageId !== 'all' && row.language_id !== body.languageId) return false;
-    if (body.page && body.page !== 'all' && row.page !== body.page) return false;
-    if (body.deviceType && body.deviceType !== 'all' && row.device_type !== body.deviceType) return false;
-    return true;
-  });
-}
-
-function countBy(rows: any[], key: string) {
-  const counts = new Map<string, number>();
-  rows.forEach((row) => {
-    const value = row[key] || 'Unknown';
-    counts.set(value, (counts.get(value) || 0) + 1);
-  });
-  return Array.from(counts.entries()).map(([value, count]) => ({ [key]: value, count })).sort((a, b) => b.count - a.count);
-}
-
-function buildAnalyticsSummary(rows: any[]) {
-  const users = new Set(rows.filter((row) => row.user_id).map((row) => row.user_id));
-  const anonymous = new Set(rows.filter((row) => !row.user_id).map((row) => row.anonymous_id || row.session_id));
-  const sessions = new Set(rows.map((row) => row.session_id));
-  const durationSeconds = rows.reduce((sum, row) => sum + Number(row.metadata?.duration_ms || 0) / 1000, 0);
-  const onboardingStarted = rows.filter((row) => row.event_name === 'onboarding_started').length;
-  const onboardingCompleted = rows.filter((row) => row.event_name === 'onboarding_completed').length;
-  const interactionStarted = rows.filter((row) => ['quiz_started', 'practice_started'].includes(row.event_name)).length;
-  const interactionCompleted = rows.filter((row) => ['quiz_completed', 'practice_completed'].includes(row.event_name)).length;
-  const pageRows = rows.filter((row) => row.event_name === 'page_viewed');
-  const buttonRows = rows.filter((row) => row.event_name === 'button_clicked');
-  const scrollRows = rows.filter((row) => row.event_name === 'scroll_depth_reached');
-  const eventCounts = countBy(rows, 'event_name').map((item: any) => ({ event_name: item.event_name, count: item.count }));
-  const pages = countBy(pageRows, 'page').map((item: any) => ({ page: item.page, count: item.count, unique_visitors: item.count }));
-  const buttons = buttonRows.reduce((acc: any[], row) => {
-    const buttonName = row.metadata?.button_name || row.element_id || 'Unknown';
-    const existing = acc.find((item) => item.button_name === buttonName);
-    if (existing) existing.count += 1;
-    else acc.push({ button_name: buttonName, event_category: row.event_category, count: 1 });
-    return acc;
-  }, []).sort((a, b) => b.count - a.count);
-  const scroll = scrollRows.reduce((acc: any[], row) => {
-    const depth = String(row.metadata?.depth_percent || row.metadata?.depth || 'Unknown');
-    const existing = acc.find((item) => item.depth === depth);
-    if (existing) existing.count += 1;
-    else acc.push({ depth, count: 1 });
-    return acc;
-  }, []);
-  return {
-    users: { total: users.size + anonymous.size, authenticated: users.size, anonymous: anonymous.size },
-    sessions: { total: sessions.size, perUser: users.size ? Number((sessions.size / users.size).toFixed(1)) : 0, avgDuration: Math.round(durationSeconds / Math.max(sessions.size, 1)) },
-    conversions: {
-      started: onboardingStarted,
-      completed: onboardingCompleted,
-      rate: onboardingStarted ? Math.round((onboardingCompleted / onboardingStarted) * 100) : 0,
-      onboarding: { step1: onboardingStarted, step2: rows.filter((row) => row.event_name === 'onboarding_preference_selected').length, step3: onboardingCompleted },
-      interaction: { step1: pageRows.length, step2: buttonRows.length, step3: interactionStarted, step4: interactionCompleted },
-    },
-    engagement: { pages, buttons, scroll },
-    events: eventCounts,
-    devices: countBy(rows, 'device_type').map((item: any) => ({ device_type: item.device_type, count: item.count })),
-    languages: countBy(rows, 'language_id').map((item: any) => ({ language_id: item.language_id, count: item.count })),
-    categories: countBy(rows, 'event_category').map((item: any) => ({ event_category: item.event_category, count: item.count })),
-  };
-}
-
+// Centralized Analytics Event Tracking Endpoint with Validation & Batching
 app.post("/api/analytics/track", async (req, res) => {
   try {
-    const events = Array.isArray(req.body) ? req.body : [req.body];
-    if (!events.length) return res.status(400).json({ error: 'Empty tracking payload.' });
-    const supabase = getServerSupabase();
-    const rows = events.map(normalizeAnalyticsEvent);
-    const { error } = await supabase.from('analytics_events').upsert(rows, { onConflict: 'event_id' });
-    if (error) throw error;
-    res.json({ success: true, count: rows.length });
-  } catch (error: any) {
-    console.error('Supabase analytics insert failed:', error);
-    res.status(500).json({ error: 'Failed to process analytics payload', details: error?.message });
+    const payload = req.body;
+    const events = Array.isArray(payload) ? payload : [payload];
+
+    if (events.length === 0) {
+      return res.status(400).json({ error: "Empty tracking payload." });
+    }
+
+    const validatedEvents = [];
+    const serverTime = new Date();
+
+    for (const rawEvent of events) {
+      // Validate core required fields
+      const eventName = String(rawEvent.event_name || "").trim();
+      const eventCategory = String(rawEvent.event_category || "").trim();
+      const sessionId = String(rawEvent.session_id || "").trim();
+      
+      if (!eventName || !eventCategory || !sessionId) {
+        console.warn("[Analytics Validator] Rejected event: missing event_name, event_category, or session_id", rawEvent);
+        continue;
+      }
+
+      // Generate or sanitize event ID (must start with "evt_")
+      let eventId = String(rawEvent.event_id || "").trim();
+      if (!eventId || !eventId.startsWith("evt_")) {
+        eventId = `evt_${Math.random().toString(36).substring(2, 15)}_${Date.now()}`;
+      }
+
+      // Metadata size and depth validation
+      let metadataStr = null;
+      if (rawEvent.metadata) {
+        try {
+          const metaObj = typeof rawEvent.metadata === "string" ? JSON.parse(rawEvent.metadata) : rawEvent.metadata;
+          // Clean metadata to avoid circular references or huge nested data
+          const cleanedMeta: Record<string, any> = {};
+          for (const [k, v] of Object.entries(metaObj)) {
+            if (v !== null && v !== undefined && typeof v !== "object" && typeof v !== "function") {
+              cleanedMeta[k] = v;
+            } else if (typeof v === "object" && v !== null) {
+              cleanedMeta[k] = JSON.stringify(v).substring(0, 1000); // truncate sub-objects
+            }
+          }
+          metadataStr = JSON.stringify(cleanedMeta);
+        } catch {
+          metadataStr = String(rawEvent.metadata).substring(0, 5000);
+        }
+      }
+
+      // Limit overall metadata string size to prevent payload abuse
+      if (metadataStr && metadataStr.length > 10000) {
+        metadataStr = metadataStr.substring(0, 10000);
+      }
+
+      // Resolve client-provided timestamps safely, defaulting to server time
+      let eventTimestamp = serverTime;
+      if (rawEvent.timestamp) {
+        const parsedTime = new Date(rawEvent.timestamp);
+        if (!isNaN(parsedTime.getTime())) {
+          eventTimestamp = parsedTime;
+        }
+      }
+
+      // Backend security validation: verify user_id
+      let userId = rawEvent.user_id ? String(rawEvent.user_id).trim() : null;
+
+      validatedEvents.push({
+        eventId,
+        userId: userId || null,
+        anonymousId: rawEvent.anonymous_id ? String(rawEvent.anonymous_id).trim() : null,
+        sessionId,
+        eventName,
+        eventCategory,
+        timestamp: eventTimestamp,
+        route: rawEvent.route ? String(rawEvent.route).trim() : null,
+        page: rawEvent.page ? String(rawEvent.page).trim() : null,
+        elementId: rawEvent.element_id ? String(rawEvent.element_id).trim() : null,
+        languageId: rawEvent.language_id ? String(rawEvent.language_id).trim() : null,
+        languageProfileId: rawEvent.language_profile_id ? String(rawEvent.language_profile_id).trim() : null,
+        deviceType: rawEvent.device_type ? String(rawEvent.device_type).trim() : null,
+        viewport: rawEvent.viewport ? String(rawEvent.viewport).trim() : null,
+        metadata: metadataStr,
+        createdAt: serverTime,
+      });
+    }
+
+    if (validatedEvents.length === 0) {
+      return res.status(400).json({ error: "No valid events after verification." });
+    }
+
+    // Insert to Cloud SQL via Drizzle
+    try {
+      await db.insert(analyticsEvents).values(validatedEvents);
+    } catch (dbErr: any) {
+      console.error("[Analytics Engine] DB insertion failed, falling back to local file-buffering:", dbErr?.message);
+      // Fallback: append safely to a file in /storage/analytics_fallback.jsonl
+      const storageDir = path.join(process.cwd(), "storage");
+      if (!fs.existsSync(storageDir)) {
+        fs.mkdirSync(storageDir, { recursive: true });
+      }
+      const fallbackFile = path.join(storageDir, "analytics_fallback.jsonl");
+      for (const ev of validatedEvents) {
+        fs.appendFileSync(fallbackFile, JSON.stringify(ev) + "\n");
+      }
+    }
+
+    res.json({ success: true, count: validatedEvents.length });
+  } catch (err: any) {
+    console.error("[Analytics Endpoint ERROR]:", err);
+    res.status(500).json({ error: "Failed to process analytics payload", details: err?.message });
   }
 });
 
+// Centralized Analytics Event Query Endpoint for Admin Dashboard (Secure)
 app.post("/api/analytics/query", async (req, res) => {
   try {
-    if (req.headers['x-admin-passcode'] !== 'admin123') return res.status(403).json({ error: 'Admin authorization required.' });
-    const supabase = getServerSupabase();
-    const { data, error } = await supabase.from('analytics_events').select('*').order('event_timestamp', { ascending: false }).limit(5000);
-    if (error) throw error;
-    const rows = filterAnalyticsRows(data || [], req.body || {});
-    const tab = req.body?.tab || 'overview';
-    if (tab === 'events') {
-      const offset = Number(req.body?.offset || 0);
-      const limit = Math.min(Number(req.body?.limit || 50), 200);
-      return res.json({ events: rows.slice(offset, offset + limit), total: rows.length });
+    // 1. Enforce Admin Access
+    const adminPasscode = req.headers['x-admin-passcode'];
+    if (adminPasscode !== 'admin123' && adminPasscode !== 'admin') {
+      return res.status(401).json({ error: "Unauthorized: Administrative passcode required." });
     }
-    if (tab === 'live') return res.json(rows.slice(0, 100));
-    res.json(buildAnalyticsSummary(rows));
-  } catch (error: any) {
-    console.error('Supabase analytics query failed:', error);
-    res.status(500).json({ error: 'Failed to query analytics database', details: error?.message });
+
+    const {
+      timeRange = '7days',
+      startDate,
+      endDate,
+      userId = 'all',
+      languageId = 'all',
+      eventName = 'all',
+      page = 'all',
+      deviceType = 'all',
+      limit = 50,
+      offset = 0,
+      tab = 'overview'
+    } = req.body;
+
+    // 2. Build time conditions
+    let sinceDate: Date | null = null;
+    let untilDate: Date | null = null;
+    const now = new Date();
+
+    if (timeRange === 'today') {
+      sinceDate = new Date();
+      sinceDate.setHours(0, 0, 0, 0);
+    } else if (timeRange === 'yesterday') {
+      sinceDate = new Date();
+      sinceDate.setDate(sinceDate.getDate() - 1);
+      sinceDate.setHours(0, 0, 0, 0);
+      untilDate = new Date();
+      untilDate.setDate(untilDate.getDate() - 1);
+      untilDate.setHours(23, 59, 59, 999);
+    } else if (timeRange === '7days') {
+      sinceDate = new Date();
+      sinceDate.setDate(sinceDate.getDate() - 7);
+    } else if (timeRange === '30days') {
+      sinceDate = new Date();
+      sinceDate.setDate(sinceDate.getDate() - 30);
+    } else if (timeRange === '90days') {
+      sinceDate = new Date();
+      sinceDate.setDate(sinceDate.getDate() - 90);
+    } else if (timeRange === 'custom' && startDate) {
+      sinceDate = new Date(startDate);
+      if (endDate) {
+        untilDate = new Date(endDate);
+      }
+    }
+
+    // Build query constraints safely using SQL
+    const conditions = [];
+
+    if (sinceDate) {
+      conditions.push(sql`${analyticsEvents.timestamp} >= ${sinceDate}`);
+    }
+    if (untilDate) {
+      conditions.push(sql`${analyticsEvents.timestamp} <= ${untilDate}`);
+    }
+
+    // Filters
+    if (userId !== 'all') {
+      if (userId === 'anonymous') {
+        conditions.push(sql`${analyticsEvents.userId} IS NULL`);
+      } else if (userId === 'authenticated') {
+        conditions.push(sql`${analyticsEvents.userId} IS NOT NULL`);
+      } else {
+        conditions.push(sql`${analyticsEvents.userId} = ${userId}`);
+      }
+    }
+
+    if (languageId !== 'all') {
+      conditions.push(sql`${analyticsEvents.languageId} = ${languageId}`);
+    }
+
+    if (eventName !== 'all') {
+      conditions.push(sql`${analyticsEvents.eventName} = ${eventName}`);
+    }
+
+    if (page !== 'all') {
+      conditions.push(sql`${analyticsEvents.page} = ${page}`);
+    }
+
+    if (deviceType !== 'all') {
+      if (deviceType === 'Mobile') {
+        conditions.push(sql`${analyticsEvents.deviceType} LIKE '%Mobile%'`);
+      } else if (deviceType === 'Desktop') {
+        conditions.push(sql`${analyticsEvents.deviceType} LIKE '%Desktop%'`);
+      } else if (deviceType === 'Tablet') {
+        conditions.push(sql`${analyticsEvents.deviceType} LIKE '%Tablet%'`);
+      } else {
+        conditions.push(sql`${analyticsEvents.deviceType} = ${deviceType}`);
+      }
+    }
+
+    const whereSql = conditions.length > 0 ? sql`WHERE ${sql.join(conditions, sql` AND `)}` : sql``;
+
+    // Execute queries based on requested tab
+    if (tab === 'overview') {
+      // 1. Users Breakdown
+      const usersQuery = sql`
+        SELECT 
+          COUNT(DISTINCT session_id) as total_unique_sessions,
+          COUNT(DISTINCT user_id) as authenticated_users,
+          COUNT(DISTINCT anonymous_id) FILTER (WHERE user_id IS NULL) as anonymous_users,
+          COUNT(DISTINCT user_id) FILTER (WHERE event_name = 'user_registered') as new_users,
+          COUNT(DISTINCT COALESCE(user_id, anonymous_id)) as active_users
+        FROM ${analyticsEvents}
+        ${whereSql}
+      `;
+      const usersRes = await db.execute(usersQuery);
+      const userStats = usersRes.rows[0] || {};
+
+      // 2. Sessions metrics
+      const sessionsQuery = sql`
+        WITH session_durations AS (
+          SELECT session_id, 
+                 EXTRACT(EPOCH FROM (MAX(timestamp) - MIN(timestamp))) AS duration_sec
+          FROM ${analyticsEvents}
+          ${whereSql}
+          GROUP BY session_id
+        )
+        SELECT COALESCE(AVG(duration_sec), 0) as avg_duration,
+               COUNT(*) as total_sessions
+        FROM session_durations
+      `;
+      const sessionsRes = await db.execute(sessionsQuery);
+      const sessionStats = sessionsRes.rows[0] || {};
+
+      // 3. Most viewed pages
+      const pagesConditions = [...conditions, sql`page IS NOT NULL`];
+      const pagesWhereSql = sql`WHERE ${sql.join(pagesConditions, sql` AND `)}`;
+      const pagesQuery = sql`
+        SELECT page, COUNT(*) as count 
+        FROM ${analyticsEvents}
+        ${pagesWhereSql}
+        GROUP BY page 
+        ORDER BY count DESC 
+        LIMIT 5
+      `;
+      const pagesRes = await db.execute(pagesQuery);
+
+      // 4. Most clicked buttons
+      const buttonsConditions = [...conditions, sql`event_name = 'button_clicked'`];
+      const buttonsWhereSql = sql`WHERE ${sql.join(buttonsConditions, sql` AND `)}`;
+      const buttonsQuery = sql`
+        SELECT 
+          COALESCE(
+            CASE 
+              WHEN metadata LIKE '%"button_name"%' THEN substring(metadata from '"button_name":"([^"]+)"')
+              ELSE 'unknown'
+            END,
+            'unknown'
+          ) as button_name, 
+          COUNT(*) as count 
+        FROM ${analyticsEvents}
+        ${buttonsWhereSql}
+        GROUP BY button_name 
+        ORDER BY count DESC 
+        LIMIT 5
+      `;
+      const buttonsRes = await db.execute(buttonsQuery);
+
+      // 5. Scroll engagement
+      const scrollConditions = [...conditions, sql`event_name = 'scroll_depth_reached'`];
+      const scrollWhereSql = sql`WHERE ${sql.join(scrollConditions, sql` AND `)}`;
+      const scrollQuery = sql`
+        SELECT 
+          COALESCE(
+            CASE 
+              WHEN metadata LIKE '%"depth_percent"%' THEN substring(metadata from '"depth_percent":([0-9]+)')
+              ELSE '0'
+            END,
+            '0'
+          ) as depth,
+          COUNT(*) as count
+        FROM ${analyticsEvents}
+        ${scrollWhereSql}
+        GROUP BY depth
+        ORDER BY depth ASC
+      `;
+      const scrollRes = await db.execute(scrollQuery);
+
+      // 6. Conversions
+      const convQuery = sql`
+        SELECT 
+          COUNT(DISTINCT session_id) FILTER (WHERE event_name = 'onboarding_started') as started,
+          COUNT(DISTINCT session_id) FILTER (WHERE event_name = 'onboarding_completed') as completed
+        FROM ${analyticsEvents}
+        ${whereSql}
+      `;
+      const convRes = await db.execute(convQuery);
+      const conversions = convRes.rows[0] || {};
+
+      // 7. Total event count
+      const countRes = await db.execute(sql`SELECT COUNT(*) FROM ${analyticsEvents} ${whereSql}`);
+      const totalEventsCount = Number(countRes.rows[0]?.count || 0);
+
+      res.json({
+        users: {
+          total: Number(userStats.active_users || 0),
+          authenticated: Number(userStats.authenticated_users || 0),
+          anonymous: Number(userStats.anonymous_users || 0),
+          new: Number(userStats.new_users || 0),
+          returning: Math.max(0, Number(userStats.active_users || 0) - Number(userStats.new_users || 0))
+        },
+        sessions: {
+          total: Number(sessionStats.total_sessions || 0),
+          avgDuration: Math.round(Number(sessionStats.avg_duration || 0)),
+          perUser: Number(userStats.active_users) > 0 ? Number((Number(sessionStats.total_sessions || 0) / Number(userStats.active_users)).toFixed(2)) : 0
+        },
+        engagement: {
+          totalEvents: totalEventsCount,
+          pages: pagesRes.rows,
+          buttons: buttonsRes.rows.filter((b: any) => b.button_name !== 'unknown'),
+          scroll: scrollRes.rows
+        },
+        conversions: {
+          started: Number(conversions.started || 0),
+          completed: Number(conversions.completed || 0),
+          rate: Number(conversions.started) > 0 ? Number(((Number(conversions.completed || 0) / Number(conversions.started)) * 100).toFixed(1)) : 0
+        }
+      });
+    } else if (tab === 'live') {
+      const liveEventsQuery = sql`
+        SELECT * FROM ${analyticsEvents}
+        ORDER BY timestamp DESC
+        LIMIT 50
+      `;
+      const liveRes = await db.execute(liveEventsQuery);
+      res.json(liveRes.rows);
+    } else if (tab === 'users') {
+      const usersListQuery = sql`
+        SELECT 
+          COALESCE(user_id, anonymous_id) as id,
+          MIN(user_id) as auth_id,
+          MIN(anonymous_id) as anon_id,
+          COUNT(*) as event_count,
+          MAX(timestamp) as last_active,
+          MIN(timestamp) as first_seen,
+          COUNT(DISTINCT session_id) as sessions_count
+        FROM ${analyticsEvents}
+        ${whereSql}
+        GROUP BY COALESCE(user_id, anonymous_id)
+        ORDER BY last_active DESC
+        LIMIT 50
+      `;
+      const usersRes = await db.execute(usersListQuery);
+      res.json(usersRes.rows);
+    } else if (tab === 'sessions') {
+      const sessionsListQuery = sql`
+        SELECT 
+          session_id,
+          COALESCE(user_id, anonymous_id) as user_id,
+          MIN(timestamp) as started_at,
+          MAX(timestamp) as ended_at,
+          EXTRACT(EPOCH FROM (MAX(timestamp) - MIN(timestamp))) as duration_sec,
+          COUNT(*) as event_count,
+          MIN(device_type) as device
+        FROM ${analyticsEvents}
+        ${whereSql}
+        GROUP BY session_id, COALESCE(user_id, anonymous_id)
+        ORDER BY ended_at DESC
+        LIMIT 50
+      `;
+      const sessionsRes = await db.execute(sessionsListQuery);
+      res.json(sessionsRes.rows);
+    } else if (tab === 'events') {
+      const countQuery = sql`
+        SELECT COUNT(*) as total FROM ${analyticsEvents}
+        ${whereSql}
+      `;
+      const countRes = await db.execute(countQuery);
+      const total = Number(countRes.rows[0]?.total || 0);
+
+      const eventsQuery = sql`
+        SELECT * FROM ${analyticsEvents}
+        ${whereSql}
+        ORDER BY timestamp DESC
+        LIMIT ${limit} OFFSET ${offset}
+      `;
+      const eventsRes = await db.execute(eventsQuery);
+      res.json({ total, events: eventsRes.rows });
+    } else if (tab === 'pages') {
+      const pagesMetricsQuery = sql`
+        SELECT 
+          COALESCE(page, 'Landing Page') as page_name,
+          COUNT(*) as views,
+          COUNT(DISTINCT session_id) as unique_visitors,
+          COUNT(DISTINCT COALESCE(user_id, anonymous_id)) as unique_users
+        FROM ${analyticsEvents}
+        ${whereSql}
+        GROUP BY page
+        ORDER BY views DESC
+      `;
+      const pagesRes = await db.execute(pagesMetricsQuery);
+      res.json(pagesRes.rows);
+    } else if (tab === 'features') {
+      const featuresMetricsQuery = sql`
+        SELECT 
+          event_category as category,
+          event_name as name,
+          COUNT(*) as usage_count,
+          COUNT(DISTINCT session_id) as sessions_count,
+          COUNT(DISTINCT COALESCE(user_id, anonymous_id)) as unique_users
+        FROM ${analyticsEvents}
+        ${whereSql}
+        GROUP BY event_category, event_name
+        ORDER BY usage_count DESC
+      `;
+      const featuresRes = await db.execute(featuresMetricsQuery);
+      res.json(featuresRes.rows);
+    } else if (tab === 'languages') {
+      const langQuery = sql`
+        SELECT 
+          language_id,
+          COUNT(*) as total_events,
+          COUNT(DISTINCT COALESCE(user_id, anonymous_id)) as active_learners,
+          COUNT(DISTINCT session_id) as total_sessions,
+          SUM(CASE WHEN event_name = 'card_reviewed' THEN 1 ELSE 0 END) as cards_reviewed,
+          SUM(CASE WHEN event_name = 'quiz_started' THEN 1 ELSE 0 END) as quizzes_started,
+          SUM(CASE WHEN event_name = 'quiz_completed' THEN 1 ELSE 0 END) as quizzes_completed
+        FROM ${analyticsEvents}
+        ${whereSql}
+        GROUP BY language_id
+        ORDER BY active_learners DESC
+      `;
+      const langRes = await db.execute(langQuery);
+      res.json(langRes.rows.filter((r: any) => r.language_id && r.language_id !== 'null' && r.language_id !== 'all'));
+    } else if (tab === 'funnels') {
+      // 1. Onboarding Funnel: onboarding_started -> onboarding_preference_selected -> onboarding_completed
+      const onboardingFunnelQuery = sql`
+        SELECT 
+          COUNT(DISTINCT session_id) FILTER (WHERE event_name = 'onboarding_started') as step1,
+          COUNT(DISTINCT session_id) FILTER (WHERE event_name = 'onboarding_preference_selected') as step2,
+          COUNT(DISTINCT session_id) FILTER (WHERE event_name = 'onboarding_completed') as step3
+        FROM ${analyticsEvents}
+        ${whereSql}
+      `;
+      const onboardingFunnelRes = await db.execute(onboardingFunnelQuery);
+
+      // 2. Interaction Funnel: page_viewed -> button_clicked -> quiz/practice started
+      const interactFunnelQuery = sql`
+        SELECT 
+          COUNT(DISTINCT session_id) FILTER (WHERE event_name = 'page_viewed') as step1,
+          COUNT(DISTINCT session_id) FILTER (WHERE event_name = 'button_clicked') as step2,
+          COUNT(DISTINCT session_id) FILTER (WHERE event_name IN ('quiz_started', 'practice_started', 'voice_tutor_started')) as step3,
+          COUNT(DISTINCT session_id) FILTER (WHERE event_name IN ('quiz_completed', 'practice_completed', 'voice_tutor_completed')) as step4
+        FROM ${analyticsEvents}
+        ${whereSql}
+      `;
+      const interactFunnelRes = await db.execute(interactFunnelQuery);
+
+      res.json({
+        onboarding: onboardingFunnelRes.rows[0] || { step1: 0, step2: 0, step3: 0 },
+        interaction: interactFunnelRes.rows[0] || { step1: 0, step2: 0, step3: 0, step4: 0 }
+      });
+    } else if (tab === 'errors') {
+      const errorsConditions = [...conditions, sql`(event_name LIKE '%error%' OR event_category = 'error' OR metadata LIKE '%error%')`];
+      const errorsWhereSql = sql`WHERE ${sql.join(errorsConditions, sql` AND `)}`;
+      const errorsQuery = sql`
+        SELECT 
+          event_name,
+          COUNT(*) as error_count,
+          COUNT(DISTINCT session_id) as affected_sessions,
+          MAX(timestamp) as last_seen,
+          MIN(metadata) as sample_metadata
+        FROM ${analyticsEvents}
+        ${errorsWhereSql}
+        GROUP BY event_name
+        ORDER BY error_count DESC
+      `;
+      const errorsRes = await db.execute(errorsQuery);
+      res.json(errorsRes.rows);
+    } else {
+      res.status(400).json({ error: "Invalid query tab requested" });
+    }
+  } catch (err: any) {
+    console.error("[Analytics Query Endpoint ERROR]:", err);
+    res.status(500).json({ error: "Failed to query analytics database", details: err?.message });
   }
 });
 
@@ -604,57 +972,86 @@ Mandates:
   }
 });
 
-// Supabase-backed progress helpers for legacy API routes.
-async function findProgressByEmail(email: string): Promise<any | null> {
-  const client = getServerSupabase();
-  const { data: profile, error: profileError } = await client.from('user_profiles').select('id,data').eq('email', email.trim().toLowerCase()).maybeSingle();
-  if (profileError) throw profileError;
-  if (!profile?.id) return null;
-  const { data: progress, error: progressError } = await client.from('user_progress').select('data').eq('id', profile.id).maybeSingle();
-  if (progressError) throw progressError;
-  return progress?.data || profile.data || null;
+// Helper to resolve safe, sanitized, per-user progress file paths to support multi-account isolation
+function getProgressFilePath(email: string | undefined): string {
+  const cleanEmail = (email || "mopl8065_gmail_com")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9_.-]/g, "_");
+  return path.join(process.cwd(), `user_progress_${cleanEmail}.json`);
 }
 
-app.post("/api/progress/sync", async (req, res) => {
+// Client progress synchronization endpoint (saves state as a local JSON file)
+app.post("/api/progress/sync", (req, res) => {
   try {
-    const progressData = req.body || {};
-    const client = getServerSupabase();
-    const userId = progressData.userId || progressData.id;
-    if (!userId) return res.status(400).json({ error: 'A Supabase userId is required for progress sync.' });
-    const { data: existing } = await client.from('user_progress').select('data').eq('id', userId).maybeSingle();
-    const existingData = existing?.data || {};
+    const progressData = req.body;
+    const email = progressData.email || progressData.settings?.userEmail || (progressData.userId ? `user_${progressData.userId}` : "guest");
+    const filePath = getProgressFilePath(email);
+    
+    let existingData: any = {};
+    if (fs.existsSync(filePath)) {
+      try {
+        existingData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+      } catch (_) {}
+    }
+
     const mergedData = {
       ...existingData,
       ...progressData,
-      documents: progressData.documents?.length ? progressData.documents : (existingData.documents || []),
-      vocabulary: progressData.vocabulary?.length ? progressData.vocabulary : (existingData.vocabulary || []),
-      highlights: progressData.highlights?.length ? progressData.highlights : (existingData.highlights || []),
-      stickyNotes: progressData.stickyNotes?.length ? progressData.stickyNotes : (existingData.stickyNotes || []),
-      folders: progressData.folders?.length ? progressData.folders : (existingData.folders || []),
-      decks: progressData.decks?.length ? progressData.decks : (existingData.decks || []),
-      timestamp: Date.now(),
+      documents: (Array.isArray(progressData.documents) && progressData.documents.length > 0) ? progressData.documents : (existingData.documents || []),
+      vocabulary: (Array.isArray(progressData.vocabulary) && progressData.vocabulary.length > 0) ? progressData.vocabulary : (existingData.vocabulary || []),
+      highlights: (Array.isArray(progressData.highlights) && progressData.highlights.length > 0) ? progressData.highlights : (existingData.highlights || []),
+      stickyNotes: (Array.isArray(progressData.stickyNotes) && progressData.stickyNotes.length > 0) ? progressData.stickyNotes : (existingData.stickyNotes || []),
+      folders: (Array.isArray(progressData.folders) && progressData.folders.length > 0) ? progressData.folders : (existingData.folders || []),
+      decks: (Array.isArray(progressData.decks) && progressData.decks.length > 0) ? progressData.decks : (existingData.decks || []),
+      timestamp: Date.now()
     };
-    const { error } = await client.from('user_progress').upsert({ id: userId, email: mergedData.email || mergedData.settings?.userEmail || '', data: mergedData, updated_at: new Date().toISOString() }, { onConflict: 'id' });
-    if (error) throw error;
+
+    fs.writeFileSync(
+      filePath,
+      JSON.stringify(mergedData, null, 2),
+      "utf-8"
+    );
     res.json({ success: true, timestamp: new Date().toISOString() });
-  } catch (error: any) {
-    console.error('Error writing Supabase user progress:', error);
-    res.status(500).json({ error: 'Failed to sync user progress', details: error?.message });
+  } catch (err: any) {
+    console.error("Error writing user progress:", err);
+    res.status(500).json({ error: "Failed to sync user progress", details: err?.message });
   }
 });
 
-app.get("/api/developer/progress", async (req, res) => {
+// Developer API Endpoint (Allows external models or other scripts to retrieve user stats, reading logs, and flashcard metrics)
+app.get("/api/developer/progress", (req, res) => {
   try {
-    const authHeader = req.headers['x-api-key'] || req.headers['authorization']?.toString().replace(/^bearer\s+/i, '');
-    if (!authHeader) return res.status(401).json({ error: 'Unauthorized', message: 'An API key is required.' });
-    const reqEmail = req.query.email || req.headers['x-user-email'];
-    if (!reqEmail) return res.status(400).json({ error: 'Missing Email', message: 'Specify the target user email.' });
-    const data = await findProgressByEmail(reqEmail.toString());
-    if (!data) return res.status(404).json({ error: 'Not Found', message: `No synchronized Supabase progress data found for '${reqEmail}'.` });
-    res.json(data);
-  } catch (error: any) {
-    console.error('Error reading Supabase progress:', error);
-    res.status(500).json({ error: 'Failed to read progress', details: error?.message });
+    const authHeader = req.headers["x-api-key"] || req.headers["authorization"]?.toString().replace(/^bearer\s+/i, "");
+    
+    if (!authHeader) {
+      return res.status(401).json({ 
+        error: "Unauthorized", 
+        message: "Please provide an 'x-api-key' header or 'Authorization: Bearer <key>'. You can find your API key in the LingoFlow App Settings under Developer API." 
+      });
+    }
+
+    const reqEmail = req.query.email || req.headers["x-user-email"];
+    if (!reqEmail) {
+      return res.status(400).json({
+        error: "Missing Email",
+        message: "Access restricted. Please specify the target user account email using the 'email' query parameter (e.g., ?email=user@example.com) or the 'x-user-email' header to access progress logs."
+      });
+    }
+
+    const filePath = getProgressFilePath(reqEmail.toString());
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ 
+        error: "Not Found", 
+        message: `No synchronized progress data found for user email '${reqEmail}'. Please configure and save this email in the app settings first to enable API access.` 
+      });
+    }
+
+    const data = fs.readFileSync(filePath, "utf-8");
+    res.json(JSON.parse(data));
+  } catch (err: any) {
+    console.error("Error reading progress file:", err);
+    res.status(500).json({ error: "Failed to read progress", details: err?.message });
   }
 });
 
@@ -662,11 +1059,14 @@ app.get("/api/developer/progress", async (req, res) => {
 app.post("/api/ai/advices", async (req, res) => {
   try {
     const email = req.body.email || "mopl8065@gmail.com";
-    const progressData = await findProgressByEmail(email);
-    if (!progressData) {
-      return res.status(404).json({
-        error: "Not Found",
-        message: `No Supabase progress data found for '${email}'. Please study, read books, or save vocabulary first to generate recommendations.`
+    const filePath = getProgressFilePath(email);
+    let progressData: any = {};
+    if (fs.existsSync(filePath)) {
+      progressData = JSON.parse(fs.readFileSync(filePath, "utf-8"));
+    } else {
+      return res.status(404).json({ 
+        error: "Not Found", 
+        message: `No progress data found for '${email}'. Please study, read books, or save vocabulary first to generate recommendations.` 
       });
     }
 
@@ -1554,57 +1954,6 @@ Respond ONLY with valid JSON in this exact structure:
   }
 });
 
-// Public API adapters used by the supplied standalone watch page.
-app.get('/api/public/transcript', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  const videoId = String(req.query.v ?? '');
-  if (!/^[A-Za-z0-9_-]{11}$/.test(videoId)) {
-    return res.status(400).json({ error: 'Invalid YouTube video ID.' });
-  }
-  try {
-    const transcript = await fetchYoutubeTranscriptHelper(videoId, () => undefined);
-    return res.json({
-      title: 'YouTube video',
-      channel: '',
-      segments: transcript.segments.map((segment: any) => ({
-        text: String(segment.text ?? '').trim(),
-        offset: Math.round(Number(segment.startTime ?? 0) * 1000),
-        duration: Math.max(300, Math.round((Number(segment.endTime ?? 0) - Number(segment.startTime ?? 0)) * 1000)),
-      })).filter((segment: any) => segment.text && segment.duration > 0),
-    });
-  } catch (error: any) {
-    return res.status(404).json({ error: error?.message ?? 'No trustworthy transcript is available.' });
-  }
-});
-
-app.options('/api/public/translate', (_req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', 'content-type');
-  return res.sendStatus(204);
-});
-
-app.post('/api/public/translate', async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  const words = Array.isArray(req.body?.words) ? req.body.words.filter((word: unknown) => typeof word === 'string').slice(0, 20) : [];
-  const target = String(req.body?.target ?? 'ar');
-  if (!words.length) return res.status(400).json({ error: 'An array of words is required.' });
-  try {
-    const translations: Record<string, string> = {};
-    await Promise.all(words.map(async (word: string) => {
-      const response = await fetch(`http://127.0.0.1:${PORT}/api/translate`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ word, targetLanguage: target, sourceLanguage: 'English' }),
-      });
-      const payload = await response.json();
-      translations[word] = String(payload.translation ?? payload.word ?? word);
-    }));
-    return res.json({ translations });
-  } catch (error: any) {
-    return res.status(502).json({ error: error?.message ?? 'Translation service unavailable.' });
-  }
-});
-
 // YouTube Transcript Route with Redundant Fallbacks
 app.post("/api/youtube-transcript", async (req, res) => {
   try {
@@ -1622,42 +1971,9 @@ app.post("/api/youtube-transcript", async (req, res) => {
   }
 });
 
-type TranscriptWordPayload = {
-  id?: string;
-  text: string;
-  startTime: number;
-  endTime: number;
-};
-
-function createServerWordTimings(text: string, startTime: number, endTime: number, idPrefix: string): TranscriptWordPayload[] {
-  const words = text.match(/\S+/g) ?? [];
-  if (!words.length || !Number.isFinite(startTime) || !Number.isFinite(endTime) || endTime <= startTime) {
-    return [];
-  }
-
-  const weights = words.map((word) => Math.max(1, (word.match(/[\p{L}\p{N}]/gu) ?? []).length));
-  const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
-  const duration = endTime - startTime;
-  let cursor = startTime;
-
-  return words.map((word, index) => {
-    const nextCursor = index === words.length - 1
-      ? endTime
-      : cursor + (duration * weights[index]) / totalWeight;
-    const result = {
-      id: `${idPrefix}-word-${index}`,
-      text: word,
-      startTime: cursor,
-      endTime: nextCursor,
-    };
-    cursor = nextCursor;
-    return result;
-  });
-}
-
 function makeTranscript(
   videoId: string,
-  segments: Array<{ id?: string; text: string; startTime: number; endTime: number; words?: TranscriptWordPayload[] }>,
+  segments: Array<{ id?: string; text: string; startTime: number; endTime: number }>,
   alignmentMethod: 'caption-segment' | 'asr-segment' = 'caption-segment',
 ) {
   return {
@@ -1674,9 +1990,6 @@ function makeTranscript(
         text: segment.text.trim(),
         startTime: Number(segment.startTime),
         endTime: Number(segment.endTime),
-        words: segment.words?.length
-          ? segment.words
-          : createServerWordTimings(segment.text.trim(), Number(segment.startTime), Number(segment.endTime), segment.id ?? `segment-${index}`),
       }))
       .filter((segment) =>
         segment.text.length > 0 &&
@@ -1725,49 +2038,15 @@ async function fetchYoutubeTranscriptHelper(videoId: string, log: (msg: string) 
               if (json3Data?.events && Array.isArray(json3Data.events)) {
                 const parsedSegments = json3Data.events
                   .filter((event: any) => Array.isArray(event.segs) && event.segs.length > 0)
-                  .map((event: any, index: number, events: any[]) => {
+                  .map((event: any, index: number) => {
                     const text = event.segs
                       .map((seg: any) => String(seg.utf8 ?? '').replace(/\s+/g, ' '))
                       .join(' ')
                       .replace(/\s+/g, ' ')
                       .trim();
                     const startTime = Number(event.tStartMs ?? 0) / 1000;
-                    const rawDuration = Number(event.dDurationMs ?? 0) / 1000;
-                    const nextEventStart = Number(events[index + 1]?.tStartMs ?? 0) / 1000;
-                    const endTime = rawDuration > 0
-                      ? startTime + rawDuration
-                      : (nextEventStart > startTime ? nextEventStart : startTime + 3);
-
-                    let cursor = startTime;
-                    const pieces = event.segs
-                      .map((seg: any, segIndex: number) => {
-                        const pieceText = String(seg.utf8 ?? '').replace(/\s+/g, ' ').trim();
-                        if (!pieceText) return null;
-                        const pieceStart = Number.isFinite(Number(seg.tOffsetMs))
-                          ? startTime + Number(seg.tOffsetMs) / 1000
-                          : cursor;
-                        const pieceDuration = Number(seg.dDurationMs ?? 0) / 1000;
-                        const piece = {
-                          id: `caption-${index}-word-${segIndex}`,
-                          text: pieceText,
-                          startTime: Math.max(startTime, Math.min(pieceStart, endTime)),
-                          endTime: pieceDuration > 0 ? Math.min(endTime, pieceStart + pieceDuration) : Number.NaN,
-                        };
-                        cursor = piece.startTime;
-                        return piece;
-                      })
-                      .filter(Boolean) as TranscriptWordPayload[];
-
-                    const words = pieces.length > 0
-                      ? pieces.map((piece, pieceIndex) => ({
-                          ...piece,
-                          endTime: Number.isFinite(piece.endTime)
-                            ? piece.endTime
-                            : (pieces[pieceIndex + 1]?.startTime ?? endTime),
-                        })).filter((word) => word.endTime > word.startTime)
-                      : createServerWordTimings(text, startTime, endTime, `caption-${index}`);
-
-                    return { id: `caption-${index}`, text, startTime, endTime, words };
+                    const endTime = startTime + Number(event.dDurationMs ?? 0) / 1000;
+                    return { id: `caption-${index}`, text, startTime, endTime };
                   })
                   .filter((segment: any) => segment.text && segment.endTime > segment.startTime);
 

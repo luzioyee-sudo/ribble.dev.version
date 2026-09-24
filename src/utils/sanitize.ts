@@ -1,12 +1,14 @@
-export const sanitizeForBackend = (obj: any): any => {
+export const sanitizeForFirestore = (obj: any): any => {
   if (obj === undefined) return null;
   if (obj === null || typeof obj !== 'object') return obj;
-  if (Array.isArray(obj)) return obj.map(sanitizeForBackend);
-
-  const result: Record<string, any> = {};
+  if (Array.isArray(obj)) return obj.map(sanitizeForFirestore);
+  
+  const result: any = {};
   for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key) && obj[key] !== undefined) {
-      result[key] = sanitizeForBackend(obj[key]);
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      if (obj[key] !== undefined) {
+        result[key] = sanitizeForFirestore(obj[key]);
+      }
     }
   }
   return result;
